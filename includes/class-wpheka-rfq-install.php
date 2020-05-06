@@ -13,12 +13,13 @@ defined( 'ABSPATH' ) || exit;
  */
 class WPHEKA_Rfq_Install {
 
+
 	/**
 	 * Install WPHEKA_Rfq.
 	 */
 	public static function install() {
-        // Determines whether WordPress is already installed
-        if ( ! is_blog_installed() ) {
+		// Determines whether WordPress is already installed.
+		if ( ! is_blog_installed() ) {
 			return;
 		}
 
@@ -38,8 +39,8 @@ class WPHEKA_Rfq_Install {
 
 		flush_rewrite_rules();
 		do_action( 'wpheka_rfq_installed' );
-    }
-    
+	}
+
 	/**
 	 * Default options.
 	 *
@@ -48,18 +49,18 @@ class WPHEKA_Rfq_Install {
 	private static function create_options() {
 		// Include settings so that we can run through defaults.
 
-        $general_tab_settings = get_option( 'wpheka_rfq_general_settings' );
+		$general_tab_settings = get_option( 'wpheka_rfq_general_settings' );
 
-        if( empty($general_tab_settings) ) {
-            $general_settings = array();
-            $general_settings['button_type'] = 'button';
-            $general_settings['button_link_text'] = 'Add to quote';
-            $general_settings['hide_add_to_cart'] = 'no';
-            $general_settings['hide_price'] = 'no';
-            $general_settings['button_in_other_pages'] = 'no';
+		if ( empty( $general_tab_settings ) ) {
+			$general_settings                          = array();
+			$general_settings['button_type']           = 'button';
+			$general_settings['button_link_text']      = 'Add to quote';
+			$general_settings['hide_add_to_cart']      = 'no';
+			$general_settings['hide_price']            = 'no';
+			$general_settings['button_in_other_pages'] = 'no';
 
-            add_option( 'wpheka_rfq_general_settings', $general_settings, '', 'yes' );
-        }
+			add_option( 'wpheka_rfq_general_settings', $general_settings, '', 'yes' );
+		}
 	}
 
 	/**
@@ -70,7 +71,7 @@ class WPHEKA_Rfq_Install {
 		$pages = apply_filters(
 			'wpheka_rfq_create_pages',
 			array(
-				'request_for_quote'      => array(
+				'request_for_quote' => array(
 					'name'    => _x( 'request-quote', 'Page slug', 'wpheka-request-for-quote' ),
 					'title'   => _x( 'Request A Quote', 'Page title', 'wpheka-request-for-quote' ),
 					'content' => '<!-- wp:shortcode -->[' . apply_filters( 'wpheka_rfq_shortcode_tag', 'wpheka_request_for_quote' ) . ']<!-- /wp:shortcode -->',
@@ -109,7 +110,7 @@ class WPHEKA_Rfq_Install {
 
 		if ( strlen( $page_content ) > 0 ) {
 			// Search for an existing page with the specified page content (typically a shortcode).
-			$shortcode = str_replace( array( '<!-- wp:shortcode -->', '<!-- /wp:shortcode -->' ), '', $page_content );
+			$shortcode        = str_replace( array( '<!-- wp:shortcode -->', '<!-- /wp:shortcode -->' ), '', $page_content );
 			$valid_page_found = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_type='page' AND post_status NOT IN ( 'pending', 'trash', 'future', 'auto-draft' ) AND post_content LIKE %s LIMIT 1;", "%{$shortcode}%" ) );
 		} else {
 			// Search for an existing page with the specified page slug.
@@ -161,5 +162,4 @@ class WPHEKA_Rfq_Install {
 
 		return $page_id;
 	}
-
 }
