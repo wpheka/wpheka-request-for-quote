@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WPHEKA Request For Quote\n"
-"POT-Creation-Date: 2020-05-03 13:55+0530\n"
-"PO-Revision-Date: 2020-05-03 13:58+0530\n"
+"POT-Creation-Date: 2020-05-06 13:22+0530\n"
+"PO-Revision-Date: 2020-05-06 13:23+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -16,297 +16,297 @@ msgstr ""
 "X-Poedit-WPHeader: wpheka-request-for-quote.php\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
-"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;"
-"_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.min.js\n"
 
 #. Plugin Name of the plugin/theme
-#: includes/admin/class-wpheka-request-for-quote-admin.php:68
+#: includes/admin/class-wpheka-rfq-admin.php:68
 msgid "WPHEKA Request For Quote"
 msgstr ""
 
-#: includes/admin/class-wpheka-request-for-quote-admin.php:68
-#: includes/emails/class-wpheka-request-for-quote-mail.php:28
+#: includes/admin/class-wpheka-rfq-admin.php:68
+#: includes/emails/class-wpheka-rfq-mail.php:39
 msgid "Request For Quote"
 msgstr ""
 
-#: includes/admin/class-wpheka-request-for-quote-admin.php:92
-#: includes/admin/class-wpheka-request-for-quote-admin.php:163
+#: includes/admin/class-wpheka-rfq-admin.php:97
+#: includes/admin/class-wpheka-rfq-admin.php:173
 msgid "Settings"
 msgstr ""
 
-#: includes/admin/class-wpheka-request-for-quote-admin.php:96
+#: includes/admin/class-wpheka-rfq-admin.php:101
 msgid ""
 "This WooCommerce extension give your customers the possibility to request "
 "custom quotes."
 msgstr ""
 
-#: includes/admin/class-wpheka-request-for-quote-admin.php:163
+#: includes/admin/class-wpheka-rfq-admin.php:173
 msgid "View plugin settings"
 msgstr ""
 
-#: includes/class-wpheka-request-for-quote-ajax.php:77
-#: includes/class-wpheka-request-for-quote-ajax.php:306
-#: templates/single-product/add-to-quote.php:6
+#: includes/class-wpheka-rfq-ajax.php:60
+msgid "Request for quote page is not set."
+msgstr ""
+
+#: includes/class-wpheka-rfq-ajax.php:85 includes/class-wpheka-rfq-ajax.php:338
+#: templates/single-product/add-to-quote.php:18
 msgid "Product already in the quote list."
 msgstr ""
 
-#: includes/class-wpheka-request-for-quote-ajax.php:78
-#: includes/class-wpheka-request-for-quote-ajax.php:307
+#: includes/class-wpheka-rfq-ajax.php:86 includes/class-wpheka-rfq-ajax.php:339
 msgid "Browse the list."
 msgstr ""
 
-#: includes/class-wpheka-request-for-quote-ajax.php:79
-#: includes/class-wpheka-request-for-quote-ajax.php:308
+#: includes/class-wpheka-rfq-ajax.php:87 includes/class-wpheka-rfq-ajax.php:340
 msgid "Product added to quote list."
 msgstr ""
 
-#: includes/class-wpheka-request-for-quote-ajax.php:159
-#: includes/class-wpheka-request-for-quote-ajax.php:359
+#: includes/class-wpheka-rfq-ajax.php:164
+#: includes/class-wpheka-rfq-ajax.php:385
 msgid "Error occurred while adding product to the quote list."
 msgstr ""
 
-#: includes/class-wpheka-request-for-quote-frontend.php:81
+#: includes/class-wpheka-rfq-frontend.php:80
 msgid ""
 "Sorry, no products matched your selection. Please choose a different "
 "combination."
 msgstr ""
 
-#: includes/class-wpheka-request-for-quote-frontend.php:82
+#: includes/class-wpheka-rfq-frontend.php:81
 msgid ""
 "Please select some product options before adding this product to your cart."
 msgstr ""
 
-#: includes/class-wpheka-request-for-quote-frontend.php:83
+#: includes/class-wpheka-rfq-frontend.php:82
 msgid ""
 "Sorry, this product is unavailable. Please choose a different combination."
 msgstr ""
 
-#: includes/class-wpheka-request-for-quote-install.php:74
+#: includes/class-wpheka-rfq-install.php:75
 msgctxt "Page slug"
 msgid "request-quote"
 msgstr ""
 
-#: includes/class-wpheka-request-for-quote-install.php:75
+#: includes/class-wpheka-rfq-install.php:76
 msgctxt "Page title"
 msgid "Request A Quote"
 msgstr ""
 
-#: includes/class-wpheka-request-for-quote.php:85
+#: includes/class-wpheka-rfq.php:86
 msgid "Cloning is forbidden."
 msgstr ""
 
-#: includes/class-wpheka-request-for-quote.php:94
+#: includes/class-wpheka-rfq.php:95
 msgid "Unserializing instances of this class is forbidden."
 msgstr ""
 
-#: includes/emails/class-wpheka-request-for-quote-mail.php:29
+#: includes/emails/class-wpheka-rfq-mail.php:40
 msgid ""
 "New request for quote emails are sent to chosen recipient(s) when a new "
 "request is received."
 msgstr ""
 
-#: includes/emails/class-wpheka-request-for-quote-mail.php:54
+#: includes/emails/class-wpheka-rfq-mail.php:64
 msgid "[New Quote Request]"
 msgstr ""
 
-#: includes/emails/class-wpheka-request-for-quote-mail.php:65
+#: includes/emails/class-wpheka-rfq-mail.php:74
 msgid "New quote request"
 msgstr ""
 
-#: includes/emails/class-wpheka-request-for-quote-mail.php:126
+#: includes/emails/class-wpheka-rfq-mail.php:146
 msgid "Enable/Disable"
 msgstr ""
 
-#: includes/emails/class-wpheka-request-for-quote-mail.php:128
+#: includes/emails/class-wpheka-rfq-mail.php:148
 msgid "Enable this email notification"
 msgstr ""
 
-#: includes/emails/class-wpheka-request-for-quote-mail.php:132
+#: includes/emails/class-wpheka-rfq-mail.php:152
 msgid "Recipient(s)"
 msgstr ""
 
 #. translators: %s: WP admin email
-#: includes/emails/class-wpheka-request-for-quote-mail.php:135
+#: includes/emails/class-wpheka-rfq-mail.php:155
 #, php-format
 msgid "Enter recipients (comma separated) for this email. Defaults to %s."
 msgstr ""
 
-#: includes/emails/class-wpheka-request-for-quote-mail.php:141
+#: includes/emails/class-wpheka-rfq-mail.php:161
 msgid "Subject"
 msgstr ""
 
 #. translators: %s: list of placeholders
-#: includes/emails/class-wpheka-request-for-quote-mail.php:145
-#: includes/emails/class-wpheka-request-for-quote-mail.php:154
+#: includes/emails/class-wpheka-rfq-mail.php:165
+#: includes/emails/class-wpheka-rfq-mail.php:174
 #, php-format
 msgid "Available placeholders: %s"
 msgstr ""
 
-#: includes/emails/class-wpheka-request-for-quote-mail.php:150
+#: includes/emails/class-wpheka-rfq-mail.php:170
 msgid "Email heading"
 msgstr ""
 
-#: includes/emails/class-wpheka-request-for-quote-mail.php:159
+#: includes/emails/class-wpheka-rfq-mail.php:179
 msgid "Email type"
 msgstr ""
 
-#: includes/emails/class-wpheka-request-for-quote-mail.php:161
+#: includes/emails/class-wpheka-rfq-mail.php:181
 msgid "Choose which format of email to send."
 msgstr ""
 
-#: templates/admin/settings/settings-form-submit.php:7
+#: templates/admin/settings/settings-form-submit.php:15
 msgid "Saving Changes..."
 msgstr ""
 
-#: templates/admin/settings/settings-form-submit.php:7
+#: templates/admin/settings/settings-form-submit.php:15
 msgid "Changes Updated"
 msgstr ""
 
-#: templates/admin/settings/settings-form-submit.php:7
+#: templates/admin/settings/settings-form-submit.php:15
 msgid "Save Changes"
 msgstr ""
 
-#: templates/admin/settings/settings-form.php:9
+#: templates/admin/settings/settings-form.php:17
 msgid "General:"
 msgstr ""
 
-#: templates/admin/settings/settings-form.php:14
+#: templates/admin/settings/settings-form.php:22
 msgid "Hide Price"
 msgstr ""
 
-#: templates/admin/settings/settings-form.php:18
+#: templates/admin/settings/settings-form.php:26
 msgid "Hide price from product pages."
 msgstr ""
 
-#: templates/admin/settings/settings-form.php:23
+#: templates/admin/settings/settings-form.php:31
 msgid "Hide Add To Cart"
 msgstr ""
 
-#: templates/admin/settings/settings-form.php:27
+#: templates/admin/settings/settings-form.php:35
 msgid "Hide add to cart button from product pages."
 msgstr ""
 
-#: templates/admin/settings/settings-form.php:32
+#: templates/admin/settings/settings-form.php:40
 msgid "Request Quote Page"
 msgstr ""
 
-#: templates/admin/settings/settings-form.php:35
+#: templates/admin/settings/settings-form.php:43
 msgid "Select a page…"
 msgstr ""
 
-#: templates/admin/settings/settings-form.php:47
+#: templates/admin/settings/settings-form.php:63
 msgid "Page contents: [wpheka_request_for_quote]"
 msgstr ""
 
-#: templates/admin/settings/settings-form.php:51
+#: templates/admin/settings/settings-form.php:67
 msgid "Button Type"
 msgstr ""
 
-#: templates/admin/settings/settings-form.php:54
+#: templates/admin/settings/settings-form.php:70
 msgid "Button"
 msgstr ""
 
-#: templates/admin/settings/settings-form.php:55
+#: templates/admin/settings/settings-form.php:71
 msgid "Link"
 msgstr ""
 
-#: templates/admin/settings/settings-form.php:61
+#: templates/admin/settings/settings-form.php:77
 msgid "Button In Other Pages"
 msgstr ""
 
-#: templates/admin/settings/settings-form.php:65
+#: templates/admin/settings/settings-form.php:81
 msgid "Enable request quote button in other archive pages."
 msgstr ""
 
-#: templates/admin/settings/settings-form.php:70
+#: templates/admin/settings/settings-form.php:86
 msgid "Button/Link Text"
 msgstr ""
 
-#: templates/admin/settings/sidebar-support.php:18
+#: templates/admin/settings/sidebar-support.php:16
 msgid "Need Help?"
 msgstr ""
 
-#: templates/admin/settings/sidebar-support.php:25
+#: templates/admin/settings/sidebar-support.php:23
 #, php-format
 msgid "If you need some help contact us through our %s"
 msgstr ""
 
-#: templates/admin/settings/sidebar-support.php:25
+#: templates/admin/settings/sidebar-support.php:23
 msgid "Site"
 msgstr ""
 
-#: templates/emails/request-for-quote-mail-template.php:15
+#: templates/emails/request-for-quote-mail-template.php:19
 #, php-format
 msgid "You have received a quote request from %s. The request is as follows:"
 msgstr ""
 
-#: templates/emails/request-for-quote-mail-template.php:17
+#: templates/emails/request-for-quote-mail-template.php:21
 msgid "Request Quote"
 msgstr ""
 
-#: templates/emails/request-for-quote-mail-template.php:23
-#: templates/request-for-quote.php:20 templates/request-for-quote.php:79
+#: templates/emails/request-for-quote-mail-template.php:27
+#: templates/request-for-quote.php:26 templates/request-for-quote.php:87
 msgid "Product"
 msgstr ""
 
-#: templates/emails/request-for-quote-mail-template.php:24
-#: templates/request-for-quote.php:24 templates/request-for-quote.php:102
+#: templates/emails/request-for-quote-mail-template.php:28
+#: templates/request-for-quote.php:30 templates/request-for-quote.php:110
 msgid "Quantity"
 msgstr ""
 
-#: templates/emails/request-for-quote-mail-template.php:25
-#: templates/request-for-quote.php:22 templates/request-for-quote.php:96
+#: templates/emails/request-for-quote-mail-template.php:29
+#: templates/request-for-quote.php:28 templates/request-for-quote.php:104
 msgid "Price"
 msgstr ""
 
-#: templates/emails/request-for-quote-mail-template.php:71
+#: templates/emails/request-for-quote-mail-template.php:74
 msgid "Customer Details"
 msgstr ""
 
-#: templates/request-for-quote-empty.php:12
+#: templates/request-for-quote-empty.php:18
 msgid "No products in list"
 msgstr ""
 
-#: templates/request-for-quote-form.php:22
+#: templates/request-for-quote-form.php:29
 msgid "Name"
 msgstr ""
 
-#: templates/request-for-quote-form.php:28
+#: templates/request-for-quote-form.php:35
 msgid "Email address"
 msgstr ""
 
-#: templates/request-for-quote-form.php:33
+#: templates/request-for-quote-form.php:40
 msgid "Message"
 msgstr ""
 
-#: templates/request-for-quote-form.php:41
+#: templates/request-for-quote-form.php:48
 msgid "Send Your Request"
 msgstr ""
 
-#: templates/request-for-quote.php:25 templates/request-for-quote.php:124
+#: templates/request-for-quote.php:32 templates/request-for-quote.php:132
 msgid "Subtotal"
 msgstr ""
 
-#: templates/request-for-quote.php:56
+#: templates/request-for-quote.php:64
 msgid "Remove this item"
 msgstr ""
 
-#: templates/request-for-quote.php:91
+#: templates/request-for-quote.php:99
 msgid "Available on backorder"
 msgstr ""
 
-#: templates/request-for-quote.php:140
+#: templates/request-for-quote.php:149
 msgid "Update list"
 msgstr ""
 
-#: templates/single-product/add-to-quote.php:7
+#: templates/single-product/add-to-quote.php:19
 msgid "Browse the list"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
-#. Author URI of the plugin/theme
 msgid "https://wpheka.com"
 msgstr ""
 
@@ -320,4 +320,8 @@ msgstr ""
 
 #. Author of the plugin/theme
 msgid "WPHEKA"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://github.com/akshayadev"
 msgstr ""

@@ -11,13 +11,12 @@
  * Requires at least: 4.4
  * Tested up to: 5.4.1
  * WC requires at least: 3.0.0
- * WC tested up to: 4.0.1
+ * WC tested up to: 4.1.0
  * License: GPLv3 or later
  *
  * @package   WPHEKA_Rfq
  * @author    WPHEKA
  * @link      https://wpheka.com
- *
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -31,7 +30,7 @@ if ( ! defined( 'WPHEKA_RFQ_PLUGIN_FILE' ) ) {
 
 // Include the main WPHEKA_Rfq class.
 if ( ! class_exists( 'WPHEKA_Rfq' ) ) {
-	include_once dirname( __FILE__ ) . '/includes/class-wpheka-request-for-quote.php';
+	include_once dirname( __FILE__ ) . '/includes/class-wpheka-rfq.php';
 }
 
 /**
@@ -47,4 +46,4 @@ function wpheka_request_for_quote() {
 }
 
 // Global for backwards compatibility.
-$GLOBALS['WPHEKA_Rfq'] = wpheka_request_for_quote();
+$GLOBALS['wp_heka_rfq'] = wpheka_request_for_quote();

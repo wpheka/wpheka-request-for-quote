@@ -1,9 +1,15 @@
 <?php
 /**
- * Request For Quote Page Template
+ * Template to display request quote product list in the request quote page
+ *
+ * @package WPHEKA_Rfq
+ * @subpackage WPHEKA_Rfq_Frontend
+ * @since 1.0.0
  */
 
-defined( 'ABSPATH' ) || exit;
+if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly.
+	die( 'No script kiddies please!' );
+}
 
 function_exists( 'wc_nocache_headers' ) && wc_nocache_headers();
 
@@ -17,24 +23,26 @@ do_action( 'wpheka_before_rfq_list' ); ?>
 			<tr>
 				<th class="product-remove">&nbsp;</th>
 				<th class="product-thumbnail">&nbsp;</th>
-				<th class="product-name"><?php esc_html_e( 'Product', wpheka_request_for_quote()->text_domain ); ?></th>
-				<?php if ( wpheka_request_for_quote()->get_settings('hide_price') == 'no' ) { ?>
-				<th class="product-price"><?php esc_html_e( 'Price', wpheka_request_for_quote()->text_domain ); ?></th>
+				<th class="product-name"><?php esc_html_e( 'Product', 'wpheka-request-for-quote' ); ?></th>
+				<?php if ( wpheka_request_for_quote()->get_settings( 'hide_price' ) == 'no' ) { ?>
+				<th class="product-price"><?php esc_html_e( 'Price', 'wpheka-request-for-quote' ); ?></th>
 				<?php } ?>
-				<th class="product-quantity"><?php esc_html_e( 'Quantity', wpheka_request_for_quote()->text_domain ); ?></th>
-				<th class="product-subtotal"><?php esc_html_e( 'Subtotal', wpheka_request_for_quote()->text_domain ); ?></th>
+				<th class="product-quantity"><?php esc_html_e( 'Quantity', 'wpheka-request-for-quote' ); ?></th>
+				<?php if ( wpheka_request_for_quote()->get_settings( 'hide_price' ) == 'no' ) { ?>
+				<th class="product-subtotal"><?php esc_html_e( 'Subtotal', 'wpheka-request-for-quote' ); ?></th>
+				<?php } ?>
 			</tr>
 		</thead>
 		<tbody>
-			<?php do_action( 'wpheka_before_rfq_list_contents' );
-			
-			foreach ( $rfq_data as $rfq_item_key => $rfq_item ) {
+			<?php
+			do_action( 'wpheka_before_rfq_list_contents' );
 
+			foreach ( $rfq_data as $rfq_item_key => $rfq_item ) {
 				$actual_product_id = empty( $rfq_item['variation_id'] ) ? $rfq_item['product_id'] : $rfq_item['variation_id'];
 
 				$actual_product = wc_get_product( $actual_product_id );
-				
-				if( ! $actual_product ) {
+
+				if ( ! $actual_product ) {
 					continue;
 				}
 
@@ -53,7 +61,7 @@ do_action( 'wpheka_before_rfq_list' ); ?>
 									sprintf(
 										'<a href="%s" class="remove" aria-label="%s" data-product_id="%s" data-product_sku="%s" data-rfq_item_key="%s">&times;</a>',
 										esc_url( wpheka_request_for_quote()->get_rfq_remove_url( $rfq_item_key ) ),
-										esc_html__( 'Remove this item', wpheka_request_for_quote()->text_domain ),
+										esc_html__( 'Remove this item', 'wpheka-request-for-quote' ),
 										esc_attr( $product_id ),
 										esc_attr( $_product->get_sku() ),
 										esc_attr( $rfq_item_key )
@@ -76,7 +84,7 @@ do_action( 'wpheka_before_rfq_list' ); ?>
 						?>
 						</td>
 
-						<td class="product-name" data-title="<?php esc_attr_e( 'Product', wpheka_request_for_quote()->text_domain ); ?>">
+						<td class="product-name" data-title="<?php esc_attr_e( 'Product', 'wpheka-request-for-quote' ); ?>">
 						<?php
 						if ( ! $product_permalink ) {
 							echo wp_kses_post( apply_filters( 'wpheka_rfq_item_name', $_product->get_name(), $rfq_item, $rfq_item_key ) . '&nbsp;' );
@@ -88,18 +96,18 @@ do_action( 'wpheka_before_rfq_list' ); ?>
 
 						// Backorder notification.
 						if ( $_product->backorders_require_notification() && $_product->is_on_backorder( $rfq_item['quantity'] ) ) {
-							echo wp_kses_post( apply_filters( 'wpheka_rfq_item_backorder_notification', '<p class="backorder_notification">' . esc_html__( 'Available on backorder', wpheka_request_for_quote()->text_domain ) . '</p>', $product_id ) );
+							echo wp_kses_post( apply_filters( 'wpheka_rfq_item_backorder_notification', '<p class="backorder_notification">' . esc_html__( 'Available on backorder', 'wpheka-request-for-quote' ) . '</p>', $product_id ) );
 						}
 						?>
 						</td>
-						<?php if ( wpheka_request_for_quote()->get_settings('hide_price') == 'no' ) { ?>
-						<td class="product-price" data-title="<?php esc_attr_e( 'Price', wpheka_request_for_quote()->text_domain ); ?>">
+						<?php if ( wpheka_request_for_quote()->get_settings( 'hide_price' ) == 'no' ) { ?>
+						<td class="product-price" data-title="<?php esc_attr_e( 'Price', 'wpheka-request-for-quote' ); ?>">
 							<?php
 								echo apply_filters( 'wpheka_rfq_item_price', WC()->cart->get_product_price( $_product ), $rfq_item, $rfq_item_key ); // PHPCS: XSS ok.
 							?>
 						</td>
 						<?php } ?>
-						<td class="product-quantity" data-title="<?php esc_attr_e( 'Quantity', wpheka_request_for_quote()->text_domain ); ?>">
+						<td class="product-quantity" data-title="<?php esc_attr_e( 'Quantity', 'wpheka-request-for-quote' ); ?>">
 						<?php
 						if ( $_product->is_sold_individually() ) {
 							$product_quantity = sprintf( '1 <input type="hidden" name="rfq[%s][quantity]" value="1" />', $rfq_item_key );
@@ -120,12 +128,13 @@ do_action( 'wpheka_before_rfq_list' ); ?>
 						echo apply_filters( 'wpheka_rfq_item_quantity', $product_quantity, $rfq_item_key, $rfq_item ); // PHPCS: XSS ok.
 						?>
 						</td>
-
-						<td class="product-subtotal" data-title="<?php esc_attr_e( 'Subtotal', wpheka_request_for_quote()->text_domain ); ?>">
+						<?php if ( wpheka_request_for_quote()->get_settings( 'hide_price' ) == 'no' ) { ?>
+						<td class="product-subtotal" data-title="<?php esc_attr_e( 'Subtotal', 'wpheka-request-for-quote' ); ?>">
 							<?php
 								echo apply_filters( 'wpheka_rfq_item_subtotal', WC()->cart->get_product_subtotal( $_product, $rfq_item['quantity'] ), $rfq_item, $rfq_item_key ); // PHPCS: XSS ok.
 							?>
 						</td>
+						<?php } ?>
 					</tr>
 					<?php
 				}
@@ -137,7 +146,7 @@ do_action( 'wpheka_before_rfq_list' ); ?>
 			<tr>
 				<td colspan="6" class="actions">
 
-					<button type="submit" class="button" name="update_rfq" value="<?php esc_attr_e( 'Update list', wpheka_request_for_quote()->text_domain ); ?>"><?php esc_html_e( 'Update list', wpheka_request_for_quote()->text_domain ); ?></button>
+					<button type="submit" class="button" name="update_rfq" value="<?php esc_attr_e( 'Update list', 'wpheka-request-for-quote' ); ?>"><?php esc_html_e( 'Update list', 'wpheka-request-for-quote' ); ?></button>
 
 					<?php do_action( 'wpheka_rfq_actions' ); ?>
 

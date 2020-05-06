@@ -226,8 +226,8 @@
 }
 
 /**
-     * KINSTA NUMBER FIELD
-     */
+	 * KINSTA NUMBER FIELD
+	 */
 
 .wpheka-number-field {
 	padding: 3px 0;
@@ -247,8 +247,8 @@
 }
 
 /**
-      * KINSTA SELECT FIELD
-      */
+	  * KINSTA SELECT FIELD
+	  */
 
 .wpheka-select-field {
 	padding: 3px 0;
@@ -267,9 +267,9 @@
 }
 
 /**
-     *  ANIMATED SWITCH CHECKBOX
-     *  Full CSS animated sliding yes/no indicator
-    */
+	 *  ANIMATED SWITCH CHECKBOX
+	 *  Full CSS animated sliding yes/no indicator
+	*/
 
 .wpheka-switch {
 	display: flex;
@@ -397,9 +397,9 @@
 }
 
 /**
-     *  KINSTA BUTTON
-     *  Basic buttons styles and progress button addon
-    */
+	 *  KINSTA BUTTON
+	 *  Basic buttons styles and progress button addon
+	*/
 
 .wpheka-button {
 	display: inline-block;
@@ -472,9 +472,9 @@
 }
 
 /**
-     *  KINSTA DROPDOWN
-     *  Styles for the dropdown functionality
-    */
+	 *  KINSTA DROPDOWN
+	 *  Styles for the dropdown functionality
+	*/
 
 .wpheka-dropdown {
 	position: relative;
@@ -524,9 +524,9 @@
 }
 
 /*    .wpheka-dropdown-content button:last-of-type {
-        border-bottom-right-radius: 100px !important;
-        border-bottom-left-radius: 100px !important;
-    }*/
+		border-bottom-right-radius: 100px !important;
+		border-bottom-left-radius: 100px !important;
+	}*/
 
 .wpheka-dropdown-content > a:hover,
 .wpheka-dropdown-content > span:hover {
@@ -609,9 +609,9 @@
 }
 
 /**
-     *  KINSTA TOOLTIPS
-     *  Styles for the tooltips
-    */
+	 *  KINSTA TOOLTIPS
+	 *  Styles for the tooltips
+	*/
 
 .wpheka-tooltip {
 	position: absolute;
