@@ -188,7 +188,14 @@ if ( ! class_exists( 'WPHEKA_Rfq_Frontend', false ) ) :
 			}
 
 			if ( isset( $GLOBALS['woocommerce_loop'] ) ) {
-				if ( ( 'related' == $GLOBALS['woocommerce_loop']['name'] ) || ( 'up-sells' == $GLOBALS['woocommerce_loop']['name'] ) ) {
+
+				$exclude_loop = array(
+					'cross-sells',
+					'up-sells',
+					'related',
+				);
+
+				if ( in_array( $GLOBALS['woocommerce_loop']['name'], $exclude_loop ) ) {
 					return false;
 				}
 			}

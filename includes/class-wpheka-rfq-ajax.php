@@ -103,8 +103,12 @@ if ( ! class_exists( 'WPHEKA_Rfq_Ajax', false ) ) :
 
 						$variations = array();
 
-						foreach ( $_POST as $key => $value ) {
+						$raw_posted_data = wp_unslash( $_POST );
+
+						foreach ( $raw_posted_data as $key => $value ) {
 							if ( stripos( $key, 'attribute' ) !== false ) {
+								$key = sanitize_key( wp_unslash( $key ) );
+								$value = sanitize_text_field( wp_unslash( $value ) );
 								$variations[ $key ] = $value;
 							}
 						}
@@ -182,17 +186,12 @@ if ( ! class_exists( 'WPHEKA_Rfq_Ajax', false ) ) :
                 $nonce_value = wc_get_var($_REQUEST['wpheka-rfq-nonce']); // @codingStandardsIgnoreLine.
 				if ( wp_verify_nonce( $nonce_value, 'wpheka-rfq' ) ) {
 
-					$raw_posted_data = wp_unslash( $_POST['rfq'] );
-					$posted_data = array();
-					foreach ( $raw_posted_data as $product_id => $product_data ) {
-						$product_id = absint( $product_id );
-						$posted_data[ $product_id ] = array_map( 'absint', wp_unslash( $product_data ) );
-					}
-
-					$rfq_data    = wpheka_request_for_quote()->get_rfq_data();
+					$posted_data = wp_unslash( $_POST['rfq'] );
+					$rfq_data = wpheka_request_for_quote()->get_rfq_data();
 					if ( ! empty( $posted_data ) ) {
 						foreach ( $posted_data as $rfq_item_key => $rfq_item ) {
-							$quantity = (int) $rfq_item['quantity'];
+							$quantity = absint( $rfq_item['quantity'] );
+							$rfq_item_key = sanitize_key( wp_unslash( $rfq_item_key ) );
 							if ( ! empty( $rfq_data ) ) {
 								if ( array_key_exists( $rfq_item_key, $rfq_data ) ) {
 									$rfq_data[ $rfq_item_key ]['quantity'] = $quantity;
