@@ -43,6 +43,15 @@ do_action( 'wpheka_before_rfq_list' ); ?>
 				$actual_product = wc_get_product( $actual_product_id );
 
 				if ( ! $actual_product ) {
+					if ( array_key_exists( $rfq_item_key, $rfq_data ) ) {
+						unset( $rfq_data[ $rfq_item_key ] );
+
+						if ( empty( $rfq_data ) ) {
+							wpheka_request_for_quote()->session->set( 'rfq', array() );
+						} else {
+							wpheka_request_for_quote()->session->set( 'rfq', $rfq_data );
+						}
+					}
 					continue;
 				}
 

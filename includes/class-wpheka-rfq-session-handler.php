@@ -1,10 +1,16 @@
 <?php
 /**
- * WPHEKA_RFQ_Session_Handler
+ * Handle data for the current customers session.
+ * Implements the WC_Session abstract class.
  *
- * @package WPHEKA_Rfq
- * @since   1.0
+ * From 2.5 this uses a custom table for session storage. Based on https://github.com/kloon/woocommerce-large-sessions.
+ *
+ * @class    WC_Session_Handler
+ * @version  2.5.0
+ * @package  WooCommerce/Classes
  */
+
+use Automattic\Jetpack\Constants;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -42,11 +48,44 @@ class WPHEKA_RFQ_Session_Handler extends WC_Session {
 	protected $_has_cookie = false;
 
 	/**
+	 * Table name for session data.
+	 *
+	 * @var string Custom session table name
+	 */
+	protected $_table;
+
+	/**
 	 * Constructor for the session class.
 	 */
 	public function __construct() {
-		$this->_cookie = 'wpheka_rfq_session_' . COOKIEHASH;
+		$this->_cookie = apply_filters( 'wpheka_rfq_cookie', 'wpheka_rfq_session_' . COOKIEHASH );
+		$this->_table  = $GLOBALS['wpdb']->prefix . 'wpheka_rfq_sessions';
+	}
 
+	/**
+	 * Init hooks and session data.
+	 *
+	 * @since 3.3.0
+	 */
+	public function init() {
+		$this->init_session_cookie();
+
+		add_action( 'shutdown', array( $this, 'save_data' ), 20 );
+		add_action( 'wp_logout', array( $this, 'destroy_session' ) );
+
+		if ( ! is_user_logged_in() ) {
+			add_filter( 'nonce_user_logged_out', array( $this, 'nonce_user_logged_out' ) );
+		}
+
+		$this->set_customer_session_cookie( true );
+	}
+
+	/**
+	 * Setup cookie and customer ID.
+	 *
+	 * @since 3.6.0
+	 */
+	public function init_session_cookie() {
 		$cookie = $this->get_session_cookie();
 
 		if ( $cookie ) {
@@ -54,32 +93,26 @@ class WPHEKA_RFQ_Session_Handler extends WC_Session {
 			$this->_session_expiration = $cookie[1];
 			$this->_session_expiring   = $cookie[2];
 			$this->_has_cookie         = true;
+			$this->_data               = $this->get_session_data();
+
+			// If the user logs in, update session.
+			if ( is_user_logged_in() && strval( get_current_user_id() ) !== $this->_customer_id ) {
+				$guest_session_id   = $this->_customer_id;
+				$this->_customer_id = strval( get_current_user_id() );
+				$this->_dirty       = true;
+				$this->save_data( $guest_session_id );
+				$this->set_customer_session_cookie( true );
+			}
 
 			// Update session if its close to expiring.
 			if ( time() > $this->_session_expiring ) {
 				$this->set_session_expiration();
-				$session_expiry_option = '_wpheka_rfq_session_expires_' . $this->_customer_id;
-				// Check if option exists first to avoid auloading cleaned up sessions.
-				if ( false === get_option( $session_expiry_option ) ) {
-					add_option( $session_expiry_option, $this->_session_expiration, '', 'no' );
-				} else {
-					update_option( $session_expiry_option, $this->_session_expiration );
-				}
+				$this->update_session_timestamp( $this->_customer_id, $this->_session_expiration );
 			}
 		} else {
 			$this->set_session_expiration();
 			$this->_customer_id = $this->generate_customer_id();
-		}
-
-		$this->_data = $this->get_session_data();
-
-		// Actions.
-
-		add_action( 'woocommerce_cleanup_sessions', array( $this, 'cleanup_sessions' ), 10 );
-		add_action( 'shutdown', array( $this, 'save_data' ), 20 );
-		add_action( 'clear_auth_cookie', array( $this, 'destroy_session' ) );
-		if ( ! is_user_logged_in() ) {
-			add_action( 'woocommerce_thankyou', array( $this, 'destroy_session' ) );
+			$this->_data        = $this->get_session_data();
 		}
 	}
 
@@ -94,32 +127,42 @@ class WPHEKA_RFQ_Session_Handler extends WC_Session {
 	 */
 	public function set_customer_session_cookie( $set ) {
 		if ( $set ) {
-			// Set/renew our cookie.
-			$to_hash           = $this->_customer_id . $this->_session_expiration;
+			$to_hash           = $this->_customer_id . '|' . $this->_session_expiration;
 			$cookie_hash       = hash_hmac( 'md5', $to_hash, wp_hash( $to_hash ) );
 			$cookie_value      = $this->_customer_id . '||' . $this->_session_expiration . '||' . $this->_session_expiring . '||' . $cookie_hash;
 			$this->_has_cookie = true;
 
-			// Set the cookie.
-			wc_setcookie( $this->_cookie, $cookie_value, $this->_session_expiration, apply_filters( 'wpheka_rfq_session_use_secure_cookie', false ) );
+			if ( ! isset( $_COOKIE[ $this->_cookie ] ) || $_COOKIE[ $this->_cookie ] !== $cookie_value ) {
+				wc_setcookie( $this->_cookie, $cookie_value, $this->_session_expiration, $this->use_secure_cookie(), true );
+			}
 		}
 	}
 
 	/**
-	 * Return true if the current user has an active session, i.e. a cookie to retrieve values
+	 * Should the session cookie be secure?
 	 *
-	 * @return boolean
+	 * @since 3.6.0
+	 * @return bool
 	 */
-	public function has_session() {
-		return isset( $_COOKIE[ $this->_cookie ] ) || $this->_has_cookie || is_user_logged_in();
+	protected function use_secure_cookie() {
+		return apply_filters( 'wc_session_use_secure_cookie', wc_site_is_https() && is_ssl() );
 	}
 
 	/**
-	 * Sets session expiration.
+	 * Return true if the current user has an active session, i.e. a cookie to retrieve values.
+	 *
+	 * @return bool
+	 */
+	public function has_session() {
+		return isset( $_COOKIE[ $this->_cookie ] ) || $this->_has_cookie || is_user_logged_in(); // @codingStandardsIgnoreLine.
+	}
+
+	/**
+	 * Set session expiration.
 	 */
 	public function set_session_expiration() {
-		$this->_session_expiring   = time() + intval( apply_filters( 'wpheka_rfq_session_expiring', 60 * 60 * 47 ) ); // 47 Hours
-		$this->_session_expiration = time() + intval( apply_filters( 'wpheka_rfq_session_expiration', 60 * 60 * 48 ) ); // 48 Hours
+		$this->_session_expiring   = time() + intval( apply_filters( 'wc_session_expiring', 60 * 60 * 47 ) ); // 47 Hours.
+		$this->_session_expiration = time() + intval( apply_filters( 'wpheka_rfq_session_expiration', 60 * 60 * 48 ) ); // 48 Hours.
 	}
 
 	/**
@@ -127,35 +170,49 @@ class WPHEKA_RFQ_Session_Handler extends WC_Session {
 	 *
 	 * Uses Portable PHP password hashing framework to generate a unique cryptographically strong ID.
 	 *
-	 * @return int|string
+	 * @return string
 	 */
 	public function generate_customer_id() {
+		$customer_id = '';
+
 		if ( is_user_logged_in() ) {
-			return get_current_user_id();
-		} else {
-			require_once ABSPATH . 'wp-includes/class-phpass.php';
-			$hasher = new PasswordHash( 8, false );
-			return md5( $hasher->get_random_bytes( 32 ) );
+			$customer_id = strval( get_current_user_id() );
 		}
+
+		if ( empty( $customer_id ) ) {
+			require_once ABSPATH . 'wp-includes/class-phpass.php';
+			$hasher      = new PasswordHash( 8, false );
+			$customer_id = md5( $hasher->get_random_bytes( 32 ) );
+		}
+
+		return $customer_id;
 	}
 
 	/**
-	 * Get session cookie.
+	 * Get the session cookie, if set. Otherwise return false.
+	 *
+	 * Session cookies without a customer ID are invalid.
 	 *
 	 * @return bool|array
 	 */
 	public function get_session_cookie() {
-		if ( empty( $_COOKIE[ $this->_cookie ] ) ) {
+		$cookie_value = isset( $_COOKIE[ $this->_cookie ] ) ? wp_unslash( $_COOKIE[ $this->_cookie ] ) : false; // @codingStandardsIgnoreLine.
+
+		if ( empty( $cookie_value ) || ! is_string( $cookie_value ) ) {
 			return false;
 		}
 
-		list( $customer_id, $session_expiration, $session_expiring, $cookie_hash ) = explode( '||', sanitize_text_field( wp_unslash( $_COOKIE[ $this->_cookie ] ) ) );
+		list( $customer_id, $session_expiration, $session_expiring, $cookie_hash ) = explode( '||', $cookie_value );
+
+		if ( empty( $customer_id ) ) {
+			return false;
+		}
 
 		// Validate hash.
-		$to_hash = $customer_id . $session_expiration;
+		$to_hash = $customer_id . '|' . $session_expiration;
 		$hash    = hash_hmac( 'md5', $to_hash, wp_hash( $to_hash ) );
 
-		if ( $hash != $cookie_hash ) {
+		if ( empty( $cookie_hash ) || ! hash_equals( $hash, $cookie_hash ) ) {
 			return false;
 		}
 
@@ -168,79 +225,169 @@ class WPHEKA_RFQ_Session_Handler extends WC_Session {
 	 * @return array
 	 */
 	public function get_session_data() {
-		return $this->has_session() ? (array) get_option( '_wpheka_rfq_session_' . $this->_customer_id, array() ) : array();
+		return $this->has_session() ? (array) $this->get_session( $this->_customer_id, array() ) : array();
 	}
 
 	/**
-	 * Save session data.
+	 * Gets a cache prefix. This is used in session names so the entire cache can be invalidated with 1 function call.
+	 *
+	 * @return string
 	 */
-	public function save_data() {
+	private function get_cache_prefix() {
+		// Get cache key - uses cache key wpheka_rfq_orders_cache_prefix to invalidate when needed.
+		$prefix = wp_cache_get( 'wpheka_rfq_' . WPHEKA_RFQ_SESSION_CACHE_GROUP . '_cache_prefix', WPHEKA_RFQ_SESSION_CACHE_GROUP );
+
+		if ( false === $prefix ) {
+			$prefix = microtime();
+			wp_cache_set( 'wpheka_rfq_' . WPHEKA_RFQ_SESSION_CACHE_GROUP . '_cache_prefix', $prefix, WPHEKA_RFQ_SESSION_CACHE_GROUP );
+		}
+
+		return 'wpheka_rfq_cache_' . $prefix . '_';
+	}
+
+	/**
+	 * Save data and delete guest session.
+	 *
+	 * @param int $old_session_key session ID before user logs in.
+	 */
+	public function save_data( $old_session_key = 0 ) {
 		// Dirty if something changed - prevents saving nothing new.
 		if ( $this->_dirty && $this->has_session() ) {
-			$session_option        = '_wpheka_rfq_session_' . $this->_customer_id;
-			$session_expiry_option = '_wpheka_rfq_session_expires_' . $this->_customer_id;
+			global $wpdb;
 
-			if ( false === get_option( $session_option ) ) {
-				add_option( $session_option, $this->_data, '', 'no' );
-				add_option( $session_expiry_option, $this->_session_expiration, '', 'no' );
-			} else {
-				update_option( $session_option, $this->_data );
+			$wpdb->query(
+				$wpdb->prepare(
+					"INSERT INTO {$wpdb->prefix}wpheka_rfq_sessions (`session_key`, `session_value`, `session_expiry`) VALUES (%s, %s, %d)
+ 					ON DUPLICATE KEY UPDATE `session_value` = VALUES(`session_value`), `session_expiry` = VALUES(`session_expiry`)",
+					$this->_customer_id,
+					maybe_serialize( $this->_data ),
+					$this->_session_expiration
+				)
+			);
+
+			wp_cache_set( $this->get_cache_prefix() . $this->_customer_id, $this->_data, WPHEKA_RFQ_SESSION_CACHE_GROUP, $this->_session_expiration - time() );
+			$this->_dirty = false;
+			if ( get_current_user_id() != $old_session_key && ! is_object( get_user_by( 'id', $old_session_key ) ) ) {
+				$this->delete_session( $old_session_key );
 			}
 		}
 	}
 
 	/**
-	 * Destroy all session data
+	 * Destroy all session data.
 	 */
 	public function destroy_session() {
-		// Clear cookie.
-		wc_setcookie( $this->_cookie, '', time() - YEAR_IN_SECONDS, apply_filters( 'wpheka_rfq_session_use_secure_cookie', false ) );
+		$this->delete_session( $this->_customer_id );
+		$this->forget_session();
+	}
 
-		// Delete session.
-		$session_option        = '_wpheka_rfq_session_' . $this->_customer_id;
-		$session_expiry_option = '_wpheka_rfq_session_expires_' . $this->_customer_id;
+	/**
+	 * Forget all session data without destroying it.
+	 */
+	public function forget_session() {
+		wc_setcookie( $this->_cookie, '', time() - YEAR_IN_SECONDS, $this->use_secure_cookie(), true );
 
-		delete_option( $session_option );
-		delete_option( $session_expiry_option );
+		wc_empty_cart();
 
-		// Clear data.
 		$this->_data        = array();
 		$this->_dirty       = false;
 		$this->_customer_id = $this->generate_customer_id();
 	}
 
 	/**
-	 * Cleanup sessions.
+	 * When a user is logged out, ensure they have a unique nonce by using the customer/session ID.
+	 *
+	 * @param int $uid User ID.
+	 * @return string
+	 */
+	public function nonce_user_logged_out( $uid ) {
+		return $this->has_session() && $this->_customer_id ? $this->_customer_id : $uid;
+	}
+
+	/**
+	 * Cleanup session data from the database and clear caches.
 	 */
 	public function cleanup_sessions() {
 		global $wpdb;
 
-		if ( ! defined( 'WP_SETUP_CONFIG' ) && ! defined( 'WP_INSTALLING' ) ) {
-			$now                = time();
-			$expired_sessions   = array();
-			$wc_session_expires = $wpdb->get_col( "SELECT option_name FROM $wpdb->options WHERE option_name LIKE '\_wpheka_rfq\_session\_expires\_%' AND option_value < '$now'" );
+		$wpdb->query( $wpdb->prepare( "DELETE FROM $this->_table WHERE session_expiry < %d", time() ) ); // @codingStandardsIgnoreLine.
 
-			foreach ( $wc_session_expires as $option_name ) {
-				$session_id         = substr( $option_name, 20 );
-				$expired_sessions[] = $option_name;  // Expires key.
-				$expired_sessions[] = "_wpheka_rfq_session_$session_id"; // Session key.
+		if ( class_exists( 'WC_Cache_Helper' ) ) {
+			wp_cache_set( 'wc_' . WPHEKA_RFQ_SESSION_CACHE_GROUP . '_cache_prefix', microtime(), WPHEKA_RFQ_SESSION_CACHE_GROUP );
+		}
+	}
+
+	/**
+	 * Returns the session.
+	 *
+	 * @param string $customer_id Custo ID.
+	 * @param mixed  $default Default session value.
+	 * @return string|array
+	 */
+	public function get_session( $customer_id, $default = false ) {
+		global $wpdb;
+
+		if ( Constants::is_defined( 'WP_SETUP_CONFIG' ) ) {
+			return false;
+		}
+
+		// Try to get it from the cache, it will return false if not present or if object cache not in use.
+		$value = wp_cache_get( $this->get_cache_prefix() . $customer_id, WPHEKA_RFQ_SESSION_CACHE_GROUP );
+
+		if ( false === $value ) {
+			$value = $wpdb->get_var( $wpdb->prepare( "SELECT session_value FROM $this->_table WHERE session_key = %s", $customer_id ) ); // @codingStandardsIgnoreLine.
+
+			if ( is_null( $value ) ) {
+				$value = $default;
 			}
 
-			if ( ! empty( $expired_sessions ) ) {
-				$expired_sessions_chunked = array_chunk( $expired_sessions, 100 );
-				foreach ( $expired_sessions_chunked as $chunk ) {
-					if ( wp_using_ext_object_cache() ) {
-						// delete from object cache first, to avoid cached but deleted options.
-						foreach ( $chunk as $option ) {
-							wp_cache_delete( $option, 'options' );
-						}
-					}
-
-					// delete from options table.
-					$option_names = implode( "','", $chunk );
-					$wpdb->query( "DELETE FROM $wpdb->options WHERE option_name IN ('$option_names')" );
-				}
+			$cache_duration = $this->_session_expiration - time();
+			if ( 0 < $cache_duration ) {
+				wp_cache_add( $this->get_cache_prefix() . $customer_id, $value, WPHEKA_RFQ_SESSION_CACHE_GROUP, $cache_duration );
 			}
 		}
+
+		return maybe_unserialize( $value );
+	}
+
+	/**
+	 * Delete the session from the cache and database.
+	 *
+	 * @param int $customer_id Customer ID.
+	 */
+	public function delete_session( $customer_id ) {
+		global $wpdb;
+
+		wp_cache_delete( $this->get_cache_prefix() . $customer_id, WPHEKA_RFQ_SESSION_CACHE_GROUP );
+
+		$wpdb->delete(
+			$this->_table,
+			array(
+				'session_key' => $customer_id,
+			)
+		);
+	}
+
+	/**
+	 * Update the session expiry timestamp.
+	 *
+	 * @param string $customer_id Customer ID.
+	 * @param int    $timestamp Timestamp to expire the cookie.
+	 */
+	public function update_session_timestamp( $customer_id, $timestamp ) {
+		global $wpdb;
+
+		$wpdb->update(
+			$this->_table,
+			array(
+				'session_expiry' => $timestamp,
+			),
+			array(
+				'session_key' => $customer_id,
+			),
+			array(
+				'%d',
+			)
+		);
 	}
 }

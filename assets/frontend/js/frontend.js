@@ -67,6 +67,8 @@ jQuery(
 			e.preventDefault();
 
 			$thisbutton.addClass( "is-busy" );
+			$thisbutton.removeClass( 'added' );
+			$thisbutton.addClass( 'loading' );
 
 			var button_wrap = $thisbutton.parents( '.wpheka-add-to-quote-button-wrapper' ),
 			prod_id         = $thisbutton.attr( 'data-product_id' );
@@ -93,10 +95,12 @@ jQuery(
 				if ( variation_is_unavailable.length ) {
 					window.alert( wpheka_rfq_frontend_params.i18n_unavailable_text );
 					$thisbutton.removeClass( "is-busy" );
+					$thisbutton.removeClass( 'loading' );
 					return false;
 				} else if ( variation_selection_needed.length ) {
 					window.alert( wpheka_rfq_frontend_params.i18n_make_a_selection_text );
 					$thisbutton.removeClass( "is-busy" );
+					$thisbutton.removeClass( 'loading' );
 					return false;
 				}
 			}
@@ -130,6 +134,8 @@ jQuery(
 					complete: function () {
 						$thisbutton.siblings( '.ajax-loading' ).hide();
 						$thisbutton.removeClass( "is-busy" );
+						$thisbutton.removeClass( 'loading' );
+						$thisbutton.addClass( 'added' );
 						$thisbutton.hide();
 					},
 					error: function () {

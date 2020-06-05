@@ -2,8 +2,8 @@
 /**
  * Plugin Name: WPHEKA Request For Quote
  * Plugin URI: https://wpheka.com
- * Description: The <code><strong>WPHEKA Request For Quote</strong></code> plugin allows your customers to submit quotes for any product and negotiate with you for the best price. This extension can be a great tool to generate customer leads for future engagement.
- * Version: 1.0
+ * Description: The <code><strong>WPHEKA Request For Quote</strong></code> plugin allows your customers to submit quotes for any product and negotiate with you for the best price.
+ * Version: 1.1
  * Author: WPHEKA
  * Author URI: https://github.com/akshayadev
  * Text Domain: wpheka-request-for-quote

@@ -32,6 +32,7 @@ class WPHEKA_Rfq_Install {
 		set_transient( 'wpheka_rfq_installing', 'yes', MINUTE_IN_SECONDS * 10 );
 		wc_maybe_define_constant( 'WPHEKA_RFQ_INSTALLING', true );
 
+		self::create_tables();
 		self::create_options();
 		self::create_pages();
 
@@ -39,6 +40,39 @@ class WPHEKA_Rfq_Install {
 
 		flush_rewrite_rules();
 		do_action( 'wpheka_rfq_installed' );
+	}
+
+	/**
+	 * Set up the database tables which the plugin needs to function.
+	 *
+	 * Tables:
+	 *      wpheka_rfq_sessions - Plugin sessions table.
+	 */
+	private static function create_tables() {
+		global $wpdb;
+
+		$collate = '';
+
+		if ( $wpdb->has_cap( 'collation' ) ) {
+			$collate = $wpdb->get_charset_collate();
+		}
+
+		$tables = "
+CREATE TABLE {$wpdb->prefix}wpheka_rfq_sessions (
+  session_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  session_key char(32) NOT NULL,
+  session_value longtext NOT NULL,
+  session_expiry BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY  (session_id),
+  UNIQUE KEY session_key (session_key)
+) $collate;
+		";
+
+		if ( ! function_exists( 'dbDelta' ) ) {
+			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		}
+
+		dbDelta( $tables );
 	}
 
 	/**

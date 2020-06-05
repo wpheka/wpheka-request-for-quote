@@ -3,7 +3,7 @@ Contributors: akshayaswaroop, wpheka
 Tags: request a quote button, woocommerce request for quote, woocommerce request a quote shortcode, request a quote, quote, WPHEKA, quotations, request for quote, rfq, raq, proposal, ask an estimate, budget, email quote
 Requires at least: 4.8
 Tested up to: 5.4.1
-Stable tag: 1.0
+Stable tag: 1.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Donate link: paypal.me/AKSHAYASWAROOP

@@ -39,11 +39,11 @@ final class WPHEKA_Rfq {
 
 
 	/**
-	 * Session object
+	 * Session instance.
 	 *
-	 * @var $session_class WPHEKA_Rfq_Session_Handler
+	 * @var WC_Session|WPHEKA_RFQ_Session_Handler
 	 */
-	public $session;
+	public $session = null;
 
 	/**
 	 * Session data
@@ -167,6 +167,7 @@ final class WPHEKA_Rfq {
 		$this->version    = $plugin_data['Version'];
 		$this->plugin_url = trailingslashit( plugins_url( '', WPHEKA_RFQ_PLUGIN_FILE ) );
 
+		$this->define( 'WPHEKA_RFQ_SESSION_CACHE_GROUP', 'wpheka_rfq_session_id' );
 		$this->define( 'WPHEKA_RFQ_PLUGIN_ABSPATH', dirname( WPHEKA_RFQ_PLUGIN_FILE ) . '/' );
 		$this->define( 'WPHEKA_RFQ_PLUGIN_BASENAME', plugin_basename( WPHEKA_RFQ_PLUGIN_FILE ) );
 		$this->define( 'WPHEKA_RFQ_PLUGIN_VERSION', $this->version );
@@ -265,6 +266,7 @@ final class WPHEKA_Rfq {
 		$session_class = apply_filters( 'wpheka_rfq_session_handler', 'WPHEKA_RFQ_Session_Handler' );
 		if ( is_null( $this->session ) || ! $this->session instanceof $session_class ) {
 			$this->session = new $session_class();
+			$this->session->init();
 		}
 	}
 
