@@ -161,7 +161,7 @@ class WPHEKA_RFQ_Session_Handler extends WC_Session {
 	 * Set session expiration.
 	 */
 	public function set_session_expiration() {
-		$this->_session_expiring   = time() + intval( apply_filters( 'wc_session_expiring', 60 * 60 * 47 ) ); // 47 Hours.
+		$this->_session_expiring   = time() + intval( apply_filters( 'wpheka_rfq_session_expiring', 60 * 60 * 47 ) ); // 47 Hours.
 		$this->_session_expiration = time() + intval( apply_filters( 'wpheka_rfq_session_expiration', 60 * 60 * 48 ) ); // 48 Hours.
 	}
 
@@ -313,7 +313,7 @@ class WPHEKA_RFQ_Session_Handler extends WC_Session {
 		$wpdb->query( $wpdb->prepare( "DELETE FROM $this->_table WHERE session_expiry < %d", time() ) ); // @codingStandardsIgnoreLine.
 
 		if ( class_exists( 'WC_Cache_Helper' ) ) {
-			wp_cache_set( 'wc_' . WPHEKA_RFQ_SESSION_CACHE_GROUP . '_cache_prefix', microtime(), WPHEKA_RFQ_SESSION_CACHE_GROUP );
+			wp_cache_set( 'wpheka_rfq_' . WPHEKA_RFQ_SESSION_CACHE_GROUP . '_cache_prefix', microtime(), WPHEKA_RFQ_SESSION_CACHE_GROUP );
 		}
 	}
 
