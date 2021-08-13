@@ -76,7 +76,7 @@ if ( ! class_exists( 'WPHEKA_Rfq_Ajax', false ) ) :
 		 * @return void
 		 */
 		public function action_wpheka_add_to_quote() {
-			check_ajax_referer( 'wpheka-add-to-quote-ajax-action', 'security', false );
+			check_ajax_referer( 'wpheka-add-to-quote-ajax-action', 'security' );
 
 			if ( ! empty( $_POST['product_id'] ) ) {
 				if ( isset( wpheka_request_for_quote()->session ) ) {
@@ -265,7 +265,7 @@ if ( ! class_exists( 'WPHEKA_Rfq_Ajax', false ) ) :
 		 * @author WPHEKA
 		 */
 		public function action_remove_item_from_rfq_list() {
-			check_ajax_referer( 'wpheka-add-to-quote-ajax-action', 'security', false );
+			check_ajax_referer( 'wpheka-add-to-quote-ajax-action', 'security' );
 
 			if ( ! empty( $_POST['rfq_item_key'] ) ) {
 				$rfq_item_key = sanitize_key( $_POST['rfq_item_key'] );

@@ -105,8 +105,8 @@ jQuery(
 				}
 			}
 
-			add_to_quote_data += '&action=wpheka_add_to_quote&product_id=' + prod_id + '&wp_nonce=' + wpheka_rfq_frontend_params.add_to_quote_nonce;
-
+			add_to_quote_data += '&action=wpheka_add_to_quote&product_id=' + prod_id + '&security=' + wpheka_rfq_frontend_params.add_to_quote_nonce;
+			
 			$thisbutton.siblings( '.ajax-loading' ).show();
 
 			if (add_to_quote_data.indexOf( 'add-to-cart' ) > 0) {
@@ -116,7 +116,7 @@ jQuery(
 			e.data.RfqFrontendHandler.addRequest(
 				{
 					type: 'POST',
-					url: wpheka_rfq_frontend_params.ajax_url.toString().replace( '%%endpoint%%', 'wpheka_add_to_quote_shop' ),
+					url: wpheka_rfq_frontend_params.ajax_url.toString().replace( '%%endpoint%%', 'wpheka_add_to_quote' ),
 					data: add_to_quote_data,
 					success: function ( response ) {
 						if ( ! response ) {
@@ -162,7 +162,7 @@ jQuery(
 			var data = {
 				action: 'remove_item_from_rfq_list',
 				rfq_item_key: $a.attr( 'data-rfq_item_key' ),
-				wp_nonce: wpheka_rfq_frontend_params.add_to_quote_nonce
+				security: wpheka_rfq_frontend_params.add_to_quote_nonce
 			};
 
 			e.data.RfqFrontendHandler.addRequest(

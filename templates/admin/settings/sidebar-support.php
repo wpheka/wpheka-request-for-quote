@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly.
 		<div>
 		<?php
 		// Translators: %s '<a href="https://wpheka.com/" target="_blank">Site</a>.
-		$content = sprintf( __( 'If you need some help contact us through our %s', 'wpheka-request-for-quote' ), '<a href="https://wpheka.com/" target="_blank">' . __( 'Site', 'wpheka-request-for-quote' ) . '</a>' );
+		$content = sprintf( __( 'If you need some help contact us through our %s', 'wpheka-request-for-quote' ), '<a href="https://www.wpheka.com/contact" target="_blank">' . __( 'Site', 'wpheka-request-for-quote' ) . '</a>' );
 
 		echo wp_kses(
 			$content,
