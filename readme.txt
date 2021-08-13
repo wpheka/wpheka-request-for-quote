@@ -3,7 +3,7 @@ Contributors: akshayaswaroop, wpheka
 Tags: request a quote button, woocommerce request for quote, woocommerce request a quote shortcode, request a quote, quote, WPHEKA, quotations, request for quote, rfq, raq, proposal, ask an estimate, budget, email quote
 Requires at least: 4.8
 Tested up to: 5.4.1
-Stable tag: 1.1
+Stable tag: 1.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Donate link: paypal.me/AKSHAYASWAROOP
@@ -50,6 +50,12 @@ If you enjoyed this plugin then please put a review, that will encourage me to b
 3. Configure email notifications
 
 == Changelog ==
+
+= 1.2 - 2020-06-06 =
+* Enhancement - Session cache fix added.
+
+= 1.1 - 2020-06-05 =
+* Tweak - Session class updated.
 
 = 1.0 - 2020-05-03 =
 * Initial release
