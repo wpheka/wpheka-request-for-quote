@@ -45,6 +45,12 @@ class WPHEKA_Rfq_Admin {
 		if ( 'wpheka_page_wpheka_request_for_quote' == $screen_id ) {
 			wp_enqueue_style( 'wpheka_common_css', $wp_heka_rfq->plugin_url . 'assets/admin/css/common.css', array(), $wp_heka_rfq->version );
 			wp_enqueue_script( 'wpheka_plugin_loader_js', $wp_heka_rfq->plugin_url . 'assets/admin/js/plugin-loader.js', array( 'jquery' ), $wp_heka_rfq->version, true );
+			wp_enqueue_script( 'wpheka_admin_settings_js', $wp_heka_rfq->plugin_url . 'assets/admin/js/admin-settings.js', array( 'jquery' ), $wp_heka_rfq->version, true );
+			
+			wp_localize_script( 'wpheka_admin_settings_js', 'wpheka_admin_params', array(
+				'ajax_url' => admin_url( 'admin-ajax.php' ),
+				'nonce'    => wp_create_nonce( 'save-plugin-data' )
+			));
 		}
 	}
 
@@ -107,57 +113,6 @@ class WPHEKA_Rfq_Admin {
 				</div>
 			</div>
 		</div>
-		<script>
-		jQuery(document).on('click', '.wpheka-save-changes', function() {
-			var element = jQuery(this);
-
-			var fd = new FormData(document.getElementById('plugin-settings-form')); // Currently empty
-
-			if(jQuery('input#hide_price').prop("checked") == true){
-				fd.append( 'hide_price', 'yes');
-			} else {
-				fd.append( 'hide_price', 'no');
-			}
-
-			if(jQuery('input#hide_add_to_cart').prop("checked") == true){
-				fd.append( 'hide_add_to_cart', 'yes');
-			} else {
-				fd.append( 'hide_add_to_cart', 'no');
-			}
-
-			if(jQuery('input#button_in_other_pages').prop("checked") == true){
-				fd.append( 'button_in_other_pages', 'yes');
-			} else {
-				fd.append( 'button_in_other_pages', 'no');
-			}
-
-			// Add ajax action.
-			fd.append( 'action', 'save_wpheka_rfq_plugin_data');
-
-			// Add ajax nonce
-			fd.append( 'wpheka_nonce', '<?php echo esc_attr( wp_create_nonce( 'save-plugin-data' ) ); ?>');
-
-			// Display the values.
-			for (var value of fd.values()) {
-				console.log(value); 
-			}
-
-			jQuery.ajax({
-				url: "<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>",
-				type: 'post',
-				cache: false,
-				processData: false,
-				contentType: false,
-				data: fd,
-				success: function (response) {
-					if(response.success) {
-					location.reload(true);
-				}
-				},
-			});
-			return false;
-		});
-		</script>
 		<?php
 	}
 

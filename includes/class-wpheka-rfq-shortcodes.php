@@ -47,11 +47,9 @@ if ( ! class_exists( 'WPHEKA_Rfq_Shortcodes', false ) ) :
 		) {
 			ob_start();
 
-            // @codingStandardsIgnoreStart
-            echo empty( $wrapper['before'] ) ? '<div class="' . esc_attr( $wrapper['class'] ) . '">' : $wrapper['before'];
-            call_user_func( $function, $atts );
-            echo empty( $wrapper['after'] ) ? '</div>' : $wrapper['after'];
-            // @codingStandardsIgnoreEnd
+			echo empty( $wrapper['before'] ) ? '<div class="' . esc_attr( $wrapper['class'] ) . '">' : wp_kses_post( $wrapper['before'] );
+			call_user_func( $function, $atts );
+			echo empty( $wrapper['after'] ) ? '</div>' : wp_kses_post( $wrapper['after'] );
 
 			return ob_get_clean();
 		}

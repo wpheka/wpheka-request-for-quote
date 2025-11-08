@@ -1,17 +1,17 @@
-=== WPHEKA Request For Quote ===
-Contributors: akshayaswaroop, wpheka
+=== Request For Quote ===
+Contributors: wpheka, akshayaswaroop
 Tags: request a quote button, woocommerce request for quote, woocommerce request a quote shortcode, request a quote, quote, WPHEKA, quotations, request for quote, rfq, raq, proposal, ask an estimate, budget, email quote
 Requires at least: 4.8
-Tested up to: 5.8
-Stable tag: 1.3
+Tested up to: 6.8.3
+Stable tag: 1.6.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Donate link: paypal.me/AKSHAYASWAROOP
 
-WPHEKA Request For Quote plugin allows your customers to submit quotes for any product and negotiate with you for the best price. This extension can be a great tool to generate customer leads for future engagement.
+Request For Quote plugin allows your customers to submit quotes for any product and negotiate with you for the best price. This extension can be a great tool to generate customer leads for future engagement.
 
 == Description ==
-**WPHEKA Request For Quote** allows your customers to add products to a quote basket and negotiate with you for the best price. This Extension helps both sides to reach a price agreement, which decreases cart abandonment with price reason and increase purchases.
+**Request For Quote** allows your customers to add products to a quote basket and negotiate with you for the best price. This Extension helps both sides to reach a price agreement, which decreases cart abandonment with price reason and increase purchases.
 
 = Features List: =
 
@@ -51,8 +51,26 @@ If you enjoyed this plugin then please put a review, that will encourage me to b
 
 == Changelog ==
 
+= 1.6.1 - 2025-11-09 =
+* Enhancement - WooCommerce HPOS (High Performance Order Storage) compatibility added.
+* Enhancement - WooCommerce Version 10.3.4 compatibility added.
+* Security - Fixed missing nonce verification in shop AJAX handler.
+* Security - Improved data sanitization with proper wp_unslash() calls.
+* Enhancement - Externalized inline JavaScript for better security practices.
+* Enhancement - Added proper error handling for session class instantiation.
+* Enhancement - Improved code organization and separation of concerns.
+
+= 1.6 - 2024-12-03 =
+* Enhancement - WooCommerce Version 9.4.2 compatibility added.
+
+= 1.5 - 2022-06-09 =
+* Enhancement - WooCommerce Version 6.5.1 compatibility added.
+
+= 1.4 - 2021-09-02 =
+* Enhancement - Used 'wp or 'wordpress' prefixed cookies to fix caching issue with multiple hosting providers.
+
 = 1.3 - 2021-08-13 =
-* Enhancement - CSRF issue fixed.
+* Enhancement - CSRF issues fixed.
 
 = 1.2 - 2020-06-06 =
 * Enhancement - Session cache fix added.

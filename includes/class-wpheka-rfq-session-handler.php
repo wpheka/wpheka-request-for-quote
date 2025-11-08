@@ -58,7 +58,7 @@ class WPHEKA_RFQ_Session_Handler extends WC_Session {
 	 * Constructor for the session class.
 	 */
 	public function __construct() {
-		$this->_cookie = apply_filters( 'wpheka_rfq_cookie', 'wpheka_rfq_session_' . COOKIEHASH );
+		$this->_cookie = apply_filters( 'wpheka_rfq_cookie', 'wp_wpheka_rfq_session_' . COOKIEHASH ); // Use 'wp or 'wordpress' prefixed cookies to fix caching issue with multiple hosting providers.
 		$this->_table  = $GLOBALS['wpdb']->prefix . 'wpheka_rfq_sessions';
 	}
 

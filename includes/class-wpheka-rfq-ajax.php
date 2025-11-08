@@ -88,11 +88,11 @@ if ( ! class_exists( 'WPHEKA_Rfq_Ajax', false ) ) :
 
 					$result = 'false';
 
-					$product_id = absint( $_POST['product_id'] );
+					$product_id = absint( wp_unslash( $_POST['product_id'] ) );
 
-					$variation_id = empty( $_POST['variation_id'] ) ? 0 : absint( $_POST['variation_id'] );
+					$variation_id = empty( $_POST['variation_id'] ) ? 0 : absint( wp_unslash( $_POST['variation_id'] ) );
 
-					$quantity = empty( $_POST['quantity'] ) ? 1 : absint( $_POST['quantity'] );
+					$quantity = empty( $_POST['quantity'] ) ? 1 : absint( wp_unslash( $_POST['quantity'] ) );
 
 					if ( ! empty( $variation_id ) ) {
 						$rfq = array(
@@ -323,15 +323,14 @@ if ( ! class_exists( 'WPHEKA_Rfq_Ajax', false ) ) :
 		 * @author WPHEKA
 		 */
 		public function action_wpheka_add_to_quote_shop() {
-			ob_start();
+			check_ajax_referer( 'wpheka-add-to-quote-shop-ajax-action', 'security' );
 
-            // phpcs:disable WordPress.Security.NonceVerification.Missing
 			if ( empty( $_POST['product_id'] ) ) {
 				wp_die();
 			}
 
-			$product_id = absint( $_POST['product_id'] );
-			$quantity = empty( $_POST['quantity'] ) ? 1 : absint( $_POST['quantity'] );
+			$product_id = absint( wp_unslash( $_POST['product_id'] ) );
+			$quantity = empty( $_POST['quantity'] ) ? 1 : absint( wp_unslash( $_POST['quantity'] ) );
 
 			$result                                     = 'false';
 			$wpheka_rfq_product_already_in_list_message = apply_filters( 'wpheka_rfq_product_already_in_list_message', __( 'Product already in the quote list.', 'wpheka-request-for-quote' ) );
