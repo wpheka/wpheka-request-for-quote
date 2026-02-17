@@ -29,11 +29,17 @@ if (! class_exists('WPHEKA_Rfq_Frontend', false)) :
             // Custom styles and javascripts.
             add_action('wp_enqueue_scripts', array( $this, 'enqueue_styles_scripts' ));
 
-            // Show button in product details page.
-            if (has_action('woocommerce_after_add_to_cart_button')) {
-                add_action('woocommerce_after_add_to_cart_button', array( $this, 'add_button_product_page' ));
+            // Show button in product details page based on position setting
+            $button_position = wpheka_request_for_quote()->get_settings('button_position');
+            if ($button_position == 'before') {
+                add_action('woocommerce_before_add_to_cart_button', array( $this, 'add_button_product_page' ));
             } else {
-                add_action('woocommerce_single_product_summary', array( $this, 'add_button_product_page' ), 35);
+                // Default: after add to cart button
+                if (has_action('woocommerce_after_add_to_cart_button')) {
+                    add_action('woocommerce_after_add_to_cart_button', array( $this, 'add_button_product_page' ));
+                } else {
+                    add_action('woocommerce_single_product_summary', array( $this, 'add_button_product_page' ), 35);
+                }
             }
 
             // Request quote form.
@@ -43,21 +49,124 @@ if (! class_exists('WPHEKA_Rfq_Frontend', false)) :
 
             add_action('wpheka_rfq_content_end', array( $this, 'close_parent_div_after_rfq_mail_form' ));
 
-            if (wpheka_request_for_quote()->get_settings('hide_add_to_cart') == 'yes') {
-                // Hide add to cart from store.
-                remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10);
-                remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30);
-                // add_filter( 'woocommerce_is_purchasable', '__return_false');.
-            }
-
-            if (wpheka_request_for_quote()->get_settings('hide_price') == 'yes') {
-                // Hide price from store.
-                remove_action('woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10);
-                remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_price', 10);
-            }
+            // Hook into WordPress to remove WooCommerce actions at the right time
+            add_action('wp', array( $this, 'remove_woocommerce_hooks' ), 99);
 
             if (wpheka_request_for_quote()->get_settings('button_in_other_pages') == 'yes') {
                 add_action('woocommerce_after_shop_loop_item', array( $this, 'add_quote_button_in_loop' ), 15);
+            }
+        }
+
+        /**
+         * Remove WooCommerce hooks based on settings
+         *
+         * @return void
+         * @since  1.7
+         * @author WPHEKA
+         */
+        public function remove_woocommerce_hooks()
+        {
+            $hide_price = wpheka_request_for_quote()->get_settings('hide_price');
+            $hide_cart = wpheka_request_for_quote()->get_settings('hide_add_to_cart');
+
+            if ($hide_cart == 'yes') {
+                // Hide add to cart from store - using remove_action as backup
+                remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10);
+                remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30);
+
+                // Filter loop add to cart link to return empty string
+                add_filter('woocommerce_loop_add_to_cart_link', array( $this, 'hide_add_to_cart_loop' ), 99, 2);
+            }
+
+            if ($hide_price == 'yes') {
+                // Hide price from store - shop/archive pages
+                remove_action('woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10);
+                // Hide price from single product pages
+                remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_price', 10);
+
+                // Additional filters to ensure price is hidden
+                add_filter('woocommerce_get_price_html', array( $this, 'hide_price_html' ), 99, 2);
+                add_filter('woocommerce_variable_price_html', array( $this, 'hide_price_html' ), 99, 2);
+                add_filter('woocommerce_variable_sale_price_html', array( $this, 'hide_price_html' ), 99, 2);
+                add_filter('woocommerce_grouped_price_html', array( $this, 'hide_price_html' ), 99, 2);
+            }
+        }
+
+        /**
+         * Hide price HTML
+         *
+         * @param string $price Price HTML.
+         * @param object $product Product object.
+         * @return string
+         * @since  1.7
+         * @author WPHEKA
+         */
+        public function hide_price_html($price, $product)
+        {
+            return '';
+        }
+
+        /**
+         * Hide add to cart button in loop/archive pages
+         *
+         * @param string $link Add to cart link HTML.
+         * @param object $product Product object.
+         * @return string
+         * @since  1.7.0
+         * @author WPHEKA
+         */
+        public function hide_add_to_cart_loop($link, $product = false)
+        {
+            if ($product instanceof WC_Product) {
+                if (! $product->is_type(array( 'external', 'grouped', 'variable' ))) {
+                    return '';
+                }
+            }
+            return $link;
+        }
+
+        /**
+         * Hide add to cart button on single product pages using CSS
+         *
+         * @return void
+         * @since  1.7.0
+         * @author WPHEKA
+         */
+        public function hide_add_to_cart_single_css()
+        {
+            if (wpheka_request_for_quote()->get_settings('hide_add_to_cart') != 'yes') {
+                return;
+            }
+
+            global $post;
+
+            if (! $post || ! is_object($post) || ! is_singular('product')) {
+                return;
+            }
+
+            $product = wc_get_product($post->ID);
+            if (! $product) {
+                return;
+            }
+
+            $css = '';
+
+            if ($product->is_type('variable')) {
+                $css = '.single_variation_wrap .variations_button button.button,
+                        .single_variation_wrap .variations_button .button {
+                    display: none !important;
+                }';
+            } elseif (! $product->is_type(array( 'gift-card', 'grouped' ))) {
+                $css = '.cart button.single_add_to_cart_button,
+                        .cart a.single_add_to_cart_button,
+                        form.cart button.single_add_to_cart_button,
+                        form.cart .single_add_to_cart_button {
+                    display: none !important;
+                }';
+            }
+
+            if ($css) {
+                wp_add_inline_style('wpheka_rfq_frontend_css', $css);
             }
         }
 
@@ -80,7 +189,7 @@ if (! class_exists('WPHEKA_Rfq_Frontend', false)) :
                 wp_enqueue_script('wpheka_rfq_loadingoverlay_js', $wp_heka_rfq->plugin_url . 'assets/frontend/js/loadingoverlay.min.js', array( 'jquery' ), '2.1.7', true);
 
                 // Enqueue plugin frontend js.
-                wp_register_script('wpheka_rfq_frontend_single_js', $wp_heka_rfq->plugin_url . 'assets/frontend/js/frontend.js', array( 'jquery', 'jquery-blockui', 'wpheka_rfq_loadingoverlay_js' ), '1.0', true);
+                wp_register_script('wpheka_rfq_frontend_single_js', $wp_heka_rfq->plugin_url . 'assets/frontend/js/frontend.js', array( 'jquery', 'jquery-blockui', 'wpheka_rfq_loadingoverlay_js' ), '1.7.0', true);
 
                 $localize_script_args = array(
                     'ajax_url'                         => admin_url('admin-ajax.php'),
@@ -94,13 +203,16 @@ if (! class_exists('WPHEKA_Rfq_Frontend', false)) :
 
                 wp_enqueue_style('wpheka_rfq_frontend_css', $wp_heka_rfq->plugin_url . 'assets/frontend/css/frontend.css', array(), '1.0');
                 wp_enqueue_script('wpheka_rfq_frontend_single_js');
+
+                // Hide add to cart button on single product pages using CSS
+                $this->hide_add_to_cart_single_css();
             }
 
             if (is_shop() || is_product_taxonomy()) {
                 // Iclude WordPress core components buttons.
                 wp_enqueue_style('wpheka_rfq_frontend_css', $wp_heka_rfq->plugin_url . 'assets/frontend/css/dist/components/style.css', array(), '1.0');
 
-                wp_register_script('wpheka_rfq_frontend_js', $wp_heka_rfq->plugin_url . 'assets/frontend/js/rfq.js', array( 'jquery' ), '1.0', true);
+                wp_register_script('wpheka_rfq_frontend_js', $wp_heka_rfq->plugin_url . 'assets/frontend/js/rfq.js', array( 'jquery' ), '1.7.0', true);
 
                 $localize_quote_script_args = array(
                     'ajax_url'           => admin_url('admin-ajax.php'),
@@ -113,6 +225,43 @@ if (! class_exists('WPHEKA_Rfq_Frontend', false)) :
         }
 
         /**
+         * Check if button should be displayed based on settings
+         *
+         * @param object $product Product object.
+         * @return bool
+         * @since  1.7.0
+         * @author WPHEKA
+         */
+        public function should_show_button($product)
+        {
+            if (! $product) {
+                return false;
+            }
+
+            // Check user type restriction
+            $user_type = wpheka_request_for_quote()->get_settings('user_type');
+            if ($user_type == 'logged' && ! is_user_logged_in()) {
+                return false;
+            }
+            if ($user_type == 'guests' && is_user_logged_in()) {
+                return false;
+            }
+
+            // Check stock status
+            $out_of_stock_option = wpheka_request_for_quote()->get_settings('out_of_stock_option');
+            $is_out_of_stock = ! $product->is_in_stock();
+
+            if ($out_of_stock_option == 'only_out_of_stock' && ! $is_out_of_stock) {
+                return false; // Show only on out of stock, but this product is in stock
+            }
+            if ($out_of_stock_option == 'hide_out_of_stock' && $is_out_of_stock) {
+                return false; // Hide on out of stock, and this product is out of stock
+            }
+
+            return true;
+        }
+
+        /**
          * Add quote button in product details page
          *
          * @since  1.0
@@ -121,6 +270,10 @@ if (! class_exists('WPHEKA_Rfq_Frontend', false)) :
         public function add_button_product_page()
         {
             global $product;
+
+            if (! $this->should_show_button($product)) {
+                return;
+            }
 
             wc_get_template(
                 'single-product/add-to-quote.php',
@@ -214,6 +367,10 @@ if (! class_exists('WPHEKA_Rfq_Frontend', false)) :
             $display_for_product_type = apply_filters('wpheka_rfq_display_for_product_type', array( 'simple', 'subscription', 'external' ));
 
             if (! $product->is_type($display_for_product_type)) {
+                return false;
+            }
+
+            if (! $this->should_show_button($product)) {
                 return false;
             }
 

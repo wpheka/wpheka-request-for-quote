@@ -36,6 +36,20 @@ do_action( 'wpheka_before_rfq_form_start' );
 		<input type="email" class="woocommerce-Input woocommerce-Input--email input-text" name="rfq_email" id="rfq_email" autocomplete="email" value="<?php echo esc_html( $email ); ?>" required />
 	</p>
 
+	<?php if ( wpheka_request_for_quote()->get_settings( 'show_phone_field' ) == 'yes' ) : ?>
+		<p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+			<label for="rfq_phone"><?php esc_html_e( 'Phone Number', 'wpheka-request-for-quote' ); ?>&nbsp;<?php if ( wpheka_request_for_quote()->get_settings( 'phone_required' ) == 'yes' ) : ?><span class="required">*</span><?php endif; ?></label>
+			<input type="tel" class="woocommerce-Input woocommerce-Input--tel input-text" name="rfq_phone" id="rfq_phone" autocomplete="tel" value="" <?php if ( wpheka_request_for_quote()->get_settings( 'phone_required' ) == 'yes' ) : ?>required<?php endif; ?> />
+		</p>
+	<?php endif; ?>
+
+	<?php if ( wpheka_request_for_quote()->get_settings( 'show_company_field' ) == 'yes' ) : ?>
+		<p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+			<label for="rfq_company"><?php esc_html_e( 'Company Name', 'wpheka-request-for-quote' ); ?></label>
+			<input type="text" class="woocommerce-Input woocommerce-Input--text input-text" name="rfq_company" id="rfq_company" value="" />
+		</p>
+	<?php endif; ?>
+
 	<p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
 		<label for="rfq_message"><?php esc_html_e( 'Message', 'wpheka-request-for-quote' ); ?>&nbsp;<span class="required">*</span></label>
 		<textarea class="woocommerce-Input" id="rfq_message" name="rfq_message" cols="45" rows="5" required></textarea>

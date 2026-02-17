@@ -82,8 +82,23 @@ foreach ( $rfq_data as $rfq_item_key => $rfq_item ) {
 	<div style="font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif; margin-bottom: 40px;">
 		<h2><?php esc_html_e( 'Customer Details', 'wpheka-request-for-quote' ); ?></h2>
 		<ul>
-			<?php foreach ( $customer_data as $cus_key => $cust_val ) : ?>
-				<li><strong><?php echo wp_kses_post( $cus_key ); ?>:</strong> <span class="text"><?php echo wp_kses_post( wp_unslash( $cust_val ) ); ?></span></li>
+			<?php
+			// Field labels for better email formatting
+			$field_labels = array(
+				'name'    => __( 'Name', 'wpheka-request-for-quote' ),
+				'email'   => __( 'Email', 'wpheka-request-for-quote' ),
+				'phone'   => __( 'Phone', 'wpheka-request-for-quote' ),
+				'company' => __( 'Company', 'wpheka-request-for-quote' ),
+				'message' => __( 'Message', 'wpheka-request-for-quote' ),
+			);
+
+			foreach ( $customer_data as $cus_key => $cust_val ) :
+				if ( empty( $cust_val ) ) {
+					continue; // Skip empty fields
+				}
+				$label = isset( $field_labels[ $cus_key ] ) ? $field_labels[ $cus_key ] : ucfirst( $cus_key );
+				?>
+				<li><strong><?php echo esc_html( $label ); ?>:</strong> <span class="text"><?php echo wp_kses_post( wp_unslash( $cust_val ) ); ?></span></li>
 			<?php endforeach; ?>
 		</ul>
 	</div>

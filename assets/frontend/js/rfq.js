@@ -87,6 +87,7 @@ jQuery(
 			);
 
 			data['action'] = 'wpheka_add_to_quote_shop';
+			data['security'] = wpheka_rfq_shop_params.add_to_quote_nonce;
 
 			$thisbutton.siblings( '.ajax-loading' ).show();
 
@@ -100,7 +101,20 @@ jQuery(
 							return;
 						}
 
+						// Debug logging
+						console.log('WPHEKA RFQ Shop Response:', response);
+						console.log('After click action:', response.after_click_action);
+
 						if ( response.result == 'true' || response.result == 'exists' ) {
+							// Check if automatic redirect is enabled
+							if ( response.after_click_action && response.after_click_action === 'redirect' ) {
+								console.log('Redirecting to:', response.rfq_page_url);
+								// Redirect to quote list page
+								window.location.href = response.rfq_page_url;
+								return;
+							}
+
+							// Default behavior: show message and link
 							button_wrap.append( '<div class="wpheka_rfq_add_item_response' + prod_id + ' wpheka_rfq_add_item_response_message">' + response.message + '</div>' );
 							button_wrap.append( '<div class="wpheka_rfq_add_item_browse-list' + prod_id + ' wpheka_rfq_add_item_browse_message"><a href="' + response.rfq_page_url + '">' + response.label_browse + '</a></div>' );
 						} else if ( response.result == 'false' ) {

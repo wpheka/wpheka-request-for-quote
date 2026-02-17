@@ -61,10 +61,26 @@ if ( ! class_exists( 'WPHEKA_Rfq_Ajax', false ) ) :
 				wp_die();
 			}
 
-			$wpheka_rfq_general_settings = array_map( 'sanitize_text_field', wp_unslash( $_POST ) );
+			// Sanitize only relevant settings fields from $_POST
+	$page_id = sanitize_text_field( wp_unslash( $_POST['wpheka_request_for_quote_page_id'] ) );
+		$wpheka_rfq_general_settings = array(
+			'wpheka_request_for_quote_page_id' => $page_id,
+		'user_type'                         => isset( $_POST['user_type'] ) ? sanitize_text_field( wp_unslash( $_POST['user_type'] ) ) : 'all',
+		'out_of_stock_option'               => isset( $_POST['out_of_stock_option'] ) ? sanitize_text_field( wp_unslash( $_POST['out_of_stock_option'] ) ) : 'show_all',
+		'hide_price'                        => isset( $_POST['hide_price'] ) ? sanitize_text_field( wp_unslash( $_POST['hide_price'] ) ) : 'no',
+			'hide_add_to_cart'        => isset( $_POST['hide_add_to_cart'] ) ? sanitize_text_field( wp_unslash( $_POST['hide_add_to_cart'] ) ) : 'no',
+			'button_type'                       => isset( $_POST['button_type'] ) ? sanitize_text_field( wp_unslash( $_POST['button_type'] ) ) : 'button',
+		'button_position'                   => isset( $_POST['button_position'] ) ? sanitize_text_field( wp_unslash( $_POST['button_position'] ) ) : 'after',
+			'button_in_other_pages'   => isset( $_POST['button_in_other_pages'] ) ? sanitize_text_field( wp_unslash( $_POST['button_in_other_pages'] ) ) : 'no',
+			'button_link_text'                  => isset( $_POST['button_link_text'] ) ? sanitize_text_field( wp_unslash( $_POST['button_link_text'] ) ) : '',
+		'after_click_action'                => isset( $_POST['after_click_action'] ) ? sanitize_text_field( wp_unslash( $_POST['after_click_action'] ) ) : 'show_link',
+		'show_phone_field'                  => isset( $_POST['show_phone_field'] ) ? sanitize_text_field( wp_unslash( $_POST['show_phone_field'] ) ) : 'no',
+		'phone_required'                    => isset( $_POST['phone_required'] ) ? sanitize_text_field( wp_unslash( $_POST['phone_required'] ) ) : 'no',
+		'show_company_field'                => isset( $_POST['show_company_field'] ) ? sanitize_text_field( wp_unslash( $_POST['show_company_field'] ) ) : 'no',
+		);
 
 			update_option( 'wpheka_rfq_general_settings', $wpheka_rfq_general_settings );
-			update_option( 'wpheka_request_for_quote_page_id', sanitize_text_field( wp_unslash( $_POST['wpheka_request_for_quote_page_id'] ) ) );
+			update_option( 'wpheka_request_for_quote_page_id', $page_id );
 
 			wp_send_json_success();
 			wp_die();
@@ -147,7 +163,8 @@ if ( ! class_exists( 'WPHEKA_Rfq_Ajax', false ) ) :
 								'result'       => $result,
 								'message'      => $wpheka_rfq_product_already_in_list_message,
 								'label_browse' => $wpheka_rfq_product_added_view_browse_list,
-								'rfq_page_url' => wpheka_request_for_quote()->get_rfq_page_url(),
+								'rfq_page_url'       => wpheka_request_for_quote()->get_rfq_page_url(),
+						'after_click_action' => wpheka_request_for_quote()->get_settings('after_click_action'),
 							)
 						);
 					} elseif ( 'true' == $result ) {
@@ -158,7 +175,8 @@ if ( ! class_exists( 'WPHEKA_Rfq_Ajax', false ) ) :
 								'result'       => $result,
 								'message'      => $wpheka_rfq_product_added_to_list_message,
 								'label_browse' => $wpheka_rfq_product_added_view_browse_list,
-								'rfq_page_url' => wpheka_request_for_quote()->get_rfq_page_url(),
+								'rfq_page_url'       => wpheka_request_for_quote()->get_rfq_page_url(),
+						'after_click_action' => wpheka_request_for_quote()->get_settings('after_click_action'),
 							)
 						);
 					} elseif ( 'false' == $result ) {
@@ -233,14 +251,18 @@ if ( ! class_exists( 'WPHEKA_Rfq_Ajax', false ) ) :
 				if ( wp_verify_nonce( $nonce_value, 'rfq-send-request' ) ) {
 					$name = empty( $_POST['rfq_display_name'] ) ? '' : sanitize_text_field( wp_unslash( $_POST['rfq_display_name'] ) );
 					$email    = sanitize_email( wp_unslash( $_POST['rfq_email'] ) );
-					$message = empty( $_POST['rfq_message'] ) ? '' : sanitize_textarea_field( wp_unslash( $_POST['rfq_message'] ) );
+					$phone    = empty( $_POST['rfq_phone'] ) ? '' : sanitize_text_field( wp_unslash( $_POST['rfq_phone'] ) );
+					$company  = empty( $_POST['rfq_company'] ) ? '' : sanitize_text_field( wp_unslash( $_POST['rfq_company'] ) );
+					$message  = empty( $_POST['rfq_message'] ) ? '' : sanitize_textarea_field( wp_unslash( $_POST['rfq_message'] ) );
 					$rfq_data = wpheka_request_for_quote()->get_rfq_data();
 
 					if ( ! empty( $rfq_data ) ) {
 						$customer_data = array(
 							'name'    => $name,
 							'email'   => $email,
-							'message' => $message,
+							'phone'   => $phone,
+						'company' => $company,
+						'message' => $message,
 						);
 
 						$mail_success = WC()->mailer()->emails['WPHEKA_Rfq_Mail']->trigger( $customer_data );
@@ -268,7 +290,7 @@ if ( ! class_exists( 'WPHEKA_Rfq_Ajax', false ) ) :
 			check_ajax_referer( 'wpheka-add-to-quote-ajax-action', 'security' );
 
 			if ( ! empty( $_POST['rfq_item_key'] ) ) {
-				$rfq_item_key = sanitize_key( $_POST['rfq_item_key'] );
+				$rfq_item_key = sanitize_key( wp_unslash( $_POST['rfq_item_key'] ) );
 
 				$rfq_data = wpheka_request_for_quote()->get_rfq_data();
 
@@ -362,7 +384,8 @@ if ( ! class_exists( 'WPHEKA_Rfq_Ajax', false ) ) :
 						'result'       => $result,
 						'message'      => $wpheka_rfq_product_already_in_list_message,
 						'label_browse' => $wpheka_rfq_product_added_view_browse_list,
-						'rfq_page_url' => wpheka_request_for_quote()->get_rfq_page_url(),
+						'rfq_page_url'       => wpheka_request_for_quote()->get_rfq_page_url(),
+					'after_click_action' => wpheka_request_for_quote()->get_settings('after_click_action'),
 					)
 				);
 			} elseif ( 'true' == $result ) {
@@ -373,7 +396,8 @@ if ( ! class_exists( 'WPHEKA_Rfq_Ajax', false ) ) :
 						'result'       => $result,
 						'message'      => $wpheka_rfq_product_added_to_list_message,
 						'label_browse' => $wpheka_rfq_product_added_view_browse_list,
-						'rfq_page_url' => wpheka_request_for_quote()->get_rfq_page_url(),
+						'rfq_page_url'       => wpheka_request_for_quote()->get_rfq_page_url(),
+					'after_click_action' => wpheka_request_for_quote()->get_settings('after_click_action'),
 					)
 				);
 			} elseif ( 'false' == $result ) {

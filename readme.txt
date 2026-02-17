@@ -2,8 +2,8 @@
 Contributors: wpheka, akshayaswaroop
 Tags: request a quote button, woocommerce request for quote, woocommerce request a quote shortcode, request a quote, quote, WPHEKA, quotations, request for quote, rfq, raq, proposal, ask an estimate, budget, email quote
 Requires at least: 4.8
-Tested up to: 6.8.3
-Stable tag: 1.6.1
+Tested up to: 6.9.1
+Stable tag: 1.7.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Donate link: paypal.me/AKSHAYASWAROOP
@@ -50,6 +50,22 @@ If you enjoyed this plugin then please put a review, that will encourage me to b
 3. Configure email notifications
 
 == Changelog ==
+
+= 1.7.1 - 2026-02-13 =
+* Fix - Fixed "unexpected output during activation" error by removing get_plugin_data() call.
+
+= 1.7.0 - 2026-02-13 =
+* Feature - Added user type restrictions (show button to all/logged/guest users).
+* Feature - Added out of stock product options (show on all/only out of stock/hide on out of stock).
+* Feature - Added button position option (before/after add to cart button).
+* Feature - Added after-click behavior (show link or auto-redirect to quote page).
+* Feature - Added additional form fields (phone number and company name).
+* Fix - Fixed "Hide Price" and "Hide Add to Cart" settings not working on product pages.
+* Security - Fixed improper sanitization in plugin settings save handler.
+* Security - Added proper output escaping for page dropdown in settings form.
+* Security - Added missing wp_unslash() call in remove item AJAX handler.
+* Enhancement - WordPress version 6.9.1 compatibility added.
+* Enhancement - WooCommerce version 10.5.1 compatibility added.
 
 = 1.6.1 - 2025-11-09 =
 * Enhancement - WooCommerce HPOS (High Performance Order Storage) compatibility added.

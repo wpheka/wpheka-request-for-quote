@@ -168,11 +168,7 @@ final class WPHEKA_Rfq
      */
     private function define_constants()
     {
-        if (! function_exists('get_plugin_data')) {
-            require_once ABSPATH . 'wp-admin/includes/plugin.php';
-        }
-        $plugin_data      = get_plugin_data(WPHEKA_RFQ_PLUGIN_FILE, false, false);
-        $this->version    = $plugin_data['Version'];
+        $this->version    = WPHEKA_RFQ_VERSION;
         $this->plugin_url = trailingslashit(plugins_url('', WPHEKA_RFQ_PLUGIN_FILE));
 
         $this->define('WPHEKA_RFQ_SESSION_CACHE_GROUP', 'wpheka_rfq_session_id');

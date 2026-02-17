@@ -18,6 +18,40 @@ if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly.
 			<div id="wpheka-plugin-form">
 				<div id="wpheka-plugin-form-fields">
 					<table class="form-table" role="presentation">
+						<tr>
+							<th scope="row"><?php esc_html_e( 'Show "Add to quote" button to:', 'wpheka-request-for-quote' ); ?></th>
+							<td>
+								<label>
+									<input type="radio" name="user_type" value="all" <?php checked( 'all', wpheka_request_for_quote()->get_settings( 'user_type' ), true ); ?> />
+									<?php esc_html_e( 'All users', 'wpheka-request-for-quote' ); ?>
+								</label><br/>
+								<label>
+									<input type="radio" name="user_type" value="logged" <?php checked( 'logged', wpheka_request_for_quote()->get_settings( 'user_type' ), true ); ?> />
+									<?php esc_html_e( 'Only logged-in users', 'wpheka-request-for-quote' ); ?>
+								</label><br/>
+								<label>
+									<input type="radio" name="user_type" value="guests" <?php checked( 'guests', wpheka_request_for_quote()->get_settings( 'user_type' ), true ); ?> />
+									<?php esc_html_e( 'Only guest users', 'wpheka-request-for-quote' ); ?>
+								</label>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row"><?php esc_html_e( 'Out of stock products:', 'wpheka-request-for-quote' ); ?></th>
+							<td>
+								<label>
+									<input type="radio" name="out_of_stock_option" value="show_all" <?php checked( 'show_all', wpheka_request_for_quote()->get_settings( 'out_of_stock_option' ), true ); ?> />
+									<?php esc_html_e( 'Show button on all products (including out of stock)', 'wpheka-request-for-quote' ); ?>
+								</label><br/>
+								<label>
+									<input type="radio" name="out_of_stock_option" value="only_out_of_stock" <?php checked( 'only_out_of_stock', wpheka_request_for_quote()->get_settings( 'out_of_stock_option' ), true ); ?> />
+									<?php esc_html_e( 'Show button ONLY on out of stock products', 'wpheka-request-for-quote' ); ?>
+								</label><br/>
+								<label>
+									<input type="radio" name="out_of_stock_option" value="hide_out_of_stock" <?php checked( 'hide_out_of_stock', wpheka_request_for_quote()->get_settings( 'out_of_stock_option' ), true ); ?> />
+									<?php esc_html_e( 'Hide button on out of stock products', 'wpheka-request-for-quote' ); ?>
+								</label>
+							</td>
+						</tr>
 						<tr class="form-field form-required">
 							<th scope="row"><?php esc_html_e( 'Hide Price', 'wpheka-request-for-quote' ); ?></th>
 							<td>
@@ -45,8 +79,8 @@ if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly.
 									$wp_pages = get_pages();
 									$wpheka_request_for_quote_page_id = get_option( 'wpheka_request_for_quote_page_id' );
 									foreach ( $wp_pages as $wp_page ) {
-										$option  = '<option value="' . $wp_page->ID . '" ' . selected( $wpheka_request_for_quote_page_id, $wp_page->ID ) . '>';
-										$option .= $wp_page->post_title;
+										$option  = '<option value="' . esc_attr( $wp_page->ID ) . '" ' . selected( $wpheka_request_for_quote_page_id, $wp_page->ID, false ) . '>';
+										$option .= esc_html( $wp_page->post_title );
 										$option .= '</option>';
 										echo wp_kses(
 											$option,
@@ -83,9 +117,52 @@ if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly.
 							</td>
 						</tr>
 						<tr>
+							<th scope="row"><?php esc_html_e( 'Button position on product page:', 'wpheka-request-for-quote' ); ?></th>
+							<td>
+								<label>
+									<input type="radio" name="button_position" value="after" <?php checked( 'after', wpheka_request_for_quote()->get_settings( 'button_position' ), true ); ?> />
+									<?php esc_html_e( 'After "Add to cart" button', 'wpheka-request-for-quote' ); ?>
+								</label><br/>
+								<label>
+									<input type="radio" name="button_position" value="before" <?php checked( 'before', wpheka_request_for_quote()->get_settings( 'button_position' ), true ); ?> />
+									<?php esc_html_e( 'Before "Add to cart" button', 'wpheka-request-for-quote' ); ?>
+								</label>
+							</td>
+						</tr>
+						<tr>
 							<th scope="row"><label for="button_link_text"><?php esc_html_e( 'Button/Link Text', 'wpheka-request-for-quote' ); ?></label></th>
 							<td>
 								<input name="button_link_text" type="text" id="button_link_text" style="width: 60%;" value="<?php echo esc_attr( wpheka_request_for_quote()->get_settings( 'button_link_text' ) ); ?>" />
+							</td>
+						</tr>
+						<tr>
+							<th scope="row"><?php esc_html_e( 'After clicking "Add to quote":', 'wpheka-request-for-quote' ); ?></th>
+							<td>
+								<label>
+									<input type="radio" name="after_click_action" value="show_link" <?php checked( 'show_link', wpheka_request_for_quote()->get_settings( 'after_click_action' ), true ); ?> />
+									<?php esc_html_e( 'Show a link to the quote list', 'wpheka-request-for-quote' ); ?>
+								</label><br/>
+								<label>
+									<input type="radio" name="after_click_action" value="redirect" <?php checked( 'redirect', wpheka_request_for_quote()->get_settings( 'after_click_action' ), true ); ?> />
+									<?php esc_html_e( 'Automatically redirect to quote list page', 'wpheka-request-for-quote' ); ?>
+								</label>
+							</td>
+						</tr>
+						<tr class="form-field">
+							<th scope="row"><?php esc_html_e( 'Additional Form Fields', 'wpheka-request-for-quote' ); ?></th>
+							<td>
+								<label>
+									<input type="checkbox" name="show_phone_field" value="yes" <?php checked( 'yes', wpheka_request_for_quote()->get_settings( 'show_phone_field' ) ); ?> />
+									<?php esc_html_e( 'Show phone number field', 'wpheka-request-for-quote' ); ?>
+								</label><br/>
+								<label style="margin-left: 25px;">
+									<input type="checkbox" name="phone_required" value="yes" <?php checked( 'yes', wpheka_request_for_quote()->get_settings( 'phone_required' ) ); ?> />
+									<?php esc_html_e( 'Make phone number required', 'wpheka-request-for-quote' ); ?>
+								</label><br/><br/>
+								<label>
+									<input type="checkbox" name="show_company_field" value="yes" <?php checked( 'yes', wpheka_request_for_quote()->get_settings( 'show_company_field' ) ); ?> />
+									<?php esc_html_e( 'Show company name field', 'wpheka-request-for-quote' ); ?>
+								</label>
 							</td>
 						</tr>
 					</table>        
