@@ -74,7 +74,7 @@ if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly.
 							<th scope="row"><label for="wpheka_request_for_quote_page_id"><?php esc_html_e( 'Request Quote Page', 'wpheka-request-for-quote' ); ?></label></th>
 							<td>
 								<select name="wpheka_request_for_quote_page_id" style="min-width:300px" id="wpheka_request_for_quote_page_id">
-									<option value=""><?php echo esc_attr( __( 'Select a page…' ) ); ?></option>
+									<option value=""><?php echo esc_attr( __( 'Select a page…', 'wpheka-request-for-quote' ) ); ?></option>
 									<?php
 									$wp_pages = get_pages();
 									$wpheka_request_for_quote_page_id = get_option( 'wpheka_request_for_quote_page_id' );
@@ -101,8 +101,8 @@ if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly.
 							<th scope="row"><label for="button_type"><?php esc_html_e( 'Button Type', 'wpheka-request-for-quote' ); ?></label></th>
 							<td>
 								<select name="button_type" style="min-width:300px" id="button_type">
-									<option value="button" <?php selected( wpheka_request_for_quote()->get_settings( 'button_type' ), 'button' ); ?>><?php echo esc_attr( __( 'Button' ) ); ?></option>
-									<option value="link" <?php selected( wpheka_request_for_quote()->get_settings( 'button_type' ), 'link' ); ?>><?php echo esc_attr( __( 'Link' ) ); ?></option>
+									<option value="button" <?php selected( wpheka_request_for_quote()->get_settings( 'button_type' ), 'button' ); ?>><?php echo esc_attr( __( 'Button', 'wpheka-request-for-quote' ) ); ?></option>
+									<option value="link" <?php selected( wpheka_request_for_quote()->get_settings( 'button_type' ), 'link' ); ?>><?php echo esc_attr( __( 'Link', 'wpheka-request-for-quote' ) ); ?></option>
 								</select>
 							</td>
 						</tr>

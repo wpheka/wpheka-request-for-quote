@@ -3,17 +3,18 @@
  * Plugin Name: Request For Quote
  * Plugin URI: https://www.wpheka.com/product/request-for-quote/
  * Description: The <code><strong>Request For Quote</strong></code> plugin allows your customers to submit quotes for any product and negotiate with you for the best price.
- * Version: 1.7.1
+ * Version: 1.7.2
  * Author: WPHEKA
  * Author URI: https://www.wpheka.com
  * Text Domain: wpheka-request-for-quote
  * Domain Path: /languages/
  * Requires at least: 4.8
- * Tested up to: 6.9.1
+ * Tested up to: 7.0
+ * Requires PHP: 7.4
  * Requires Plugins: woocommerce
  * WC requires at least: 3.0
- * WC tested up to: 10.5.1
- * Woo: 10.5.1
+ * WC tested up to: 10.7.0
+ * Woo: 10.7.0
  * License: GPLv3 or later
  *
  * @package   WPHEKA_Rfq
@@ -32,7 +33,7 @@ if (! defined('WPHEKA_RFQ_PLUGIN_FILE')) {
 
 // Define WPHEKA_RFQ_VERSION.
 if (! defined('WPHEKA_RFQ_VERSION')) {
-    define('WPHEKA_RFQ_VERSION', '1.7.1');
+    define('WPHEKA_RFQ_VERSION', '1.7.2');
 }
 
 // Include the main WPHEKA_Rfq class.

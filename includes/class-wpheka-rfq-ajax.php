@@ -271,11 +271,14 @@ if ( ! class_exists( 'WPHEKA_Rfq_Ajax', false ) ) :
 							// Clear request quote list.
 							wpheka_request_for_quote()->clear_rfq_data();
 
-							wp_send_json_success( array( 'message' => 'Your request has been sent successfully.' ) );
+							$quote_count = (int) get_option( 'wpheka_rfq_quote_count', 0 );
+							update_option( 'wpheka_rfq_quote_count', $quote_count + 1 );
+
+							wp_send_json_success( array( 'message' => __( 'Your request has been sent successfully.', 'wpheka-request-for-quote' ) ) );
 						}
 					}
 				}
-				wp_send_json_error( array( 'message' => 'Something went wrong. Please try again later.' ) );
+				wp_send_json_error( array( 'message' => __( 'Something went wrong. Please try again later.', 'wpheka-request-for-quote' ) ) );
 			}
 			wp_die();
 		}

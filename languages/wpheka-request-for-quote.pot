@@ -1,29 +1,22 @@
+# Copyright (C) 2026 WPHEKA
+# This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: WPHEKA Request For Quote\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wpheka-request-"
-"for-quote\n"
-"POT-Creation-Date: 2026-05-27T18:12:59+00:00\n"
-"PO-Revision-Date: 2020-05-06 13:23+0530\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: en_US\n"
+"Project-Id-Version: Request For Quote 1.7.2\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wpheka-request-for-quote\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
-"X-Poedit-Basepath: ..\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
-"X-Poedit-WPHeader: wpheka-request-for-quote.php\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: "
-"__;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
-"X-Poedit-SearchPath-0: .\n"
-"X-Poedit-SearchPathExcluded-0: *.min.js\n"
+"POT-Creation-Date: 2026-05-27T18:12:59+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: wpheka-request-for-quote\n"
 
 #. Plugin Name of the plugin
-#: wpheka-request-for-quote.php includes/admin/class-wpheka-rfq-admin.php:79
+#: wpheka-request-for-quote.php
+#: includes/admin/class-wpheka-rfq-admin.php:79
 #: includes/emails/class-wpheka-rfq-mail.php:39
 msgid "Request For Quote"
 msgstr ""
@@ -35,10 +28,7 @@ msgstr ""
 
 #. Description of the plugin
 #: wpheka-request-for-quote.php
-msgid ""
-"The <code><strong>Request For Quote</strong></code> plugin allows your "
-"customers to submit quotes for any product and negotiate with you for the "
-"best price."
+msgid "The <code><strong>Request For Quote</strong></code> plugin allows your customers to submit quotes for any product and negotiate with you for the best price."
 msgstr ""
 
 #. Author of the plugin
@@ -61,16 +51,11 @@ msgid "Settings"
 msgstr ""
 
 #: includes/admin/class-wpheka-rfq-admin.php:112
-msgid ""
-"This WooCommerce extension give your customers the possibility to request "
-"custom quotes."
+msgid "This WooCommerce extension give your customers the possibility to request custom quotes."
 msgstr ""
 
 #: includes/admin/class-wpheka-rfq-admin.php:175
-msgid ""
-"We hope you're enjoying <strong>Request For Quote</strong>! Could you please "
-"do us a BIG favor and give it a 5-star rating on WordPress.org to help us "
-"spread the word?"
+msgid "We hope you're enjoying <strong>Request For Quote</strong>! Could you please do us a BIG favor and give it a 5-star rating on WordPress.org to help us spread the word?"
 msgstr ""
 
 #: includes/admin/class-wpheka-rfq-admin.php:182
@@ -127,19 +112,15 @@ msgid "Something went wrong. Please try again later."
 msgstr ""
 
 #: includes/class-wpheka-rfq-frontend.php:196
-msgid ""
-"Sorry, no products matched your selection. Please choose a different "
-"combination."
+msgid "Sorry, no products matched your selection. Please choose a different combination."
 msgstr ""
 
 #: includes/class-wpheka-rfq-frontend.php:197
-msgid ""
-"Please select some product options before adding this product to your cart."
+msgid "Please select some product options before adding this product to your cart."
 msgstr ""
 
 #: includes/class-wpheka-rfq-frontend.php:198
-msgid ""
-"Sorry, this product is unavailable. Please choose a different combination."
+msgid "Sorry, this product is unavailable. Please choose a different combination."
 msgstr ""
 
 #: includes/class-wpheka-rfq-install.php:113
@@ -161,9 +142,7 @@ msgid "Unserializing instances of this class is forbidden."
 msgstr ""
 
 #: includes/emails/class-wpheka-rfq-mail.php:40
-msgid ""
-"New request for quote emails are sent to chosen recipient(s) when a new "
-"request is received."
+msgid "New request for quote emails are sent to chosen recipient(s) when a new request is received."
 msgstr ""
 
 #: includes/emails/class-wpheka-rfq-mail.php:64
@@ -380,17 +359,20 @@ msgid "Request Quote"
 msgstr ""
 
 #: templates/emails/request-for-quote-mail-template.php:27
-#: templates/request-for-quote.php:26 templates/request-for-quote.php:96
+#: templates/request-for-quote.php:26
+#: templates/request-for-quote.php:96
 msgid "Product"
 msgstr ""
 
 #: templates/emails/request-for-quote-mail-template.php:28
-#: templates/request-for-quote.php:30 templates/request-for-quote.php:119
+#: templates/request-for-quote.php:30
+#: templates/request-for-quote.php:119
 msgid "Quantity"
 msgstr ""
 
 #: templates/emails/request-for-quote-mail-template.php:29
-#: templates/request-for-quote.php:28 templates/request-for-quote.php:113
+#: templates/request-for-quote.php:28
+#: templates/request-for-quote.php:113
 msgid "Price"
 msgstr ""
 
@@ -440,7 +422,8 @@ msgstr ""
 msgid "Send Your Request"
 msgstr ""
 
-#: templates/request-for-quote.php:32 templates/request-for-quote.php:141
+#: templates/request-for-quote.php:32
+#: templates/request-for-quote.php:141
 msgid "Subtotal"
 msgstr ""
 

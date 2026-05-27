@@ -30,6 +30,11 @@ class WPHEKA_Rfq_Admin {
 
 		// admin script and style.
 		add_action( 'admin_enqueue_scripts', array( &$this, 'wpheka_enqueue_admin_scripts_styles' ) );
+
+		// Review request notice.
+		add_action( 'admin_notices', array( $this, 'maybe_show_review_notice' ) );
+		add_action( 'wp_ajax_wpheka_rfq_dismiss_review', array( $this, 'ajax_dismiss_review' ) );
+		add_action( 'wp_ajax_wpheka_rfq_snooze_review', array( $this, 'ajax_snooze_review' ) );
 	}
 
 	/**
@@ -114,6 +119,132 @@ class WPHEKA_Rfq_Admin {
 			</div>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Determine whether to show the review request notice.
+	 *
+	 * @return bool
+	 */
+	private function should_show_review_notice() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return false;
+		}
+
+		if ( get_option( 'wpheka_rfq_review_dismissed' ) ) {
+			return false;
+		}
+
+		if ( get_transient( 'wpheka_rfq_review_snoozed' ) ) {
+			return false;
+		}
+
+		$activation_time = get_option( 'wpheka_rfq_activation_time' );
+		if ( ! $activation_time ) {
+			// Backfill for installs that upgraded from a pre-1.7.2 version.
+			$activation_time = time();
+			update_option( 'wpheka_rfq_activation_time', $activation_time );
+		}
+
+		if ( ( time() - (int) $activation_time ) < ( 7 * DAY_IN_SECONDS ) ) {
+			return false;
+		}
+
+		if ( (int) get_option( 'wpheka_rfq_quote_count', 0 ) < 1 ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Render the review request admin notice.
+	 */
+	public function maybe_show_review_notice() {
+		if ( ! $this->should_show_review_notice() ) {
+			return;
+		}
+
+		$review_url = 'https://wordpress.org/support/plugin/wpheka-request-for-quote/reviews/?filter=5#new-post';
+		$nonce      = wp_create_nonce( 'wpheka_rfq_review' );
+		?>
+		<div id="wpheka-rfq-review-notice" class="notice notice-info is-dismissible wpheka-rfq-review-notice" data-nonce="<?php echo esc_attr( $nonce ); ?>">
+			<p>
+				<?php
+				echo wp_kses(
+					__( 'We hope you\'re enjoying <strong>Request For Quote</strong>! Could you please do us a BIG favor and give it a 5-star rating on WordPress.org to help us spread the word?', 'wpheka-request-for-quote' ),
+					array( 'strong' => array() )
+				);
+				?>
+			</p>
+			<p>
+				<a class="button button-primary" href="<?php echo esc_url( $review_url ); ?>" target="_blank" rel="noopener noreferrer" data-wpheka-rfq-review="rate">
+					<?php esc_html_e( 'Sure, you deserve it', 'wpheka-request-for-quote' ); ?>
+				</a>
+				<a class="button" href="#" data-wpheka-rfq-review="already">
+					<?php esc_html_e( 'I already did', 'wpheka-request-for-quote' ); ?>
+				</a>
+				<a class="button" href="#" data-wpheka-rfq-review="later">
+					<?php esc_html_e( 'Maybe later', 'wpheka-request-for-quote' ); ?>
+				</a>
+				<a href="#" data-wpheka-rfq-review="never" style="margin-left: 8px;">
+					<?php esc_html_e( 'I don\'t want to leave a review', 'wpheka-request-for-quote' ); ?>
+				</a>
+			</p>
+		</div>
+		<script type="text/javascript">
+		(function($) {
+			$(document).on('click', '#wpheka-rfq-review-notice [data-wpheka-rfq-review]', function(e) {
+				var $link  = $(this);
+				var action = $link.data('wpheka-rfq-review');
+				var nonce  = $('#wpheka-rfq-review-notice').data('nonce');
+				var ajax   = (action === 'later') ? 'wpheka_rfq_snooze_review' : 'wpheka_rfq_dismiss_review';
+
+				$.post(ajaxurl, { action: ajax, _ajax_nonce: nonce });
+
+				if (action !== 'rate') {
+					e.preventDefault();
+					$('#wpheka-rfq-review-notice').fadeOut(200, function() { $(this).remove(); });
+				} else {
+					$('#wpheka-rfq-review-notice').fadeOut(200, function() { $(this).remove(); });
+				}
+			});
+
+			$(document).on('click', '#wpheka-rfq-review-notice .notice-dismiss', function() {
+				var nonce = $('#wpheka-rfq-review-notice').data('nonce');
+				$.post(ajaxurl, { action: 'wpheka_rfq_snooze_review', _ajax_nonce: nonce });
+			});
+		})(jQuery);
+		</script>
+		<?php
+	}
+
+	/**
+	 * AJAX: permanently dismiss the review request notice.
+	 */
+	public function ajax_dismiss_review() {
+		check_ajax_referer( 'wpheka_rfq_review' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error();
+		}
+
+		update_option( 'wpheka_rfq_review_dismissed', 1 );
+		wp_send_json_success();
+	}
+
+	/**
+	 * AJAX: snooze the review request notice for 14 days.
+	 */
+	public function ajax_snooze_review() {
+		check_ajax_referer( 'wpheka_rfq_review' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error();
+		}
+
+		set_transient( 'wpheka_rfq_review_snoozed', 1, 14 * DAY_IN_SECONDS );
+		wp_send_json_success();
 	}
 
 	/**

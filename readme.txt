@@ -2,8 +2,9 @@
 Contributors: wpheka, akshayaswaroop
 Tags: request a quote button, woocommerce request for quote, woocommerce request a quote shortcode, request a quote, quote, WPHEKA, quotations, request for quote, rfq, raq, proposal, ask an estimate, budget, email quote
 Requires at least: 4.8
-Tested up to: 6.9.1
-Stable tag: 1.7.1
+Tested up to: 7.0
+Requires PHP: 7.4
+Stable tag: 1.7.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Donate link: paypal.me/AKSHAYASWAROOP
@@ -50,6 +51,14 @@ If you enjoyed this plugin then please put a review, that will encourage me to b
 3. Configure email notifications
 
 == Changelog ==
+
+= 1.7.2 - 2026-05-27 =
+* Feature - Added a polite 5-star review request notice for store admins, shown after 7 days and at least one quote submission. Includes "Sure, you deserve it", "I already did", "Maybe later" (14-day snooze) and "Don't ask again" options.
+* Fix - Made the "Your request has been sent successfully" and corresponding error message translatable via Loco Translate (previously hardcoded in the AJAX response).
+* Fix - Added missing text domain to three admin settings labels (Select a page, Button, Link) so they appear in translation tools.
+* Enhancement - Added "Requires PHP: 7.4" header.
+* Enhancement - WordPress version 7.0 compatibility added.
+* Enhancement - WooCommerce version 10.7.0 compatibility added.
 
 = 1.7.1 - 2026-02-13 =
 * Fix - Fixed "unexpected output during activation" error by removing get_plugin_data() call.

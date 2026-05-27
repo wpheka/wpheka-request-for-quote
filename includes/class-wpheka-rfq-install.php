@@ -36,6 +36,10 @@ class WPHEKA_Rfq_Install {
 		self::create_options();
 		self::create_pages();
 
+		if ( ! get_option( 'wpheka_rfq_activation_time' ) ) {
+			update_option( 'wpheka_rfq_activation_time', time() );
+		}
+
 		delete_transient( 'wpheka_rfq_installing' );
 
 		flush_rewrite_rules();
