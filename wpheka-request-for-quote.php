@@ -163,11 +163,17 @@ function wpheka_rfq_schema()
  * declaration silently, leaving WooCommerce to list the plugin as
  * HPOS-incompatible while the code looked correct.
  *
- * **The false matters as much as the true.** Blocks are declared incompatible
- * on purpose, which is how WooCommerce warns a store owner rather than letting
- * them switch to block checkout and find the quote basket broken. Declaring
- * nothing produces no warning at all, so this is not a value that may be
- * quietly dropped.
+ * **Both features are declared compatible, and the blocks one was checked
+ * rather than assumed.** This plugin registers no cart or checkout hooks at all
+ * -- only product page, shop loop, price and email hooks -- and its session
+ * handler extends WC_Session into its own property via its own
+ * `wpheka_rfq_session_handler` filter. It never replaces WooCommerce's handler
+ * through `woocommerce_session_handler`, so WC sessions and the Store API the
+ * Cart and Checkout blocks run on are untouched.
+ *
+ * It previously declared `cart_checkout_blocks` **incompatible**, which was
+ * inaccurate: WooCommerce warns store owners off block checkout by naming
+ * plugins that declare that, and nothing here interacts with those blocks.
  *
  * @since 1.8.0
  * @return void
@@ -182,7 +188,7 @@ function wpheka_rfq_declare_compatibility()
             static function () {
                 if (class_exists('\Automattic\WooCommerce\Utilities\FeaturesUtil')) {
                     \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', WPHEKA_RFQ_PLUGIN_FILE, true);
-                    \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('cart_checkout_blocks', WPHEKA_RFQ_PLUGIN_FILE, false);
+                    \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('cart_checkout_blocks', WPHEKA_RFQ_PLUGIN_FILE, true);
                 }
             }
         );
@@ -196,7 +202,7 @@ function wpheka_rfq_declare_compatibility()
         WPHEKA_RFQ_PLUGIN_FILE,
         array(
             $compatibility::HPOS   => true,
-            $compatibility::BLOCKS => false,
+            $compatibility::BLOCKS => true,
         )
     );
 }
