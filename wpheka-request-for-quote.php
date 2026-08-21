@@ -226,10 +226,62 @@ add_action('plugins_loaded', 'wpheka_rfq_declare_compatibility');
 function wpheka_rfq_new_site($site)
 {
     if (! wpheka_rfq_framework_ready()) {
+        /*
+         * Degrading must not mean skipping provisioning. Returning here left the
+         * new site with no sessions table and no settings, and nothing saying
+         * so -- the exact ADR-012 failure this hook exists to prevent,
+         * reintroduced in the path taken when the framework is unavailable.
+         *
+         * Not hypothetical: with a stale bundle winning the registry the guard
+         * really does return false, and a five-site network then provisioned
+         * one site.
+         */
+        wpheka_rfq_provision_site_natively($site);
+
         return;
     }
 
     \WPHEKA\Framework\V1\Core\Lifecycle::on_new_site($site, WPHEKA_RFQ_PLUGIN_FILE, array( 'WPHEKA_Rfq_Install', 'install' ));
+}
+
+/**
+ * Provision one site without the framework.
+ *
+ * Only for the degraded path. Checks the plugin is actually network-active
+ * before writing to a site, which is what Lifecycle::on_new_site() does and
+ * what stops a network activating this plugin on sites that never asked for it.
+ *
+ * @since 1.8.0
+ * @param mixed $site WP_Site, or a blog id.
+ * @return void
+ */
+function wpheka_rfq_provision_site_natively($site)
+{
+    if (! is_multisite() || ! class_exists('WPHEKA_Rfq_Install')) {
+        return;
+    }
+
+    if (! function_exists('is_plugin_active_for_network')) {
+        require_once ABSPATH . 'wp-admin/includes/plugin.php';
+    }
+
+    if (! is_plugin_active_for_network(plugin_basename(WPHEKA_RFQ_PLUGIN_FILE))) {
+        return;
+    }
+
+    $blog_id = is_object($site) && isset($site->blog_id) ? (int) $site->blog_id : (int) $site;
+
+    if ($blog_id <= 0) {
+        return;
+    }
+
+    switch_to_blog($blog_id);
+
+    try {
+        WPHEKA_Rfq_Install::install();
+    } finally {
+        restore_current_blog();
+    }
 }
 add_action('wp_initialize_site', 'wpheka_rfq_new_site', 100);
 
@@ -254,6 +306,29 @@ register_activation_hook(WPHEKA_RFQ_PLUGIN_FILE, 'wpheka_rfq_activate');
 function wpheka_rfq_activate($network_wide = false)
 {
     if (! wpheka_rfq_framework_ready()) {
+        /*
+         * install() provisions whichever single site handles the request, so on
+         * a network activation this used to leave every other site without a
+         * sessions table. Observed on a five-site network: one table, four
+         * sites silently unprovisioned.
+         *
+         * Lifecycle::for_each_site() is the proper walk and batches; this is the
+         * degraded path, so it iterates directly.
+         */
+        if ($network_wide && is_multisite()) {
+            foreach (get_sites(array( 'fields' => 'ids', 'number' => 0 )) as $blog_id) {
+                switch_to_blog((int) $blog_id);
+
+                try {
+                    WPHEKA_Rfq_Install::install();
+                } finally {
+                    restore_current_blog();
+                }
+            }
+
+            return;
+        }
+
         WPHEKA_Rfq_Install::install();
 
         return;
