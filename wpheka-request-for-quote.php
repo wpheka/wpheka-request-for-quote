@@ -97,10 +97,22 @@ function wpheka_rfq_options()
     static $options = null;
 
     if (null === $options) {
-        $options = \WPHEKA\Framework\V1\Core\Options::for_plugin(
+        /*
+         * Explicit per-site scope, not for_plugin(). for_plugin() picks network
+         * storage when the plugin is network-activated, but WPHEKA_Rfq_Install
+         * writes its defaults with add_option() -- per-site, always, as it did
+         * before adoption. Auto-detecting here would make runtime read a network
+         * row that provisioning never wrote, and the settings would read back
+         * empty on every site of a network with nothing reporting why.
+         *
+         * Per-site is also the right answer on its own terms: quote baskets and
+         * the sessions table are per-site (Schema::SCOPE_SITE), so the settings
+         * that govern them belong beside them.
+         */
+        $options = new \WPHEKA\Framework\V1\Core\Options(
             'wpheka_rfq_general_settings',
             array(),
-            plugin_basename(WPHEKA_RFQ_PLUGIN_FILE)
+            \WPHEKA\Framework\V1\Core\Options::SCOPE_SITE
         );
     }
 
