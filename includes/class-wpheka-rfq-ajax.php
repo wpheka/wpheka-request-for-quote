@@ -200,10 +200,24 @@ if ( ! class_exists( 'WPHEKA_Rfq_Ajax', false ) ) :
 		 * @author WPHEKA
 		 */
 		public function action_update_rfq_list() {
-			if ( ! empty( $_POST['rfq'] ) ) {
+			/*
+			 * is_array(), not just ! empty(). This is a public handler --
+			 * wp_ajax_nopriv_update_rfq_list -- and ! empty() is true for a
+			 * non-empty string, which foreach then warns on. A caller posting
+			 * rfq=x reached that.
+			 */
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified immediately below.
+			if ( ! empty( $_POST['rfq'] ) && is_array( $_POST['rfq'] ) ) {
                 $nonce_value = wc_get_var($_REQUEST['wpheka-rfq-nonce']); // @codingStandardsIgnoreLine.
 				if ( wp_verify_nonce( $nonce_value, 'wpheka-rfq' ) ) {
 
+					/*
+					 * Unslashed here, sanitised per element below: the quantity
+					 * through absint() and the key through sanitize_key(), which
+					 * are the only two values that reach storage. Sanitising the
+					 * array wholesale would have to guess at its shape.
+					 */
+					// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- each element is sanitised at point of use.
 					$posted_data = wp_unslash( $_POST['rfq'] );
 					$rfq_data = wpheka_request_for_quote()->get_rfq_data();
 					if ( ! empty( $posted_data ) ) {

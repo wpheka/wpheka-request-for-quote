@@ -16,7 +16,13 @@ $margin_side = is_rtl() ? 'left' : 'right';
 
 do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 
- <p><?php printf( __( 'You have received a quote request from %s. The request is as follows:', 'wpheka-request-for-quote' ), esc_html( $customer_data['name'] ) ); ?></p>
+ <p><?php
+	printf(
+		/* translators: %s: customer name. */
+		esc_html__( 'You have received a quote request from %s. The request is as follows:', 'wpheka-request-for-quote' ),
+		esc_html( $customer_data['name'] )
+	);
+	?></p>
 
 <h2><?php esc_html_e( 'Request Quote', 'wpheka-request-for-quote' ); ?></h2>
 

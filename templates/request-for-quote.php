@@ -11,6 +11,32 @@ if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly.
 	die( 'No script kiddies please!' );
 }
 
+/*
+ * Allowlist for the cells below, which print markup WooCommerce generated -- a
+ * product image, a formatted price, a quantity field -- passed through this
+ * plugin's filters. esc_html() would print the tags as text, so these are
+ * filtered rather than escaped.
+ *
+ * wp_kses_post() is NOT usable: its allowlist carries no form elements, so it
+ * strips <input> and the quantity field vanishes from the table, and it drops
+ * the <bdi> WooCommerce wraps prices in. Both confirmed against real
+ * WooCommerce output, which is why this list exists rather than the shorthand.
+ */
+$wpheka_rfq_allowed = array_merge(
+	wp_kses_allowed_html( 'post' ),
+	array(
+		'input' => array(
+			'type'        => true, 'name' => true, 'value' => true, 'class' => true,
+			'id'          => true, 'size' => true, 'min'   => true, 'max'   => true,
+			'step'        => true, 'inputmode' => true, 'pattern' => true,
+			'autocomplete' => true, 'readonly' => true, 'disabled' => true,
+			'placeholder' => true, 'aria-label' => true, 'title' => true, 'data-*' => true,
+		),
+		'bdi'   => array( 'class' => true, 'dir' => true ),
+		'label' => array( 'for' => true, 'class' => true ),
+	)
+);
+
 function_exists( 'wc_nocache_headers' ) && wc_nocache_headers();
 
 do_action( 'wpheka_before_rfq_list' ); ?>
@@ -61,7 +87,7 @@ do_action( 'wpheka_before_rfq_list' ); ?>
 				if ( $_product && $_product->exists() && $rfq_item['quantity'] > 0 && apply_filters( 'wpheka_rfq_item_visible', true, $rfq_item, $rfq_item_key ) ) {
 					$product_permalink = apply_filters( 'wpheka_rfq_item_permalink', $_product->is_visible() ? $_product->get_permalink( $rfq_item ) : '', $rfq_item, $rfq_item_key );
 					?>
-					<tr class="woocommerce-cart-form__cart-item <?php echo esc_attr( apply_filters( 'wpheka_rfq_item_class', 'rfq_item', $rfq_item, $rfq_item_key ) ); ?>">
+					<tr class="woocommerce-cart-form__cart-item <?php echo esc_attr( apply_filters( 'wpheka_rfq_item_class', 'rfq_item', $rfq_item, $rfq_item_key ), $wpheka_rfq_allowed ); ?>">
 
 						<td class="product-remove">
 							<?php
@@ -86,9 +112,9 @@ do_action( 'wpheka_before_rfq_list' ); ?>
 						$thumbnail = apply_filters( 'wpheka_rfq_item_thumbnail', $_product->get_image(), $rfq_item, $rfq_item_key );
 
 						if ( ! $product_permalink ) {
-							echo $thumbnail; // PHPCS: XSS ok.
+							echo wp_kses( $thumbnail, $wpheka_rfq_allowed );
 						} else {
-							printf( '<a href="%s">%s</a>', esc_url( $product_permalink ), $thumbnail ); // PHPCS: XSS ok.
+							printf( '<a href="%1$s">%2$s</a>', esc_url( $product_permalink ), wp_kses( $thumbnail, $wpheka_rfq_allowed ) );
 						}
 						?>
 						</td>
@@ -98,7 +124,7 @@ do_action( 'wpheka_before_rfq_list' ); ?>
 						if ( ! $product_permalink ) {
 							echo wp_kses_post( apply_filters( 'wpheka_rfq_item_name', $_product->get_name(), $rfq_item, $rfq_item_key ) . '&nbsp;' );
 						} else {
-							echo wp_kses_post( apply_filters( 'wpheka_rfq_item_name', sprintf( '<a href="%s">%s</a>', esc_url( $product_permalink ), $_product->get_name() ), $rfq_item, $rfq_item_key ) );
+							echo wp_kses_post( apply_filters( 'wpheka_rfq_item_name', sprintf( '<a href="%1$s">%2$s</a>', esc_url( $product_permalink ), $_product->get_name() ), $rfq_item, $rfq_item_key ) );
 						}
 
 						do_action( 'wpheka_after_rfq_item_name', $rfq_item, $rfq_item_key );
@@ -112,7 +138,7 @@ do_action( 'wpheka_before_rfq_list' ); ?>
 						<?php if ( wpheka_request_for_quote()->get_settings( 'hide_price' ) == 'no' ) { ?>
 						<td class="product-price" data-title="<?php esc_attr_e( 'Price', 'wpheka-request-for-quote' ); ?>">
 							<?php
-								echo apply_filters( 'wpheka_rfq_item_price', WC()->cart->get_product_price( $_product ), $rfq_item, $rfq_item_key ); // PHPCS: XSS ok.
+								echo wp_kses( apply_filters( 'wpheka_rfq_item_price', WC()->cart->get_product_price( $_product ), $rfq_item, $rfq_item_key ), $wpheka_rfq_allowed );
 							?>
 						</td>
 						<?php } ?>
@@ -134,13 +160,13 @@ do_action( 'wpheka_before_rfq_list' ); ?>
 							);
 						}
 
-						echo apply_filters( 'wpheka_rfq_item_quantity', $product_quantity, $rfq_item_key, $rfq_item ); // PHPCS: XSS ok.
+						echo wp_kses( apply_filters( 'wpheka_rfq_item_quantity', $product_quantity, $rfq_item_key, $rfq_item ), $wpheka_rfq_allowed );
 						?>
 						</td>
 						<?php if ( wpheka_request_for_quote()->get_settings( 'hide_price' ) == 'no' ) { ?>
 						<td class="product-subtotal" data-title="<?php esc_attr_e( 'Subtotal', 'wpheka-request-for-quote' ); ?>">
 							<?php
-								echo apply_filters( 'wpheka_rfq_item_subtotal', WC()->cart->get_product_subtotal( $_product, $rfq_item['quantity'] ), $rfq_item, $rfq_item_key ); // PHPCS: XSS ok.
+								echo wp_kses( apply_filters( 'wpheka_rfq_item_subtotal', WC()->cart->get_product_subtotal( $_product, $rfq_item['quantity'] ), $rfq_item, $rfq_item_key ), $wpheka_rfq_allowed );
 							?>
 						</td>
 						<?php } ?>
