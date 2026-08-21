@@ -117,11 +117,9 @@ final class WPHEKA_Rfq
      */
     private function init_hooks()
     {
-        register_activation_hook(WPHEKA_RFQ_PLUGIN_FILE, array( 'WPHEKA_Rfq_Install', 'install' ));
         add_action('init', array( $this, 'init' ), 5);
         add_action('init', array( 'WPHEKA_Rfq_Shortcodes', 'init' ));
         add_filter('woocommerce_email_classes', array( $this, 'include_rfq_emails' ));
-        add_action('before_woocommerce_init', array( $this, 'declare_compatibility' ));
     }
 
     /**
@@ -424,26 +422,14 @@ final class WPHEKA_Rfq
             return false;
         }
 
-        $tab_option_name = 'wpheka_rfq_general_settings';
-        $tab_settings    = get_option($tab_option_name);
+        $tab_settings = wpheka_rfq_framework_ready()
+            ? wpheka_rfq_options()->all()
+            : get_option('wpheka_rfq_general_settings');
 
         if (empty($tab_settings)) {
             return false;
         }
 
         return isset($tab_settings[ $field ]) ? $tab_settings[ $field ] : false;
-    }
-
-    /**
-     * Declare compatibility with WooCommerce features
-     *
-     * @since 1.6.1
-     */
-    public function declare_compatibility()
-    {
-        if (class_exists('\Automattic\WooCommerce\Utilities\FeaturesUtil')) {
-            \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', WPHEKA_RFQ_PLUGIN_FILE, true);
-            \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('cart_checkout_blocks', WPHEKA_RFQ_PLUGIN_FILE, false);
-        }
     }
 }

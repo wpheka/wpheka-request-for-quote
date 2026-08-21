@@ -55,6 +55,17 @@ class WPHEKA_Rfq_Install {
 	private static function create_tables() {
 		global $wpdb;
 
+		/*
+		 * Same table, same columns, and on a network the same per-site prefix.
+		 * Schema is used for the scope handling rather than for the SQL: it is
+		 * what makes provisioning a later-created site correct.
+		 */
+		if ( function_exists( 'wpheka_rfq_framework_ready' ) && wpheka_rfq_framework_ready() ) {
+			wpheka_rfq_schema()->install();
+
+			return;
+		}
+
 		$collate = '';
 
 		if ( $wpdb->has_cap( 'collation' ) ) {
