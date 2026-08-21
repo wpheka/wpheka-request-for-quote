@@ -165,14 +165,14 @@ class WPHEKA_Rfq_Admin {
 			return;
 		}
 
-		$review_url = 'https://wordpress.org/support/plugin/wpheka-request-for-quote/reviews/?filter=5#new-post';
+		$review_url = 'https://wordpress.org/support/plugin/wpheka-request-for-quote/reviews/';
 		$nonce      = wp_create_nonce( 'wpheka_rfq_review' );
 		?>
 		<div id="wpheka-rfq-review-notice" class="notice notice-info is-dismissible wpheka-rfq-review-notice" data-nonce="<?php echo esc_attr( $nonce ); ?>">
 			<p>
 				<?php
 				echo wp_kses(
-					__( 'We hope you\'re enjoying <strong>Request For Quote</strong>! Could you please do us a BIG favor and give it a 5-star rating on WordPress.org to help us spread the word?', 'wpheka-request-for-quote' ),
+					__( 'We hope you\'re enjoying <strong>Request For Quote</strong>! Could you please do us a BIG favor and leave a rating on WordPress.org to help us spread the word?', 'wpheka-request-for-quote' ),
 					array( 'strong' => array() )
 				);
 				?>

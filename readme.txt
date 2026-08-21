@@ -1,15 +1,14 @@
 === Request For Quote ===
 Contributors: wpheka, akshayaswaroop
-Tags: request a quote button, woocommerce request for quote, woocommerce request a quote shortcode, request a quote, quote, WPHEKA, quotations, request for quote, rfq, raq, proposal, ask an estimate, budget, email quote
+Tags: request a quote, request for quote, quote, woocommerce, rfq
 Requires at least: 4.8
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 8.1
 Stable tag: 1.7.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
-Donate link: paypal.me/AKSHAYASWAROOP
-
-Request For Quote plugin allows your customers to submit quotes for any product and negotiate with you for the best price. This extension can be a great tool to generate customer leads for future engagement.
+Donate link: https://www.paypal.me/AKSHAYASWAROOP
+Let customers request a quote on any product and negotiate the best price, turning product enquiries into sales leads.
 
 == Description ==
 **Request For Quote** allows your customers to add products to a quote basket and negotiate with you for the best price. This Extension helps both sides to reach a price agreement, which decreases cart abandonment with price reason and increase purchases.
