@@ -4,7 +4,7 @@ Tags: request a quote, request for quote, quote, woocommerce, rfq
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.7.2
+Stable tag: 1.8.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Donate link: https://www.paypal.me/AKSHAYASWAROOP
@@ -50,6 +50,16 @@ If you enjoyed this plugin then please put a review, that will encourage me to b
 3. Configure email notifications
 
 == Changelog ==
+
+= 1.8.0 - 2026-08-22 =
+* Security - Escaped the quote table's output and tightened validation in the public add-to-quote handler.
+* Fix - On a network, activating for all sites now sets up every site, and a site created afterwards gets its own quote session table. Previously only one site was set up and later sites got nothing, with no error shown.
+* Fix - On a network, settings are read from the same per-site row they are saved to. They could previously read back empty.
+* Fix - The review request no longer links to a pre-filled five-star rating form, which wordpress.org does not allow.
+* Fix - Escaped the quote email template's heading.
+* Enhancement - Declared compatible with the Cart and Checkout blocks. This plugin adds nothing to the cart or checkout and keeps its own session, so block checkout is unaffected. It previously declared itself incompatible, which showed store owners a warning that was not warranted.
+* Enhancement - Adopted the WPHEKA framework for settings, the quote session table and site provisioning.
+* Enhancement - Requires PHP 8.1 and WordPress 6.5. WordPress 7.1 and WooCommerce 11.0.1 compatibility added.
 
 = 1.7.2 - 2026-05-27 =
 * Feature - Added a polite 5-star review request notice for store admins, shown after 7 days and at least one quote submission. Includes "Sure, you deserve it", "I already did", "Maybe later" (14-day snooze) and "Don't ask again" options.
