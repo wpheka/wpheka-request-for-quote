@@ -8,7 +8,7 @@
  * Author URI: https://www.wpheka.com
  * Text Domain: wpheka-request-for-quote
  * Domain Path: /languages/
- * Requires at least: 4.8
+ * Requires at least: 6.5
  * Tested up to: 7.1
  * Requires PHP: 8.1
  * Requires Plugins: woocommerce

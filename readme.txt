@@ -1,7 +1,7 @@
 === Request For Quote ===
 Contributors: wpheka, akshayaswaroop
 Tags: request a quote, request for quote, quote, woocommerce, rfq
-Requires at least: 4.8
+Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
 Stable tag: 1.7.2
