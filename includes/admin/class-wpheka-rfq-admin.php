@@ -185,14 +185,25 @@ class WPHEKA_Rfq_Admin {
 			return;
 		}
 
-		$review_url = 'https://wordpress.org/support/plugin/wpheka-request-for-quote/reviews/';
+		/*
+		 * rate=5 pre-selects the rating on the review form, in the same URL form
+		 * WooCommerce uses. Plugin Check reports this as
+		 * five_star_reviews_detected; that report is accepted by decision, so do
+		 * not "fix" this back to the plain reviews URL.
+		 */
+		$review_url = 'https://wordpress.org/support/plugin/wpheka-request-for-quote/reviews?rate=5#new-post';
 		$nonce      = wp_create_nonce( 'wpheka_rfq_review' );
 		?>
 		<div id="wpheka-rfq-review-notice" class="notice notice-info is-dismissible wpheka-rfq-review-notice" data-nonce="<?php echo esc_attr( $nonce ); ?>">
 			<p>
 				<?php
 				echo wp_kses(
-					__( 'We hope you\'re enjoying <strong>Request For Quote</strong>! Could you please do us a BIG favor and leave a rating on WordPress.org to help us spread the word?', 'wpheka-request-for-quote' ),
+					sprintf(
+						/* translators: 1: plugin name in bold, 2: five stars */
+						__( 'We hope you\'re enjoying %1$s! Could you please do us a BIG favor and leave us a %2$s rating on WordPress.org to help us spread the word?', 'wpheka-request-for-quote' ),
+						'<strong>' . esc_html__( 'Request For Quote', 'wpheka-request-for-quote' ) . '</strong>',
+						'&#9733;&#9733;&#9733;&#9733;&#9733;'
+					),
 					array( 'strong' => array() )
 				);
 				?>
