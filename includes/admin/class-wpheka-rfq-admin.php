@@ -53,8 +53,10 @@ class WPHEKA_Rfq_Admin {
 			wp_enqueue_script( 'wpheka_admin_settings_js', $wp_heka_rfq->plugin_url . 'assets/admin/js/admin-settings.js', array( 'jquery' ), $wp_heka_rfq->version, true );
 			
 			wp_localize_script( 'wpheka_admin_settings_js', 'wpheka_admin_params', array(
-				'ajax_url' => admin_url( 'admin-ajax.php' ),
-				'nonce'    => wp_create_nonce( 'save-plugin-data' )
+				'ajax_url'             => admin_url( 'admin-ajax.php' ),
+				'nonce'                => wp_create_nonce( 'save-plugin-data' ),
+				'i18n_save_changes'    => __( 'Save Changes', 'wpheka-request-for-quote' ),
+				'i18n_save_failed'     => __( 'The settings could not be saved. Please try again.', 'wpheka-request-for-quote' ),
 			));
 		}
 	}

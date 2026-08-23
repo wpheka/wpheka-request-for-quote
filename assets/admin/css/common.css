@@ -723,3 +723,55 @@
 	border-top-right-radius: 22px;
 	border-bottom-right-radius: 22px;
 }
+
+/**
+ *  SETTINGS FIELD GROUPS
+ *  Checkbox groups on the settings screen, and the dependent sub-options that
+ *  belong to one of them. Replaces hand-rolled <br/> spacing and an inline
+ *  margin-left, which gave a sub-option no visible relationship to its parent.
+ *
+ *  Alignment and vertical rhythm are deliberately left to WordPress core.
+ *  Inside a .form-table fieldset core already sets
+ *  `.form-table td fieldset label { margin: .35em 0 .5em !important;
+ *  display: inline-block }`, and every admin checkbox carries
+ *  `margin: -.25rem .25rem 0 0` with `vertical-align: middle`. Overriding that
+ *  checkbox margin is what pushed these labels 3.5px out of line with every
+ *  other row on the same form -- measured against a native row, which sits at
+ *  0.00. So nothing below touches the checkbox, the label's display, or the
+ *  label's margins.
+ */
+
+.wpheka-field-group {
+	/* Column flex only so each label takes its own line; core's label margins
+	   supply the spacing, hence gap: 0. */
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+.wpheka-field-group + .wpheka-field-group {
+	margin-top: 10px;
+	padding-top: 10px;
+	border-top: 1px solid #f0f0f1;
+}
+
+/* A sub-option: indented and rules-connected to the checkbox it depends on.
+   Padding, not margin -- core's label margin carries !important. */
+.wpheka-check--child {
+	padding-left: 16px;
+	border-left: 2px solid #dcdcde;
+}
+
+/* Greyed while its parent is off, so an inert control does not look active. */
+.wpheka-check.is-disabled {
+	opacity: 0.55;
+}
+
+.wpheka-field-hint {
+	margin: 10px 0 0;
+	color: #646970;
+	font-size: 12px;
+}

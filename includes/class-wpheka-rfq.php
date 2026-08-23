@@ -120,6 +120,8 @@ final class WPHEKA_Rfq
         add_action('init', array( $this, 'init' ), 5);
         add_action('init', array( 'WPHEKA_Rfq_Shortcodes', 'init' ));
         add_filter('woocommerce_email_classes', array( $this, 'include_rfq_emails' ));
+
+        WPHEKA_Rfq_Cache::init();
     }
 
     /**
@@ -220,6 +222,13 @@ final class WPHEKA_Rfq
          */
         include_once WPHEKA_RFQ_PLUGIN_ABSPATH . 'includes/class-wpheka-rfq-install.php';
         include_once WPHEKA_RFQ_PLUGIN_ABSPATH . 'includes/class-wpheka-rfq-shortcodes.php';
+
+        /*
+         * Not behind an is_request() branch: the frontend needs it to keep the
+         * quote page out of page caches, and the AJAX handler needs it to purge
+         * those caches when settings are saved.
+         */
+        include_once WPHEKA_RFQ_PLUGIN_ABSPATH . 'includes/class-wpheka-rfq-cache.php';
 
         // Include admin class.
         if ($this->is_request('admin')) {

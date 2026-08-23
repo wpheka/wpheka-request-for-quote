@@ -2,21 +2,22 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Request For Quote 1.7.2\n"
+"Project-Id-Version: Request For Quote 1.8.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wpheka-request-for-quote\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-05-27T18:12:59+00:00\n"
+"POT-Creation-Date: 2026-08-23T19:14:36+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wpheka-request-for-quote\n"
 
 #. Plugin Name of the plugin
 #: wpheka-request-for-quote.php
-#: includes/admin/class-wpheka-rfq-admin.php:79
+#: includes/admin/class-wpheka-rfq-admin.php:81
+#: includes/admin/class-wpheka-rfq-admin.php:213
 #: includes/emails/class-wpheka-rfq-mail.php:39
 msgid "Request For Quote"
 msgstr ""
@@ -41,73 +42,92 @@ msgstr ""
 msgid "https://www.wpheka.com"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin.php:79
+#: includes/admin/class-wpheka-rfq-admin.php:58
+#: templates/admin/settings/settings-form-submit.php:15
+msgid "Save Changes"
+msgstr ""
+
+#: includes/admin/class-wpheka-rfq-admin.php:59
+msgid "The settings could not be saved. Please try again."
+msgstr ""
+
+#: includes/admin/class-wpheka-rfq-admin.php:81
 msgid "WPHEKA Request For Quote"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin.php:108
-#: includes/admin/class-wpheka-rfq-admin.php:259
+#: includes/admin/class-wpheka-rfq-admin.php:110
+#: includes/admin/class-wpheka-rfq-admin.php:299
 msgid "Settings"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin.php:112
+#: includes/admin/class-wpheka-rfq-admin.php:114
 msgid "This WooCommerce extension give your customers the possibility to request custom quotes."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin.php:175
-msgid "We hope you're enjoying <strong>Request For Quote</strong>! Could you please do us a BIG favor and give it a 5-star rating on WordPress.org to help us spread the word?"
+#. translators: 1: plugin name in bold, 2: five stars
+#: includes/admin/class-wpheka-rfq-admin.php:212
+#, php-format
+msgid "We hope you're enjoying %1$s! Could you please do us a BIG favor and leave us a %2$s rating on WordPress.org to help us spread the word?"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin.php:182
+#: includes/admin/class-wpheka-rfq-admin.php:222
 msgid "Sure, you deserve it"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin.php:185
+#: includes/admin/class-wpheka-rfq-admin.php:225
 msgid "I already did"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin.php:188
+#: includes/admin/class-wpheka-rfq-admin.php:228
 msgid "Maybe later"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin.php:191
+#: includes/admin/class-wpheka-rfq-admin.php:231
 msgid "I don't want to leave a review"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin.php:259
+#: includes/admin/class-wpheka-rfq-admin.php:299
 msgid "View plugin settings"
 msgstr ""
 
-#: includes/class-wpheka-rfq-ajax.php:60
+#: includes/class-wpheka-rfq-ajax.php:72
+msgid "You do not have permission to change these settings."
+msgstr ""
+
+#: includes/class-wpheka-rfq-ajax.php:77
 msgid "Request for quote page is not set."
 msgstr ""
 
-#: includes/class-wpheka-rfq-ajax.php:101
-#: includes/class-wpheka-rfq-ajax.php:361
+#: includes/class-wpheka-rfq-ajax.php:113
+msgid "Settings saved."
+msgstr ""
+
+#: includes/class-wpheka-rfq-ajax.php:129
+#: includes/class-wpheka-rfq-ajax.php:403
 #: templates/single-product/add-to-quote.php:18
 msgid "Product already in the quote list."
 msgstr ""
 
-#: includes/class-wpheka-rfq-ajax.php:102
-#: includes/class-wpheka-rfq-ajax.php:362
+#: includes/class-wpheka-rfq-ajax.php:130
+#: includes/class-wpheka-rfq-ajax.php:404
 msgid "Browse the list."
 msgstr ""
 
-#: includes/class-wpheka-rfq-ajax.php:103
-#: includes/class-wpheka-rfq-ajax.php:363
+#: includes/class-wpheka-rfq-ajax.php:131
+#: includes/class-wpheka-rfq-ajax.php:405
 msgid "Product added to quote list."
 msgstr ""
 
-#: includes/class-wpheka-rfq-ajax.php:186
-#: includes/class-wpheka-rfq-ajax.php:410
+#: includes/class-wpheka-rfq-ajax.php:214
+#: includes/class-wpheka-rfq-ajax.php:452
 msgid "Error occurred while adding product to the quote list."
 msgstr ""
 
-#: includes/class-wpheka-rfq-ajax.php:277
+#: includes/class-wpheka-rfq-ajax.php:319
 msgid "Your request has been sent successfully."
 msgstr ""
 
-#: includes/class-wpheka-rfq-ajax.php:281
+#: includes/class-wpheka-rfq-ajax.php:323
 msgid "Something went wrong. Please try again later."
 msgstr ""
 
@@ -123,12 +143,12 @@ msgstr ""
 msgid "Sorry, this product is unavailable. Please choose a different combination."
 msgstr ""
 
-#: includes/class-wpheka-rfq-install.php:113
+#: includes/class-wpheka-rfq-install.php:124
 msgctxt "Page slug"
 msgid "request-quote"
 msgstr ""
 
-#: includes/class-wpheka-rfq-install.php:114
+#: includes/class-wpheka-rfq-install.php:125
 msgctxt "Page title"
 msgid "Request A Quote"
 msgstr ""
@@ -200,10 +220,6 @@ msgstr ""
 
 #: templates/admin/settings/settings-form-submit.php:15
 msgid "Changes Updated"
-msgstr ""
-
-#: templates/admin/settings/settings-form-submit.php:15
-msgid "Save Changes"
 msgstr ""
 
 #: templates/admin/settings/settings-form.php:17
@@ -318,20 +334,32 @@ msgstr ""
 msgid "Automatically redirect to quote list page"
 msgstr ""
 
-#: templates/admin/settings/settings-form.php:152
+#: templates/admin/settings/settings-form.php:163
 msgid "Additional Form Fields"
 msgstr ""
 
-#: templates/admin/settings/settings-form.php:156
+#: templates/admin/settings/settings-form.php:166
+msgid "Phone number field"
+msgstr ""
+
+#: templates/admin/settings/settings-form.php:169
 msgid "Show phone number field"
 msgstr ""
 
-#: templates/admin/settings/settings-form.php:160
+#: templates/admin/settings/settings-form.php:173
 msgid "Make phone number required"
 msgstr ""
 
-#: templates/admin/settings/settings-form.php:164
+#: templates/admin/settings/settings-form.php:178
+msgid "Company name field"
+msgstr ""
+
+#: templates/admin/settings/settings-form.php:181
 msgid "Show company name field"
+msgstr ""
+
+#: templates/admin/settings/settings-form.php:185
+msgid "Shown on the quote request form, after name and email."
 msgstr ""
 
 #: templates/admin/settings/sidebar-support.php:16
@@ -349,55 +377,56 @@ msgstr ""
 msgid "Site"
 msgstr ""
 
-#: templates/emails/request-for-quote-mail-template.php:19
+#. translators: %s: customer name.
+#: templates/emails/request-for-quote-mail-template.php:22
 #, php-format
 msgid "You have received a quote request from %s. The request is as follows:"
 msgstr ""
 
-#: templates/emails/request-for-quote-mail-template.php:21
+#: templates/emails/request-for-quote-mail-template.php:27
 msgid "Request Quote"
 msgstr ""
 
-#: templates/emails/request-for-quote-mail-template.php:27
-#: templates/request-for-quote.php:26
-#: templates/request-for-quote.php:96
+#: templates/emails/request-for-quote-mail-template.php:33
+#: templates/request-for-quote.php:69
+#: templates/request-for-quote.php:139
 msgid "Product"
 msgstr ""
 
-#: templates/emails/request-for-quote-mail-template.php:28
-#: templates/request-for-quote.php:30
-#: templates/request-for-quote.php:119
+#: templates/emails/request-for-quote-mail-template.php:34
+#: templates/request-for-quote.php:73
+#: templates/request-for-quote.php:162
 msgid "Quantity"
 msgstr ""
 
-#: templates/emails/request-for-quote-mail-template.php:29
-#: templates/request-for-quote.php:28
-#: templates/request-for-quote.php:113
+#: templates/emails/request-for-quote-mail-template.php:35
+#: templates/request-for-quote.php:71
+#: templates/request-for-quote.php:156
 msgid "Price"
 msgstr ""
 
-#: templates/emails/request-for-quote-mail-template.php:83
+#: templates/emails/request-for-quote-mail-template.php:89
 msgid "Customer Details"
 msgstr ""
 
-#: templates/emails/request-for-quote-mail-template.php:88
+#: templates/emails/request-for-quote-mail-template.php:94
 #: templates/request-for-quote-form.php:29
 msgid "Name"
 msgstr ""
 
-#: templates/emails/request-for-quote-mail-template.php:89
+#: templates/emails/request-for-quote-mail-template.php:95
 msgid "Email"
 msgstr ""
 
-#: templates/emails/request-for-quote-mail-template.php:90
+#: templates/emails/request-for-quote-mail-template.php:96
 msgid "Phone"
 msgstr ""
 
-#: templates/emails/request-for-quote-mail-template.php:91
+#: templates/emails/request-for-quote-mail-template.php:97
 msgid "Company"
 msgstr ""
 
-#: templates/emails/request-for-quote-mail-template.php:92
+#: templates/emails/request-for-quote-mail-template.php:98
 #: templates/request-for-quote-form.php:54
 msgid "Message"
 msgstr ""
@@ -422,20 +451,20 @@ msgstr ""
 msgid "Send Your Request"
 msgstr ""
 
-#: templates/request-for-quote.php:32
-#: templates/request-for-quote.php:141
+#: templates/request-for-quote.php:75
+#: templates/request-for-quote.php:184
 msgid "Subtotal"
 msgstr ""
 
-#: templates/request-for-quote.php:73
+#: templates/request-for-quote.php:116
 msgid "Remove this item"
 msgstr ""
 
-#: templates/request-for-quote.php:108
+#: templates/request-for-quote.php:151
 msgid "Available on backorder"
 msgstr ""
 
-#: templates/request-for-quote.php:158
+#: templates/request-for-quote.php:201
 msgid "Update list"
 msgstr ""
 

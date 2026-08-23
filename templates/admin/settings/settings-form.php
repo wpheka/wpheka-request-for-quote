@@ -148,21 +148,41 @@ if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly.
 								</label>
 							</td>
 						</tr>
+						<?php
+						/*
+						 * "Required" is meaningless with the phone field switched off, so it
+						 * is rendered from the parent's state rather than on its own. It used
+						 * to render its stored value regardless, which showed a checked
+						 * "Make phone number required" sitting under an unchecked "Show phone
+						 * number field" -- a requirement on a field that was never output.
+						 */
+						$wpheka_rfq_show_phone     = 'yes' === wpheka_request_for_quote()->get_settings( 'show_phone_field' );
+						$wpheka_rfq_phone_required = $wpheka_rfq_show_phone && 'yes' === wpheka_request_for_quote()->get_settings( 'phone_required' );
+						?>
 						<tr class="form-field">
 							<th scope="row"><?php esc_html_e( 'Additional Form Fields', 'wpheka-request-for-quote' ); ?></th>
 							<td>
-								<label>
-									<input type="checkbox" name="show_phone_field" value="yes" <?php checked( 'yes', wpheka_request_for_quote()->get_settings( 'show_phone_field' ) ); ?> />
-									<?php esc_html_e( 'Show phone number field', 'wpheka-request-for-quote' ); ?>
-								</label><br/>
-								<label style="margin-left: 25px;">
-									<input type="checkbox" name="phone_required" value="yes" <?php checked( 'yes', wpheka_request_for_quote()->get_settings( 'phone_required' ) ); ?> />
-									<?php esc_html_e( 'Make phone number required', 'wpheka-request-for-quote' ); ?>
-								</label><br/><br/>
-								<label>
-									<input type="checkbox" name="show_company_field" value="yes" <?php checked( 'yes', wpheka_request_for_quote()->get_settings( 'show_company_field' ) ); ?> />
-									<?php esc_html_e( 'Show company name field', 'wpheka-request-for-quote' ); ?>
-								</label>
+								<fieldset class="wpheka-field-group">
+									<legend class="screen-reader-text"><?php esc_html_e( 'Phone number field', 'wpheka-request-for-quote' ); ?></legend>
+									<label class="wpheka-check" for="show_phone_field">
+										<input type="checkbox" id="show_phone_field" name="show_phone_field" value="yes" <?php checked( true, $wpheka_rfq_show_phone ); ?> />
+										<span><?php esc_html_e( 'Show phone number field', 'wpheka-request-for-quote' ); ?></span>
+									</label>
+									<label class="wpheka-check wpheka-check--child<?php echo $wpheka_rfq_show_phone ? '' : ' is-disabled'; ?>" for="phone_required">
+										<input type="checkbox" id="phone_required" name="phone_required" value="yes" <?php checked( true, $wpheka_rfq_phone_required ); ?> <?php disabled( false, $wpheka_rfq_show_phone ); ?> />
+										<span><?php esc_html_e( 'Make phone number required', 'wpheka-request-for-quote' ); ?></span>
+									</label>
+								</fieldset>
+
+								<fieldset class="wpheka-field-group">
+									<legend class="screen-reader-text"><?php esc_html_e( 'Company name field', 'wpheka-request-for-quote' ); ?></legend>
+									<label class="wpheka-check" for="show_company_field">
+										<input type="checkbox" id="show_company_field" name="show_company_field" value="yes" <?php checked( 'yes', wpheka_request_for_quote()->get_settings( 'show_company_field' ) ); ?> />
+										<span><?php esc_html_e( 'Show company name field', 'wpheka-request-for-quote' ); ?></span>
+									</label>
+								</fieldset>
+
+								<p class="wpheka-field-hint"><?php esc_html_e( 'Shown on the quote request form, after name and email.', 'wpheka-request-for-quote' ); ?></p>
 							</td>
 						</tr>
 					</table>        

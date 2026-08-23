@@ -56,6 +56,23 @@ if ( ! class_exists( 'WPHEKA_Rfq_Ajax', false ) ) :
 
 			check_ajax_referer( 'save-plugin-data', 'wpheka_nonce' );
 
+			/*
+			 * The nonce proves the request was not forged; it does not prove the
+			 * sender is allowed to do this. Only wp_ajax_ is registered, so a
+			 * caller is at least logged in -- but on a store that includes every
+			 * customer, and this handler rewrites every plugin setting including
+			 * which page is the quote page.
+			 *
+			 * It matters more from 1.8.1 on, because a save now purges every page
+			 * cache on the site. Without this check the cost of an unauthorised
+			 * call is not just changed settings, it is the store's cache dumped
+			 * as often as the caller likes.
+			 */
+			if ( ! current_user_can( 'manage_options' ) ) {
+				wp_send_json_error( array( 'message' => __( 'You do not have permission to change these settings.', 'wpheka-request-for-quote' ) ) );
+				wp_die();
+			}
+
 			if ( empty( $_POST['wpheka_request_for_quote_page_id'] ) ) { // PHPCS: input var ok.
 				wp_send_json_error( array( 'message' => __( 'Request for quote page is not set.', 'wpheka-request-for-quote' ) ) );
 				wp_die();
@@ -82,7 +99,18 @@ if ( ! class_exists( 'WPHEKA_Rfq_Ajax', false ) ) :
 			update_option( 'wpheka_rfq_general_settings', $wpheka_rfq_general_settings );
 			update_option( 'wpheka_request_for_quote_page_id', $page_id );
 
-			wp_send_json_success();
+			/*
+			 * Every setting above changes product, shop or quote page markup, and
+			 * those pages are exactly what a full-page cache is holding. Without
+			 * this the option really was written and the shop owner still saw the
+			 * old button, old label and old price -- with nothing anywhere saying
+			 * why. Reported from a live site running a caching plugin.
+			 */
+			if ( class_exists( 'WPHEKA_Rfq_Cache' ) ) {
+				WPHEKA_Rfq_Cache::purge_all();
+			}
+
+			wp_send_json_success( array( 'message' => __( 'Settings saved.', 'wpheka-request-for-quote' ) ) );
 			wp_die();
 		}
 

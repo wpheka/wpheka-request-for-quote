@@ -4,7 +4,7 @@ Tags: request a quote, request for quote, quote, woocommerce, rfq
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.8.0
+Stable tag: 1.8.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Donate link: https://www.paypal.me/AKSHAYASWAROOP
@@ -50,6 +50,13 @@ If you enjoyed this plugin then please put a review, that will encourage me to b
 3. Configure email notifications
 
 == Changelog ==
+
+= 1.8.1 - 2026-08-24 =
+* Security - Saving the settings now requires the capability to manage options, not just a valid form token. The check matters more in this release, because saving also clears the page cache.
+* Fix - Saving settings now clears the page cache. With a caching plugin active the settings really were saved, but product and shop pages kept serving the old button, label and prices, so the change looked like it had not applied.
+* Fix - The quote page is no longer stored by page caches. It renders one visitor's quote basket, so a cached copy could be served to the next visitor.
+* Fix - A rejected settings save now says why. The Save Changes button used to finish with "Changes Updated" even when nothing had been saved, and the reason was never shown.
+* Enhancement - Tidied the Additional Form Fields setting. "Make phone number required" is now visibly a sub-option of "Show phone number field" and is disabled while that field is off, instead of sitting there clickable and able to require a field the form never showed.
 
 = 1.8.0 - 2026-08-22 =
 * Security - Escaped the quote table's output and tightened validation in the public add-to-quote handler.
