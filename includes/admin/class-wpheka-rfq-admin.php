@@ -131,7 +131,33 @@ class WPHEKA_Rfq_Admin {
 			return false;
 		}
 
+		/*
+		 * Dashboard only. The ask used to appear on every admin screen, which is
+		 * where a review request competes with warnings that actually need
+		 * attention.
+		 */
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+
+		if ( ! $screen || 'dashboard' !== $screen->id ) {
+			return false;
+		}
+
+		/*
+		 * Dismissal is per user. A site-wide flag let whichever administrator
+		 * clicked first answer for everyone, and meant nobody else was ever
+		 * asked.
+		 *
+		 * The old site-wide option is still honoured, so an install where
+		 * someone already declined under 1.7.2 is not asked a second time. That
+		 * matters more than the tidier storage: re-asking someone who has
+		 * already said no is exactly how a plugin earns a reputation for
+		 * nagging.
+		 */
 		if ( get_option( 'wpheka_rfq_review_dismissed' ) ) {
+			return false;
+		}
+
+		if ( get_user_meta( get_current_user_id(), 'wpheka_rfq_review_dismissed', true ) ) {
 			return false;
 		}
 
@@ -139,18 +165,12 @@ class WPHEKA_Rfq_Admin {
 			return false;
 		}
 
-		$activation_time = get_option( 'wpheka_rfq_activation_time' );
-		if ( ! $activation_time ) {
-			// Backfill for installs that upgraded from a pre-1.7.2 version.
-			$activation_time = time();
-			update_option( 'wpheka_rfq_activation_time', $activation_time );
-		}
-
-		if ( ( time() - (int) $activation_time ) < ( 7 * DAY_IN_SECONDS ) ) {
-			return false;
-		}
-
-		if ( (int) get_option( 'wpheka_rfq_quote_count', 0 ) < 1 ) {
+		/*
+		 * Three quotes, and no timer. Time elapsed says nothing about whether
+		 * the plugin was useful; a single quote could be the shop owner testing
+		 * their own form. Three submissions is the plugin having done its job.
+		 */
+		if ( (int) get_option( 'wpheka_rfq_quote_count', 0 ) < 3 ) {
 			return false;
 		}
 
@@ -229,7 +249,7 @@ class WPHEKA_Rfq_Admin {
 			wp_send_json_error();
 		}
 
-		update_option( 'wpheka_rfq_review_dismissed', 1 );
+		update_user_meta( get_current_user_id(), 'wpheka_rfq_review_dismissed', 1 );
 		wp_send_json_success();
 	}
 
