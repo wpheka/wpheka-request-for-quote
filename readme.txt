@@ -55,8 +55,9 @@ If you enjoyed this plugin then please put a review, that will encourage me to b
 * Security - Escaped the quote table's output and tightened validation in the public add-to-quote handler.
 * Fix - On a network, activating for all sites now sets up every site, and a site created afterwards gets its own quote session table. Previously only one site was set up and later sites got nothing, with no error shown.
 * Fix - On a network, settings are read from the same per-site row they are saved to. They could previously read back empty.
-* Fix - The review request no longer links to a pre-filled five-star rating form, which wordpress.org does not allow.
+* Change - The review request now appears on the Dashboard rather than on every admin screen, waits until three quotes have been submitted instead of counting days, and is dismissed per user rather than for the whole site. Anyone who already dismissed it will not be asked again.
 * Fix - Escaped the quote email template's heading.
+* Fix - Product images in the quote table keep their responsive attributes, so browsers can pick an appropriate size again.
 * Enhancement - Declared compatible with the Cart and Checkout blocks. This plugin adds nothing to the cart or checkout and keeps its own session, so block checkout is unaffected. It previously declared itself incompatible, which showed store owners a warning that was not warranted.
 * Enhancement - Adopted the WPHEKA framework for settings, the quote session table and site provisioning.
 * Enhancement - Requires PHP 8.1 and WordPress 6.5. WordPress 7.1 and WooCommerce 11.0.1 compatibility added.

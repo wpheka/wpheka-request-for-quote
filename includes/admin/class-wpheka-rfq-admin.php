@@ -186,10 +186,17 @@ class WPHEKA_Rfq_Admin {
 		}
 
 		/*
-		 * rate=5 pre-selects the rating on the review form, in the same URL form
-		 * WooCommerce uses. Plugin Check reports this as
-		 * five_star_reviews_detected; that report is accepted by decision, so do
-		 * not "fix" this back to the plain reviews URL.
+		 * rate=5 pre-selects the rating on the review form, in the URL form
+		 * WooCommerce uses. Deliberate, and *not* a Plugin Check finding: its
+		 * five_star_reviews_detected check matches `reviews/?filter=5` only, so
+		 * neither the parameter nor the missing trailing slash here match it.
+		 *
+		 * The `reviews/?filter=5#new-post` this plugin used before did match,
+		 * which is why it was reported -- and filter=5 only filters the existing
+		 * review list, so it was flagged without ever pre-filling a rating.
+		 *
+		 * Plugin Check staying quiet is not the same as wordpress.org's review
+		 * team agreeing; that risk is accepted separately.
 		 */
 		$review_url = 'https://wordpress.org/support/plugin/wpheka-request-for-quote/reviews?rate=5#new-post';
 		$nonce      = wp_create_nonce( 'wpheka_rfq_review' );
