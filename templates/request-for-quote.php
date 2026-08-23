@@ -37,6 +37,23 @@ $wpheka_rfq_allowed = array_merge(
 	)
 );
 
+/*
+ * Responsive image attributes, merged into the img entry rather than replacing
+ * it. wp_kses_allowed_html( 'post' ) has no srcset or sizes, so filtering a
+ * WooCommerce product image kept the src and dropped the browser's size
+ * choices -- the picture still appeared, at whatever size the src happened to
+ * be. Measured on a real product image: width, height, src, class, alt and
+ * loading survived; decoding, srcset and sizes did not.
+ */
+$wpheka_rfq_allowed['img'] = array_merge(
+	isset( $wpheka_rfq_allowed['img'] ) ? (array) $wpheka_rfq_allowed['img'] : array(),
+	array(
+		'srcset'   => true,
+		'sizes'    => true,
+		'decoding' => true,
+	)
+);
+
 function_exists( 'wc_nocache_headers' ) && wc_nocache_headers();
 
 do_action( 'wpheka_before_rfq_list' ); ?>
@@ -87,7 +104,7 @@ do_action( 'wpheka_before_rfq_list' ); ?>
 				if ( $_product && $_product->exists() && $rfq_item['quantity'] > 0 && apply_filters( 'wpheka_rfq_item_visible', true, $rfq_item, $rfq_item_key ) ) {
 					$product_permalink = apply_filters( 'wpheka_rfq_item_permalink', $_product->is_visible() ? $_product->get_permalink( $rfq_item ) : '', $rfq_item, $rfq_item_key );
 					?>
-					<tr class="woocommerce-cart-form__cart-item <?php echo esc_attr( apply_filters( 'wpheka_rfq_item_class', 'rfq_item', $rfq_item, $rfq_item_key ), $wpheka_rfq_allowed ); ?>">
+					<tr class="woocommerce-cart-form__cart-item <?php echo esc_attr( apply_filters( 'wpheka_rfq_item_class', 'rfq_item', $rfq_item, $rfq_item_key ) ); ?>">
 
 						<td class="product-remove">
 							<?php
