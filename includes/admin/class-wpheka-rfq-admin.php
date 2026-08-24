@@ -296,8 +296,30 @@ class WPHEKA_Rfq_Admin {
 	 */
 	public static function plugin_action_links( $links ) {
 		$action_links = array(
-			'settings' => '<a href="' . admin_url( 'admin.php?page=wpheka_request_for_quote' ) . '" aria-label="' . esc_attr__( 'View plugin settings', 'wpheka-request-for-quote' ) . '">' . esc_html__( 'Settings', 'wpheka-request-for-quote' ) . '</a>',
+			'settings' => '<a href="' . esc_url( admin_url( 'admin.php?page=wpheka_request_for_quote' ) ) . '" aria-label="' . esc_attr__( 'View plugin settings', 'wpheka-request-for-quote' ) . '">' . esc_html__( 'Settings', 'wpheka-request-for-quote' ) . '</a>',
 		);
+
+		/*
+		 * The email template lives on WooCommerce's own emails screen, which is
+		 * three clicks deep and easy to miss -- WooCommerce > Settings > Emails >
+		 * Request For Quote. Linked straight to the section so the recipient,
+		 * subject, heading and preview are one click away.
+		 *
+		 * Only when WooCommerce is actually there: without it wc-settings does
+		 * not exist and the link would 404.
+		 */
+		if ( class_exists( 'WooCommerce' ) ) {
+			$email_url = add_query_arg(
+				array(
+					'page'    => 'wc-settings',
+					'tab'     => 'email',
+					'section' => 'wpheka_rfq_mail',
+				),
+				admin_url( 'admin.php' )
+			);
+
+			$action_links['emails'] = '<a href="' . esc_url( $email_url ) . '" aria-label="' . esc_attr__( 'Edit the quote request email template', 'wpheka-request-for-quote' ) . '">' . esc_html__( 'Email template', 'wpheka-request-for-quote' ) . '</a>';
+		}
 
 		return array_merge( $action_links, $links );
 	}

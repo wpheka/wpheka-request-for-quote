@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Request For Quote 1.8.1\n"
+"Project-Id-Version: Request For Quote 1.8.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wpheka-request-for-quote\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-23T19:14:36+00:00\n"
+"POT-Creation-Date: 2026-08-24T07:57:49+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wpheka-request-for-quote\n"
@@ -18,7 +18,7 @@ msgstr ""
 #: wpheka-request-for-quote.php
 #: includes/admin/class-wpheka-rfq-admin.php:81
 #: includes/admin/class-wpheka-rfq-admin.php:213
-#: includes/emails/class-wpheka-rfq-mail.php:39
+#: includes/emails/class-wpheka-rfq-mail.php:50
 msgid "Request For Quote"
 msgstr ""
 
@@ -88,6 +88,14 @@ msgstr ""
 
 #: includes/admin/class-wpheka-rfq-admin.php:299
 msgid "View plugin settings"
+msgstr ""
+
+#: includes/admin/class-wpheka-rfq-admin.php:321
+msgid "Edit the quote request email template"
+msgstr ""
+
+#: includes/admin/class-wpheka-rfq-admin.php:321
+msgid "Email template"
 msgstr ""
 
 #: includes/class-wpheka-rfq-ajax.php:72
@@ -161,56 +169,68 @@ msgstr ""
 msgid "Unserializing instances of this class is forbidden."
 msgstr ""
 
-#: includes/emails/class-wpheka-rfq-mail.php:40
+#: includes/emails/class-wpheka-rfq-mail.php:51
 msgid "New request for quote emails are sent to chosen recipient(s) when a new request is received."
 msgstr ""
 
-#: includes/emails/class-wpheka-rfq-mail.php:64
+#: includes/emails/class-wpheka-rfq-mail.php:81
 msgid "[New Quote Request]"
 msgstr ""
 
-#: includes/emails/class-wpheka-rfq-mail.php:74
+#: includes/emails/class-wpheka-rfq-mail.php:91
 msgid "New quote request"
 msgstr ""
 
-#: includes/emails/class-wpheka-rfq-mail.php:146
+#: includes/emails/class-wpheka-rfq-mail.php:134
+msgid "John Doe"
+msgstr ""
+
+#: includes/emails/class-wpheka-rfq-mail.php:137
+msgid "Example Ltd"
+msgstr ""
+
+#: includes/emails/class-wpheka-rfq-mail.php:138
+msgid "Could you quote for these quantities, and let me know your lead time?"
+msgstr ""
+
+#: includes/emails/class-wpheka-rfq-mail.php:248
 msgid "Enable/Disable"
 msgstr ""
 
-#: includes/emails/class-wpheka-rfq-mail.php:148
+#: includes/emails/class-wpheka-rfq-mail.php:250
 msgid "Enable this email notification"
 msgstr ""
 
-#: includes/emails/class-wpheka-rfq-mail.php:152
+#: includes/emails/class-wpheka-rfq-mail.php:254
 msgid "Recipient(s)"
 msgstr ""
 
 #. translators: %s: WP admin email
-#: includes/emails/class-wpheka-rfq-mail.php:155
+#: includes/emails/class-wpheka-rfq-mail.php:257
 #, php-format
 msgid "Enter recipients (comma separated) for this email. Defaults to %s."
 msgstr ""
 
-#: includes/emails/class-wpheka-rfq-mail.php:161
+#: includes/emails/class-wpheka-rfq-mail.php:263
 msgid "Subject"
 msgstr ""
 
 #. translators: %s: list of placeholders
-#: includes/emails/class-wpheka-rfq-mail.php:165
-#: includes/emails/class-wpheka-rfq-mail.php:174
+#: includes/emails/class-wpheka-rfq-mail.php:267
+#: includes/emails/class-wpheka-rfq-mail.php:276
 #, php-format
 msgid "Available placeholders: %s"
 msgstr ""
 
-#: includes/emails/class-wpheka-rfq-mail.php:170
+#: includes/emails/class-wpheka-rfq-mail.php:272
 msgid "Email heading"
 msgstr ""
 
-#: includes/emails/class-wpheka-rfq-mail.php:179
+#: includes/emails/class-wpheka-rfq-mail.php:281
 msgid "Email type"
 msgstr ""
 
-#: includes/emails/class-wpheka-rfq-mail.php:181
+#: includes/emails/class-wpheka-rfq-mail.php:283
 msgid "Choose which format of email to send."
 msgstr ""
 
@@ -378,57 +398,81 @@ msgid "Site"
 msgstr ""
 
 #. translators: %s: customer name.
-#: templates/emails/request-for-quote-mail-template.php:22
+#: templates/emails/plain/request-for-quote-mail-template.php:37
+#: templates/emails/request-for-quote-mail-template.php:57
 #, php-format
 msgid "You have received a quote request from %s. The request is as follows:"
 msgstr ""
 
-#: templates/emails/request-for-quote-mail-template.php:27
-msgid "Request Quote"
+#: templates/emails/plain/request-for-quote-mail-template.php:41
+#: templates/emails/request-for-quote-mail-template.php:61
+msgid "You have received a quote request. The request is as follows:"
 msgstr ""
 
-#: templates/emails/request-for-quote-mail-template.php:33
+#: templates/emails/plain/request-for-quote-mail-template.php:46
+#: templates/emails/request-for-quote-mail-template.php:74
+msgid "Quote summary"
+msgstr ""
+
+#: templates/emails/plain/request-for-quote-mail-template.php:52
+#: templates/emails/request-for-quote-mail-template.php:86
+msgid "This request contains no products."
+msgstr ""
+
+#. translators: 1: product name, 2: quantity
+#: templates/emails/plain/request-for-quote-mail-template.php:66
+#, php-format
+msgid "%1$s x %2$d"
+msgstr ""
+
+#: templates/emails/plain/request-for-quote-mail-template.php:88
+#: templates/emails/request-for-quote-mail-template.php:165
+#: templates/request-for-quote-form.php:29
+msgid "Name"
+msgstr ""
+
+#: templates/emails/plain/request-for-quote-mail-template.php:89
+#: templates/emails/request-for-quote-mail-template.php:166
+msgid "Email"
+msgstr ""
+
+#: templates/emails/plain/request-for-quote-mail-template.php:90
+#: templates/emails/request-for-quote-mail-template.php:167
+msgid "Phone"
+msgstr ""
+
+#: templates/emails/plain/request-for-quote-mail-template.php:91
+#: templates/emails/request-for-quote-mail-template.php:168
+msgid "Company"
+msgstr ""
+
+#: templates/emails/plain/request-for-quote-mail-template.php:92
+#: templates/emails/request-for-quote-mail-template.php:169
+#: templates/request-for-quote-form.php:54
+msgid "Message"
+msgstr ""
+
+#: templates/emails/plain/request-for-quote-mail-template.php:106
+#: templates/emails/request-for-quote-mail-template.php:182
+msgid "Customer details"
+msgstr ""
+
+#: templates/emails/request-for-quote-mail-template.php:94
 #: templates/request-for-quote.php:69
 #: templates/request-for-quote.php:139
 msgid "Product"
 msgstr ""
 
-#: templates/emails/request-for-quote-mail-template.php:34
+#: templates/emails/request-for-quote-mail-template.php:95
 #: templates/request-for-quote.php:73
 #: templates/request-for-quote.php:162
 msgid "Quantity"
 msgstr ""
 
-#: templates/emails/request-for-quote-mail-template.php:35
+#: templates/emails/request-for-quote-mail-template.php:97
 #: templates/request-for-quote.php:71
 #: templates/request-for-quote.php:156
 msgid "Price"
-msgstr ""
-
-#: templates/emails/request-for-quote-mail-template.php:89
-msgid "Customer Details"
-msgstr ""
-
-#: templates/emails/request-for-quote-mail-template.php:94
-#: templates/request-for-quote-form.php:29
-msgid "Name"
-msgstr ""
-
-#: templates/emails/request-for-quote-mail-template.php:95
-msgid "Email"
-msgstr ""
-
-#: templates/emails/request-for-quote-mail-template.php:96
-msgid "Phone"
-msgstr ""
-
-#: templates/emails/request-for-quote-mail-template.php:97
-msgid "Company"
-msgstr ""
-
-#: templates/emails/request-for-quote-mail-template.php:98
-#: templates/request-for-quote-form.php:54
-msgid "Message"
 msgstr ""
 
 #: templates/request-for-quote-empty.php:18

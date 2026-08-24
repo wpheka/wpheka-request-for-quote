@@ -32,6 +32,17 @@ if ( ! class_exists( 'WPHEKA_Rfq_Mail' ) ) :
 		private $customer_data;
 
 		/**
+		 * Quote items to render instead of the visitor's session, or null.
+		 *
+		 * Only set for WooCommerce's email preview. A real send reads the
+		 * session, which is where the actual quote lives.
+		 *
+		 * @since 1.8.2
+		 * @var array|null
+		 */
+		private $rfq_data_override = null;
+
+		/**
 		 * Constructor.
 		 */
 		public function __construct() {
@@ -39,8 +50,14 @@ if ( ! class_exists( 'WPHEKA_Rfq_Mail' ) ) :
 			$this->title          = __( 'Request For Quote', 'wpheka-request-for-quote' );
 			$this->description    = __( 'New request for quote emails are sent to chosen recipient(s) when a new request is received.', 'wpheka-request-for-quote' );
 			$this->template_base  = WPHEKA_RFQ_PLUGIN_TEMPLATE_PATH;
-			$this->template_html  = 'emails/request-for-quote-mail-template.php';
-			$this->template_plain = 'emails/request-for-quote-mail-template.php';
+			$this->template_html = 'emails/request-for-quote-mail-template.php';
+			/*
+			 * A real plain-text template, not the HTML one. Pointing both at the
+			 * same file meant "Email type: Plain text" mailed a full
+			 * <!DOCTYPE html> document as text/plain, and the recipient read the
+			 * markup.
+			 */
+			$this->template_plain = 'emails/plain/request-for-quote-mail-template.php';
 			$this->placeholders   = array(
 				'{site_title}'   => $this->get_blogname(),
 				'{order_date}'   => '',
@@ -84,6 +101,14 @@ if ( ! class_exists( 'WPHEKA_Rfq_Mail' ) ) :
 			$this->customer_data = $customer_data;
 			$this->setup_locale();
 
+			/*
+			 * Initialised, because the branch below does not always run. With the
+			 * email disabled or no recipient set, this returned an undefined
+			 * variable -- a PHP warning, and a null the AJAX handler then read as
+			 * "sending failed".
+			 */
+			$return = false;
+
 			if ( $this->is_enabled() && $this->get_recipient() ) {
 				$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
 			}
@@ -91,6 +116,83 @@ if ( ! class_exists( 'WPHEKA_Rfq_Mail' ) ) :
 			$this->restore_locale();
 
 			return $return;
+		}
+
+		/**
+		 * Fill this email with sample content for WooCommerce's email preview.
+		 *
+		 * Called from the `woocommerce_prepare_email_for_preview` filter, which
+		 * exists for exactly this. Without it the preview rendered an email with
+		 * no customer and no products -- technically correct, and useless for
+		 * judging what the email looks like.
+		 *
+		 * @since 1.8.2
+		 * @return void
+		 */
+		public function set_preview_data() {
+			$this->customer_data = array(
+				'name'    => __( 'John Doe', 'wpheka-request-for-quote' ),
+				'email'   => 'john.doe@example.com',
+				'phone'   => '+1 555 0100',
+				'company' => __( 'Example Ltd', 'wpheka-request-for-quote' ),
+				'message' => __( 'Could you quote for these quantities, and let me know your lead time?', 'wpheka-request-for-quote' ),
+			);
+
+			$this->rfq_data_override = $this->get_preview_rfq_data();
+		}
+
+		/**
+		 * Sample quote items for the preview.
+		 *
+		 * Real products from the store, because the template calls
+		 * wc_get_product() on each id -- a made-up id would render an empty
+		 * table and look like a bug in the template.
+		 *
+		 * @since 1.8.2
+		 * @return array
+		 */
+		private function get_preview_rfq_data() {
+			if ( ! function_exists( 'wc_get_products' ) ) {
+				return array();
+			}
+
+			$product_ids = wc_get_products(
+				array(
+					'limit'   => 2,
+					'status'  => 'publish',
+					'return'  => 'ids',
+					'orderby' => 'ID',
+					'order'   => 'ASC',
+				)
+			);
+
+			$rfq_data = array();
+			$quantity = 2;
+
+			foreach ( (array) $product_ids as $product_id ) {
+				$rfq_data[ $product_id ] = array(
+					'product_id' => $product_id,
+					'quantity'   => $quantity,
+				);
+
+				$quantity += 3;
+			}
+
+			return $rfq_data;
+		}
+
+		/**
+		 * The quote items this email should render.
+		 *
+		 * @since 1.8.2
+		 * @return array
+		 */
+		private function get_rfq_items() {
+			if ( null !== $this->rfq_data_override ) {
+				return $this->rfq_data_override;
+			}
+
+			return wpheka_request_for_quote()->get_rfq_data();
 		}
 
 		/**
@@ -103,7 +205,7 @@ if ( ! class_exists( 'WPHEKA_Rfq_Mail' ) ) :
 			return wc_get_template_html(
 				$this->template_html,
 				array(
-					'rfq_data'      => wpheka_request_for_quote()->get_rfq_data(),
+					'rfq_data'      => $this->get_rfq_items(),
 					'customer_data' => $this->customer_data,
 					'email_heading' => $this->get_heading(),
 					'sent_to_admin' => true,
@@ -125,7 +227,7 @@ if ( ! class_exists( 'WPHEKA_Rfq_Mail' ) ) :
 			return wc_get_template_html(
 				$this->template_plain,
 				array(
-					'rfq_data'      => wpheka_request_for_quote()->get_rfq_data(),
+					'rfq_data'      => $this->get_rfq_items(),
 					'customer_data' => $this->customer_data,
 					'email_heading' => $this->get_heading(),
 					'sent_to_admin' => true,

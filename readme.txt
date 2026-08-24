@@ -4,7 +4,7 @@ Tags: request a quote, request for quote, quote, woocommerce, rfq
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.8.1
+Stable tag: 1.8.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Donate link: https://www.paypal.me/AKSHAYASWAROOP
@@ -50,6 +50,16 @@ If you enjoyed this plugin then please put a review, that will encourage me to b
 3. Configure email notifications
 
 == Changelog ==
+
+= 1.8.2 - 2026-08-24 =
+* Fix - The quote email no longer breaks WooCommerce's email preview. Opening WooCommerce > Settings > Emails > Request For Quote showed "There has been a critical error on this website" in the preview pane, and "Send a test email" failed the same way, because the email was rendered from wp-admin where the quote session and the cart do not exist.
+* Fix - The quote email now matches WooCommerce's current email design. It hardcoded the pre-9.9 styling, so on a store using WooCommerce's "Email improvements" design the quote email did not look like any other email from the store.
+* Fix - Hiding prices no longer leaves a "Price" column heading above rows that have no price cell.
+* Enhancement - WooCommerce's email preview now shows a representative quote, with sample products and customer details, instead of an empty email.
+* Fix - Plain text emails read as plain text, including product names and prices. A name like "Bed & Breakfast Package" arrived as "Bed &amp; Breakfast Package" and prices kept their currency entity, because the text was HTML-escaped on its way into an email that has no HTML.
+* Fix - Plain text emails are now plain text. With "Email type: Plain text" selected the plugin mailed a full HTML document as text/plain, so the recipient read the markup. There is now a proper plain-text template beside the HTML one.
+* Fix - Sending no longer emits a PHP warning when the email is disabled or has no recipient, and correctly reports failure instead of returning an undefined value.
+* Enhancement - Added an "Email template" link to the plugin's row on the Plugins screen, going straight to WooCommerce > Settings > Emails > Request For Quote.
 
 = 1.8.1 - 2026-08-24 =
 * Security - Saving the settings now requires the capability to manage options, not just a valid form token. The check matters more in this release, because saving also clears the page cache.

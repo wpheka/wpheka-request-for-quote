@@ -120,6 +120,7 @@ final class WPHEKA_Rfq
         add_action('init', array( $this, 'init' ), 5);
         add_action('init', array( 'WPHEKA_Rfq_Shortcodes', 'init' ));
         add_filter('woocommerce_email_classes', array( $this, 'include_rfq_emails' ));
+        add_filter('woocommerce_prepare_email_for_preview', array( $this, 'prepare_email_for_preview' ));
 
         WPHEKA_Rfq_Cache::init();
     }
@@ -289,10 +290,38 @@ final class WPHEKA_Rfq
     }
 
     /**
+     * Whether a quote session is available to read or write.
+     *
+     * There is no session in wp-admin: includes() only loads the handler for
+     * front-end requests and initialize_session() only runs there, so
+     * $this->session stays null. Anything reachable from the admin therefore has
+     * to ask before dereferencing it.
+     *
+     * That was not theoretical. WooCommerce's email preview and its "Send a test
+     * email" button both render this plugin's email from wp-admin, and both died
+     * on "Call to a member function get() on null" -- the settings screen showed
+     * WordPress's "There has been a critical error on this website" inside the
+     * preview pane.
+     *
+     * @since 1.8.2
+     * @return bool
+     */
+    public function has_session()
+    {
+        return null !== $this->session && is_callable(array( $this->session, 'get' ));
+    }
+
+    /**
      * Get request for quote data
+     *
+     * @return array
      */
     public function get_rfq_data()
     {
+        if (! $this->has_session()) {
+            return array();
+        }
+
         return $this->session->get('rfq', array());
     }
 
@@ -301,6 +330,10 @@ final class WPHEKA_Rfq
      */
     public function clear_rfq_data()
     {
+        if (! $this->has_session()) {
+            return;
+        }
+
         $this->session->set('rfq', array());
     }
 
@@ -311,6 +344,10 @@ final class WPHEKA_Rfq
      */
     public function check_product_exists_in_quote_list($product_id)
     {
+        if (! $this->has_session()) {
+            return false;
+        }
+
         $rfq_data = $this->session->get('rfq', array());
 
         if (empty($rfq_data)) {
@@ -403,6 +440,27 @@ final class WPHEKA_Rfq
         $page_id = get_option('wpheka_request_for_quote_page_id');
 
         return ( $page_id && is_page($page_id) ) || defined('WPHEKA_RFQ_PAGE') || wc_post_content_has_shortcode('wpheka_request_for_quote');
+    }
+
+    /**
+     * Give WooCommerce's email preview something to show.
+     *
+     * WooCommerce injects a dummy order for its own emails, which does nothing
+     * for a quote email: there is no order behind one. This hook is WooCommerce's
+     * documented place for an extension to supply its own sample data, so the
+     * preview shows a representative quote rather than an empty shell.
+     *
+     * @since 1.8.2
+     * @param  WC_Email $email Email being prepared for preview.
+     * @return WC_Email
+     */
+    public function prepare_email_for_preview($email)
+    {
+        if ($email instanceof WPHEKA_Rfq_Mail && is_callable(array( $email, 'set_preview_data' ))) {
+            $email->set_preview_data();
+        }
+
+        return $email;
     }
 
     /**
