@@ -359,7 +359,7 @@ if (! class_exists('WPHEKA_Rfq_Frontend', false)) :
                     'related',
                 );
 
-                if (in_array($GLOBALS['woocommerce_loop']['name'], $exclude_loop)) {
+                if (in_array($GLOBALS['woocommerce_loop']['name'], $exclude_loop, true)) {
                     return false;
                 }
             }
