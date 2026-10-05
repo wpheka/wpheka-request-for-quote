@@ -4,7 +4,7 @@ Tags: request a quote, request for quote, quote, woocommerce, rfq
 Requires at least: 6.5
 Tested up to: 7.1.2
 Requires PHP: 8.1
-Stable tag: 1.8.2
+Stable tag: 1.8.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Donate link: https://www.paypal.me/AKSHAYASWAROOP
@@ -50,6 +50,12 @@ If you enjoyed this plugin then please put a review, that will encourage me to b
 3. Configure email notifications
 
 == Changelog ==
+
+= 1.8.3 - 2026-10-05 =
+* Fix - The Add to quote button shows on product pages again when "Hide Add to cart" is on. With Storefront and other themes that use WooCommerce's standard product layout, it had disappeared together with the Add to cart button.
+* Fix - The Add to quote button now shows on out-of-stock products, so "Show only on out-of-stock products" works on product pages.
+* Fix - "Maybe later" on the review request now snoozes it only for the administrator who chose it, not for everyone.
+* Enhancement - WordPress 7.1.2 and WooCommerce 11.1.2 compatibility.
 
 = 1.8.2 - 2026-08-24 =
 * Fix - The quote email no longer breaks WooCommerce's email preview. Opening WooCommerce > Settings > Emails > Request For Quote showed "There has been a critical error on this website" in the preview pane, and "Send a test email" failed the same way, because the email was rendered from wp-admin where the quote session and the cart do not exist.

@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Request For Quote 1.8.2\n"
+"Project-Id-Version: Request For Quote 1.8.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wpheka-request-for-quote\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-24T07:57:49+00:00\n"
+"POT-Creation-Date: 2026-10-05T17:40:07+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wpheka-request-for-quote\n"
@@ -17,7 +17,7 @@ msgstr ""
 #. Plugin Name of the plugin
 #: wpheka-request-for-quote.php
 #: includes/admin/class-wpheka-rfq-admin.php:81
-#: includes/admin/class-wpheka-rfq-admin.php:213
+#: includes/admin/class-wpheka-rfq-admin.php:215
 #: includes/emails/class-wpheka-rfq-mail.php:50
 msgid "Request For Quote"
 msgstr ""
@@ -56,7 +56,7 @@ msgid "WPHEKA Request For Quote"
 msgstr ""
 
 #: includes/admin/class-wpheka-rfq-admin.php:110
-#: includes/admin/class-wpheka-rfq-admin.php:299
+#: includes/admin/class-wpheka-rfq-admin.php:301
 msgid "Settings"
 msgstr ""
 
@@ -65,36 +65,36 @@ msgid "This WooCommerce extension give your customers the possibility to request
 msgstr ""
 
 #. translators: 1: plugin name in bold, 2: five stars
-#: includes/admin/class-wpheka-rfq-admin.php:212
+#: includes/admin/class-wpheka-rfq-admin.php:214
 #, php-format
 msgid "We hope you're enjoying %1$s! Could you please do us a BIG favor and leave us a %2$s rating on WordPress.org to help us spread the word?"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin.php:222
+#: includes/admin/class-wpheka-rfq-admin.php:224
 msgid "Sure, you deserve it"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin.php:225
+#: includes/admin/class-wpheka-rfq-admin.php:227
 msgid "I already did"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin.php:228
+#: includes/admin/class-wpheka-rfq-admin.php:230
 msgid "Maybe later"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin.php:231
+#: includes/admin/class-wpheka-rfq-admin.php:233
 msgid "I don't want to leave a review"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin.php:299
+#: includes/admin/class-wpheka-rfq-admin.php:301
 msgid "View plugin settings"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin.php:321
+#: includes/admin/class-wpheka-rfq-admin.php:323
 msgid "Edit the quote request email template"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin.php:321
+#: includes/admin/class-wpheka-rfq-admin.php:323
 msgid "Email template"
 msgstr ""
 
@@ -139,15 +139,15 @@ msgstr ""
 msgid "Something went wrong. Please try again later."
 msgstr ""
 
-#: includes/class-wpheka-rfq-frontend.php:196
+#: includes/class-wpheka-rfq-frontend.php:211
 msgid "Sorry, no products matched your selection. Please choose a different combination."
 msgstr ""
 
-#: includes/class-wpheka-rfq-frontend.php:197
+#: includes/class-wpheka-rfq-frontend.php:212
 msgid "Please select some product options before adding this product to your cart."
 msgstr ""
 
-#: includes/class-wpheka-rfq-frontend.php:198
+#: includes/class-wpheka-rfq-frontend.php:213
 msgid "Sorry, this product is unavailable. Please choose a different combination."
 msgstr ""
 
@@ -398,61 +398,61 @@ msgid "Site"
 msgstr ""
 
 #. translators: %s: customer name.
-#: templates/emails/plain/request-for-quote-mail-template.php:37
+#: templates/emails/plain/request-for-quote-mail-template.php:70
 #: templates/emails/request-for-quote-mail-template.php:57
 #, php-format
 msgid "You have received a quote request from %s. The request is as follows:"
 msgstr ""
 
-#: templates/emails/plain/request-for-quote-mail-template.php:41
+#: templates/emails/plain/request-for-quote-mail-template.php:74
 #: templates/emails/request-for-quote-mail-template.php:61
 msgid "You have received a quote request. The request is as follows:"
 msgstr ""
 
-#: templates/emails/plain/request-for-quote-mail-template.php:46
+#: templates/emails/plain/request-for-quote-mail-template.php:79
 #: templates/emails/request-for-quote-mail-template.php:74
 msgid "Quote summary"
 msgstr ""
 
-#: templates/emails/plain/request-for-quote-mail-template.php:52
+#: templates/emails/plain/request-for-quote-mail-template.php:85
 #: templates/emails/request-for-quote-mail-template.php:86
 msgid "This request contains no products."
 msgstr ""
 
 #. translators: 1: product name, 2: quantity
-#: templates/emails/plain/request-for-quote-mail-template.php:66
+#: templates/emails/plain/request-for-quote-mail-template.php:99
 #, php-format
 msgid "%1$s x %2$d"
 msgstr ""
 
-#: templates/emails/plain/request-for-quote-mail-template.php:88
+#: templates/emails/plain/request-for-quote-mail-template.php:121
 #: templates/emails/request-for-quote-mail-template.php:165
 #: templates/request-for-quote-form.php:29
 msgid "Name"
 msgstr ""
 
-#: templates/emails/plain/request-for-quote-mail-template.php:89
+#: templates/emails/plain/request-for-quote-mail-template.php:122
 #: templates/emails/request-for-quote-mail-template.php:166
 msgid "Email"
 msgstr ""
 
-#: templates/emails/plain/request-for-quote-mail-template.php:90
+#: templates/emails/plain/request-for-quote-mail-template.php:123
 #: templates/emails/request-for-quote-mail-template.php:167
 msgid "Phone"
 msgstr ""
 
-#: templates/emails/plain/request-for-quote-mail-template.php:91
+#: templates/emails/plain/request-for-quote-mail-template.php:124
 #: templates/emails/request-for-quote-mail-template.php:168
 msgid "Company"
 msgstr ""
 
-#: templates/emails/plain/request-for-quote-mail-template.php:92
+#: templates/emails/plain/request-for-quote-mail-template.php:125
 #: templates/emails/request-for-quote-mail-template.php:169
 #: templates/request-for-quote-form.php:54
 msgid "Message"
 msgstr ""
 
-#: templates/emails/plain/request-for-quote-mail-template.php:106
+#: templates/emails/plain/request-for-quote-mail-template.php:139
 #: templates/emails/request-for-quote-mail-template.php:182
 msgid "Customer details"
 msgstr ""
