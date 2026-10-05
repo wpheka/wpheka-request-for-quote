@@ -163,7 +163,9 @@ class WPHEKA_Rfq_Admin {
 			return false;
 		}
 
-		if ( get_transient( 'wpheka_rfq_review_snoozed' ) ) {
+		// Snoozed per user, like the dismissal. This was a site-wide transient,
+		// so one administrator's "Maybe later" hid the request from everyone.
+		if ( (int) get_user_meta( get_current_user_id(), 'wpheka_rfq_review_snoozed_until', true ) > time() ) {
 			return false;
 		}
 
@@ -283,7 +285,7 @@ class WPHEKA_Rfq_Admin {
 			wp_send_json_error();
 		}
 
-		set_transient( 'wpheka_rfq_review_snoozed', 1, 14 * DAY_IN_SECONDS );
+		update_user_meta( get_current_user_id(), 'wpheka_rfq_review_snoozed_until', time() + 14 * DAY_IN_SECONDS );
 		wp_send_json_success();
 	}
 
