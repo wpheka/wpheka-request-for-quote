@@ -42,6 +42,16 @@ if (! class_exists('WPHEKA_Rfq_Frontend', false)) :
                 }
             }
 
+            // The hooks above live inside WooCommerce's add-to-cart form, which it
+            // only prints for a product that can be bought: out of stock, the
+            // form and with it the quote button were simply absent, so "show
+            // only on out-of-stock products" showed nothing on product pages.
+            // These per-type actions run wherever the add-to-cart area is
+            // rendered, including themes that call the template function directly
+            // rather than through woocommerce_single_product_summary.
+            add_action('woocommerce_simple_add_to_cart', array( $this, 'add_button_when_no_cart_form' ), 31);
+            add_action('woocommerce_variable_add_to_cart', array( $this, 'add_button_when_no_cart_form' ), 31);
+
             // Request quote form.
             add_action('wpheka_after_rfq_list', array( $this, 'add_request_quote_form' ));
 
@@ -70,9 +80,14 @@ if (! class_exists('WPHEKA_Rfq_Frontend', false)) :
             $hide_cart = wpheka_request_for_quote()->get_settings('hide_add_to_cart');
 
             if ($hide_cart == 'yes') {
-                // Hide add to cart from store - using remove_action as backup
+                // Hide add to cart in shop loops.
                 remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10);
-                remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30);
+
+                // Not on the product page: removing woocommerce_template_single_add_to_cart
+                // removed the whole form, and the Add to quote button is placed by
+                // hooks inside that form, so on Storefront and other themes using the
+                // standard hooks the quote button vanished too. The cart button is
+                // hidden there with CSS instead (hide_add_to_cart_single_css()).
 
                 // Filter loop add to cart link to return empty string
                 add_filter('woocommerce_loop_add_to_cart_link', array( $this, 'hide_add_to_cart_loop' ), 99, 2);
@@ -287,6 +302,32 @@ if (! class_exists('WPHEKA_Rfq_Frontend', false)) :
                 '',
                 WPHEKA_RFQ_PLUGIN_TEMPLATE_PATH
             );
+        }
+
+        /**
+         * Show the quote button where the add-to-cart form would be, when
+         * WooCommerce does not print that form.
+         *
+         * WooCommerce skips the form for a product that is out of stock or not
+         * purchasable, and the button hooks live inside it. Rendered only then,
+         * so a product with a form never gets a second button.
+         *
+         * @since  1.8.3
+         * @return void
+         */
+        public function add_button_when_no_cart_form()
+        {
+            global $product;
+
+            if (! $product instanceof WC_Product) {
+                return;
+            }
+
+            if ($product->is_purchasable() && $product->is_in_stock()) {
+                return;
+            }
+
+            $this->add_button_product_page();
         }
 
         /**
