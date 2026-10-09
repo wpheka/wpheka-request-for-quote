@@ -13,7 +13,7 @@ Let customers request a quote on any product and negotiate the best price, turni
 == Description ==
 **Request For Quote** allows your customers to add products to a quote basket and negotiate with you for the best price. This Extension helps both sides to reach a price agreement, which decreases cart abandonment with price reason and increase purchases.
 
-= Features List: =
+### 📝 FEATURES
 
 * Display **Add to Quote** on products
 * Option to show **Add to quote** as button or link
