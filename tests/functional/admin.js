@@ -7,15 +7,29 @@ const path = require('path');
 
 const STATE = process.env.RFQ_STATE;
 const ids = JSON.parse(fs.readFileSync(path.join(STATE, 'ids.json'), 'utf8'));
-const php = (file, ...args) => execFileSync('wp', ['--path=' + process.env.WP_PATH, 'eval-file', path.join(__dirname, file), ...args], { encoding: 'utf8', env: process.env, stdio: ['ignore', 'pipe', 'ignore'] }).trim().split('\n').filter(l => !l.startsWith('Deprecated')).pop();
+// WP_CLI overrides how WP-CLI is called (words split on spaces) on a machine
+// where `wp` is a script node cannot start: WP_CLI="php /path/to/wp-cli.phar".
+const WP_CLI = (process.env.WP_CLI || 'wp').split(' ');
+const php = (file, ...args) => execFileSync(WP_CLI[0], [...WP_CLI.slice(1), '--path=' + process.env.WP_PATH, 'eval-file', path.join(__dirname, file), ...args], { encoding: 'utf8', env: process.env, stdio: ['ignore', 'pipe', 'ignore'] }).trim().split('\n').filter(l => !l.startsWith('Deprecated')).pop();
 const record = (ok, name, detail) => { const line = `${ok ? 'PASS' : 'FAIL'}|${name}${ok ? '' : ' -- ' + detail}`; fs.appendFileSync(path.join(STATE, 'results'), line + '\n'); console.log('  ' + line); };
+// A crash anywhere in this script is a FAIL, never a silent stop: run.sh also
+// fails a non-zero exit and a missing "ran to the end" case.
+const crashed = kind => e => {
+  const lines = String((e && e.stack) || e).split('\n');
+  try { record(false, `admin.js: ${kind}`, [lines[0], (lines.find(l => /^\s+at /.test(l)) || '').trim()].filter(Boolean).join(' ')); } catch (ignored) {}
+  process.exit(1);
+};
+process.on('unhandledRejection', crashed('no unhandled promise rejection'));
+process.on('uncaughtException', crashed('no uncaught exception'));
 const A = ids.admin_url;
 async function check(name, fn) {
   try { const [ok, detail] = await fn(); record(ok, name, detail); } catch (e) { record(false, name, e.message.split('\n')[0]); }
 }
 
 (async () => {
-  const browser = await chromium.launch();
+  // PW_CHANNEL=chrome runs the installed Google Chrome instead of Playwright's
+  // bundled Chromium (for a machine without the matching browser download).
+  const browser = await chromium.launch(process.env.PW_CHANNEL ? { channel: process.env.PW_CHANNEL } : {});
   const ctx = await browser.newContext({ viewport: { width: 1400, height: 1400 } });
   await ctx.addCookies(ids.cookies);
   const errors = [];
@@ -27,6 +41,7 @@ async function check(name, fn) {
     const field = page.locator('#button_link_text');
     await field.fill('Ask for a price');
     const resp = page.waitForResponse(r => r.url().includes('admin-ajax.php') && (r.request().postData() || '').includes('save_wpheka_rfq_plugin_data'));
+    resp.catch(() => {}); // a failed click must not leave this wait to crash the run
     await page.locator('.wpheka-save-changes').click();
     const r = await resp;
     const body = await r.text().catch(() => '(reloaded)');
@@ -57,6 +72,7 @@ async function check(name, fn) {
     await check(`review request: ${label}`, async () => {
       const page = await newPage(); await page.goto(`${A}index.php`, { waitUntil: 'load' });
       const resp = page.waitForResponse(r => r.url().includes('admin-ajax.php') && /wpheka_rfq_(snooze|dismiss)_review/.test(r.request().postData() || ''));
+      resp.catch(() => {}); // a failed click must not leave this wait to crash the run
       await page.locator(`#wpheka-rfq-review-notice ${click}`).first().click();
       const r = await resp;
       await page.goto(`${A}index.php`, { waitUntil: 'load' });
@@ -75,4 +91,5 @@ async function check(name, fn) {
   const real = errors.filter(e => !/Transition was skipped/.test(e));
   record(real.length === 0, 'no JavaScript errors on the admin screens', JSON.stringify(real).slice(0, 400));
   await browser.close();
+  record(true, 'admin.js: ran to the end');
 })();
