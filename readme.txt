@@ -18,7 +18,7 @@ Let customers request a quote on any product and negotiate the best price, turni
 * Display **Add to Quote** on products
 * Option to show **Add to quote** as button or link
 * Option to **hide price** from product pages
-* Option to **add to cart** button from product pages
+* Option to hide **add to cart** button from product pages
 * Option to enable **request quote** button in shop and other archive/category pages
 * Allow your customers to request a **list of products** or a **single product** for each quote
 * Quote list page with a basic form (name, email, message)

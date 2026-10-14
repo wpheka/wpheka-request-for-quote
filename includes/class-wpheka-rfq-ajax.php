@@ -138,6 +138,10 @@ if ( ! class_exists( 'WPHEKA_Rfq_Ajax', false ) ) :
 
 					$quantity = empty( $_POST['quantity'] ) ? 1 : absint( wp_unslash( $_POST['quantity'] ) );
 
+					if ( ! $this->can_add_to_quote( $product_id, $variation_id ) ) {
+						$this->send_add_error();
+					}
+
 					if ( ! empty( $variation_id ) ) {
 						$rfq = array(
 							'product_id'   => $product_id,
@@ -384,6 +388,57 @@ if ( ! class_exists( 'WPHEKA_Rfq_Ajax', false ) ) :
 		}
 
 		/**
+		 * Whether a product may go into the quote list.
+		 *
+		 * The add handlers are public, so a request can name any id, not only
+		 * one the shopper was shown a button for. The product must exist, be
+		 * published and pass the same rules that decide whether its Add to quote
+		 * button is shown. A variation must be a published variation of that
+		 * product.
+		 *
+		 * @since  1.9.0
+		 * @param  int $product_id   Product id.
+		 * @param  int $variation_id Variation id, or 0.
+		 * @return bool
+		 */
+		private function can_add_to_quote( $product_id, $variation_id = 0 ) {
+			$product = wc_get_product( $product_id );
+
+			if ( ! $product || $product->is_type( 'variation' ) || 'publish' !== $product->get_status() ) {
+				return false;
+			}
+
+			if ( ! class_exists( 'WPHEKA_Rfq_Frontend', false ) || ! WPHEKA_Rfq_Frontend::should_show_button( $product ) ) {
+				return false;
+			}
+
+			if ( $variation_id ) {
+				$variation = wc_get_product( $variation_id );
+
+				if ( ! $variation || ! $variation->is_type( 'variation' ) || $variation->get_parent_id() !== $product->get_id() || 'publish' !== $variation->get_status() ) {
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		/**
+		 * Answer an add request with the plugin's error response and stop.
+		 *
+		 * @since  1.9.0
+		 * @return void
+		 */
+		private function send_add_error() {
+			wp_send_json(
+				array(
+					'result'  => 'false',
+					'message' => apply_filters( 'wpheka_rfq_product_error_message', __( 'Error occurred while adding product to the quote list.', 'wpheka-request-for-quote' ) ),
+				)
+			);
+		}
+
+		/**
 		 * Add to quote in archive pages
 		 *
 		 * @since  1.0
@@ -398,6 +453,10 @@ if ( ! class_exists( 'WPHEKA_Rfq_Ajax', false ) ) :
 
 			$product_id = absint( wp_unslash( $_POST['product_id'] ) );
 			$quantity = empty( $_POST['quantity'] ) ? 1 : absint( wp_unslash( $_POST['quantity'] ) );
+
+			if ( ! $this->can_add_to_quote( $product_id ) ) {
+				$this->send_add_error();
+			}
 
 			$result                                     = 'false';
 			$wpheka_rfq_product_already_in_list_message = apply_filters( 'wpheka_rfq_product_already_in_list_message', __( 'Product already in the quote list.', 'wpheka-request-for-quote' ) );

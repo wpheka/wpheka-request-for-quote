@@ -49,6 +49,8 @@ async function productState(page, url) {
     link: await visible(`a${quoteButton}`),
     price: await visible('.summary .price .amount, .product .price .amount'),
     cart: await visible('form.cart button[name="add-to-cart"], form.cart .single_add_to_cart_button'),
+    // Every button in the page, shown or not: a second, hidden copy is still a bug.
+    inPage: await page.locator(quoteButton).count(),
   };
 }
 
@@ -160,6 +162,32 @@ async function productState(page, url) {
       });
     }
   }
+  // Exactly one Add to quote button on a product page, in either position, for
+  // simple and variable products, in and out of stock. Out of stock, WooCommerce
+  // prints no add-to-cart form, and the plugin's fallback for that case used to
+  // add a second button when the position was "after".
+  const products = [
+    ['simple in stock', ids.in_url, 'in'],
+    ['simple out of stock', ids.out_url, 'out'],
+    ['variable in stock', ids.var_in_url, 'in'],
+    ['variable out of stock', ids.var_out_url, 'out'],
+  ];
+  for (const position of ['before', 'after']) {
+    for (const option of ['show_all', 'only_out_of_stock']) {
+      const read = JSON.parse(php('settings.php', `button_position=${position}`, `out_of_stock_option=${option}`));
+      for (const [label, url, stock] of products) {
+        const want = option === 'only_out_of_stock' && stock === 'in' ? 0 : 1;
+        for (const theme of ids.themes) {
+          await check(`[${theme}] button_position=${position}, out_of_stock_option=${option}, ${label}: ${want} Add to quote button`, async () => {
+            const g = await guest(browser, theme);
+            const s = await productState(g.page, url);
+            await g.ctx.close();
+            return [s.inPage === want && s.button === want, `plugin read ${JSON.stringify(read)}, page ${JSON.stringify(s)}`];
+          });
+        }
+      }
+    }
+  }
   php('settings.php', 'hide_price=yes'); // back to the baseline
 
   // Requests without a valid nonce change nothing.
@@ -176,6 +204,73 @@ async function productState(page, url) {
     await g.ctx.close();
     return [add.status() === 403 && rows === 0 && mail().length === before2 && !sendBody.includes('"success":true'), `add ${add.status()}, rows ${rows}, send ${send.status()} ${sendBody.slice(0, 60)}`];
   });
+
+  // The add-to-quote handlers check the product, not only the nonce: a direct
+  // request can name any id. Each refusal gets the plugin's error response and
+  // leaves the quote list as it was; real products still add.
+  {
+    const g = await guest(browser);
+    const ajax = ids.admin_url + 'admin-ajax.php';
+    await g.page.goto(ids.in_url, { waitUntil: 'load' });
+    const singleNonce = await g.page.evaluate(() => window.wpheka_rfq_frontend_params && window.wpheka_rfq_frontend_params.add_to_quote_nonce);
+    await g.page.goto(ids.shop_url, { waitUntil: 'load' });
+    const shopNonce = await g.page.evaluate(() => window.wpheka_rfq_shop_params && window.wpheka_rfq_shop_params.add_to_quote_nonce);
+    const add = async (action, fields) => {
+      const res = await g.page.request.post(ajax, { form: { action, security: action === 'wpheka_add_to_quote' ? singleNonce : shopNonce, ...fields } });
+      const text = await res.text();
+      try { return JSON.parse(text).result; } catch (e) { return `(${res.status()}) ${text.slice(0, 60)}`; }
+    };
+    const rows = async () => { await g.page.goto(ids.quote_page, { waitUntil: 'load' }); return g.page.locator('tr.rfq_item').count(); };
+    await check('add to quote: the test has both nonces', async () => [!!singleNonce && !!shopNonce, `single ${singleNonce}, shop ${shopNonce}`]);
+
+    const refusals = [
+      ['a product that does not exist', { product_id: '999999999' }],
+      ['a draft product', { product_id: String(ids.draft) }],
+      ['a private product', { product_id: String(ids.private) }],
+      ['a variation id posted as the product', { product_id: String(ids.var_in_variation) }],
+    ];
+    for (const action of ['wpheka_add_to_quote', 'wpheka_add_to_quote_shop']) {
+      for (const [label, fields] of refusals) {
+        await check(`add to quote (${action}): refuses ${label}`, async () => {
+          const result = await add(action, fields);
+          return [result === 'false', `result ${result}`];
+        });
+      }
+    }
+    await check('add to quote: refuses a variation of another product', async () => {
+      const result = await add('wpheka_add_to_quote', { product_id: String(ids.var_in), variation_id: String(ids.var_out_variation), attribute_size: 'Small' });
+      return [result === 'false', `result ${result}`];
+    });
+    php('settings.php', 'hide_price=yes', 'out_of_stock_option=hide_out_of_stock');
+    for (const action of ['wpheka_add_to_quote', 'wpheka_add_to_quote_shop']) {
+      await check(`add to quote (${action}): refuses a product the button rules hide`, async () => {
+        const result = await add(action, { product_id: String(ids.out) });
+        return [result === 'false', `result ${result}`];
+      });
+    }
+    php('settings.php', 'hide_price=yes'); // back to the baseline
+    await check('add to quote: nothing refused reached the quote list', async () => {
+      const n = await rows();
+      return [n === 0, `${n} row(s)`];
+    });
+    await check('add to quote: a published product still adds (product page)', async () => {
+      const result = await add('wpheka_add_to_quote', { product_id: String(ids.in) });
+      return [result === 'true', `result ${result}`];
+    });
+    await check('add to quote: a variation of the product still adds (product page)', async () => {
+      const result = await add('wpheka_add_to_quote', { product_id: String(ids.var_in), variation_id: String(ids.var_in_variation), attribute_size: 'Small' });
+      return [result === 'true', `result ${result}`];
+    });
+    await check('add to quote: a published product still adds (shop page)', async () => {
+      const result = await add('wpheka_add_to_quote_shop', { product_id: String(ids.out) });
+      return [result === 'true', `result ${result}`];
+    });
+    await check('add to quote: the quote list holds exactly the three real products', async () => {
+      const n = await rows();
+      return [n === 3, `${n} row(s)`];
+    });
+    await g.ctx.close();
+  }
 
   const real = errors.filter(e => !/Transition was skipped/.test(e));
   record(real.length === 0, 'no JavaScript errors on the shop pages', JSON.stringify(real).slice(0, 400));

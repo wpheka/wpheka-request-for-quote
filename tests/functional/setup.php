@@ -34,6 +34,47 @@ $simple = function ( $name, $stock ) {
 };
 $ids['in']  = $simple( 'ZZ RFQ In Stock', 10 );
 $ids['out'] = $simple( 'ZZ RFQ Out Of Stock', 0 );
+$variable = function ( $name, $stock ) {
+	$p = new WC_Product_Variable();
+	$p->set_name( $name );
+	$p->set_status( 'publish' );
+	$attr = new WC_Product_Attribute();
+	$attr->set_name( 'Size' );
+	$attr->set_options( array( 'Small', 'Large' ) );
+	$attr->set_visible( true );
+	$attr->set_variation( true );
+	$p->set_attributes( array( $attr ) );
+	$id = $p->save();
+	foreach ( array( 'Small', 'Large' ) as $size ) {
+		$v = new WC_Product_Variation();
+		$v->set_parent_id( $id );
+		$v->set_attributes( array( 'size' => $size ) );
+		$v->set_regular_price( '24.99' );
+		$v->set_manage_stock( true );
+		$v->set_stock_quantity( $stock );
+		$v->set_backorders( 'no' );
+		$v->save();
+	}
+	WC_Product_Variable::sync( $id );
+	return $id;
+};
+
+$ids['var_in']  = $variable( 'ZZ RFQ Variable In Stock', 10 );
+$ids['var_out'] = $variable( 'ZZ RFQ Variable Out Of Stock', 0 );
+
+$ids['var_in_variation']  = wc_get_product( $ids['var_in'] )->get_children()[0];
+$ids['var_out_variation'] = wc_get_product( $ids['var_out'] )->get_children()[0];
+// Products a shopper is never shown: refused by the add-to-quote handlers.
+foreach ( array( 'draft', 'private' ) as $hidden_status ) {
+	$p = new WC_Product_Simple();
+	$p->set_name( 'ZZ RFQ ' . ucfirst( $hidden_status ) );
+	$p->set_regular_price( '19.99' );
+	$p->set_status( $hidden_status );
+	$ids[ $hidden_status ] = $p->save();
+}
+
+$ids['var_in_url']  = get_permalink( $ids['var_in'] );
+$ids['var_out_url'] = get_permalink( $ids['var_out'] );
 $ids['in_url']  = get_permalink( $ids['in'] );
 $ids['out_url'] = get_permalink( $ids['out'] );
 $ids['shop_url'] = add_query_arg( 's', 'ZZ RFQ', home_url( '/' ) ) . '&post_type=product';

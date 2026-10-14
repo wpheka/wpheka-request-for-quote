@@ -19,6 +19,18 @@ if (! class_exists('WPHEKA_Rfq_Frontend', false)) :
     class WPHEKA_Rfq_Frontend
     {
 
+		/**
+		 * Products whose product-page button has been printed in this request.
+		 *
+		 * The button is hooked in two places (the position setting and the
+		 * fallback for products WooCommerce prints no add-to-cart form for).
+		 * Out of stock, both run on the same page, so whichever comes first
+		 * prints the button and the other one skips it.
+		 *
+		 * @since 1.9.0
+		 * @var   array<int,bool>
+		 */
+		private $button_printed = array();
 
         /**
          * WPHEKA_Rfq_Frontend Constructor.
@@ -34,12 +46,14 @@ if (! class_exists('WPHEKA_Rfq_Frontend', false)) :
             if ($button_position == 'before') {
                 add_action('woocommerce_before_add_to_cart_button', array( $this, 'add_button_product_page' ));
             } else {
-                // Default: after add to cart button
-                if (has_action('woocommerce_after_add_to_cart_button')) {
-                    add_action('woocommerce_after_add_to_cart_button', array( $this, 'add_button_product_page' ));
-                } else {
-                    add_action('woocommerce_single_product_summary', array( $this, 'add_button_product_page' ), 35);
-                }
+                // Default: after the Add to cart button. Hooked in both places: inside the
+                // add-to-cart form, and on the product summary for themes that print no form
+                // hook. Themes that build the product page from WooCommerce's template
+                // functions (and never run woocommerce_single_product_summary) only reach the
+                // first. The once-per-product guard in add_button_product_page() keeps it to
+                // one button where both run.
+                add_action('woocommerce_after_add_to_cart_button', array( $this, 'add_button_product_page' ));
+                add_action('woocommerce_single_product_summary', array( $this, 'add_button_product_page' ), 35);
             }
 
             // The hooks above live inside WooCommerce's add-to-cart form, which it
@@ -247,7 +261,7 @@ if (! class_exists('WPHEKA_Rfq_Frontend', false)) :
          * @since  1.7.0
          * @author WPHEKA
          */
-        public function should_show_button($product)
+        public static function should_show_button($product)
         {
             if (! $product) {
                 return false;
@@ -289,6 +303,11 @@ if (! class_exists('WPHEKA_Rfq_Frontend', false)) :
             if (! $this->should_show_button($product)) {
                 return;
             }
+
+			if ( isset( $this->button_printed[ $product->get_id() ] ) ) {
+				return;
+			}
+			$this->button_printed[ $product->get_id() ] = true;
 
             wc_get_template(
                 'single-product/add-to-quote.php',

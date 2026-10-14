@@ -8,7 +8,7 @@ if ( ! $ids ) {
 	return;
 }
 global $wpdb;
-foreach ( array( 'in', 'out' ) as $k ) {
+foreach ( array( 'in', 'out', 'var_in', 'var_out', 'draft', 'private' ) as $k ) {
 	if ( ! empty( $ids[ $k ] ) && ( $p = wc_get_product( $ids[ $k ] ) ) ) {
 		$p->delete( true );
 	}
