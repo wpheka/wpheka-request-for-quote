@@ -8,7 +8,9 @@
 # Add to quote button with the price and cart hidden, on product and shop pages;
 # adding, updating and removing in the quote list; sending the request and the
 # email the shop receives; every display setting; the Settings page; the review
-# request; and that requests without a valid nonce are refused. Fails on any
+# request; the 1.9.0 page (settings, Requests tab, stats) and stored requests
+# (requests.php: handlers, privacy, uninstall); and that requests without a valid
+# nonce are refused. Fails on any
 # case that misbehaves or on new PHP errors from this plugin in debug.log. The
 # plugin is activated for the suite if it is not already, and everything is put
 # back afterwards, even after a failure.
@@ -66,6 +68,13 @@ echo "== setup";    wpe "$HERE/setup.php" | sed 's/^/  /'
 [ -f "$STATE/ids.json" ] || { echo "setup failed"; exit 2; }
 echo "== shopper";  run_node frontend.js
 echo "== shop owner"; run_node admin.js
+echo "== stored requests, handlers, privacy, uninstall (requests.php)"
+wpe "$HERE/requests.php" | sed 's/^/  /'
+# Same guard as run_node: a fatal error or an early exit stops it before its last case.
+if ! grep -qxF "PASS|requests: ran to the end" "$STATE/results" 2>/dev/null; then
+  echo "  FAIL|requests.php: ran to the end -- it stopped before its last case"
+  echo "FAIL|requests.php: ran to the end -- it stopped before its last case" >> "$STATE/results"
+fi
 
 # grep finds nothing in a clean log and exits 1; "|| true" only reads the log here.
 NEW=$(tail -c +$((OFFSET + 1)) "$LOG" 2>/dev/null | grep -v 'PHP Deprecated' | grep 'wpheka-request-for-quote' || true)

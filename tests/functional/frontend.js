@@ -47,7 +47,8 @@ async function productState(page, url) {
   return {
     button: await visible(quoteButton),
     link: await visible(`a${quoteButton}`),
-    price: await visible('.summary .price .amount, .product .price .amount'),
+    // Classic themes print .price inside .summary; block themes use the product price block.
+    price: await visible('.summary .price .amount, .product .price .amount, .wp-block-woocommerce-product-price .amount'),
     cart: await visible('form.cart button[name="add-to-cart"], form.cart .single_add_to_cart_button'),
     // Every button in the page, shown or not: a second, hidden copy is still a bug.
     inPage: await page.locator(quoteButton).count(),
@@ -138,6 +139,36 @@ async function productState(page, url) {
     const count = parseInt(php('option.php', 'wpheka_rfq_quote_count') || '0', 10) || 0;
     return [empty === 1 && !!toShop && body.includes('ZZ RFQ') && body.includes('Zz Co') && body.includes('Please quote ZZ RFQ items') && count === countBefore + 1,
       `empty list ${empty}, mails ${JSON.stringify(sent.map(m => [m.to, m.subject]))}, has product ${body.includes('ZZ RFQ')}, has company ${body.includes('Zz Co')}, count ${countBefore}->${count}`];
+  });
+  // 1.9.0: the sent request is also stored, and only once its email went out.
+  await check('stored request: the sent quote is stored with its customer, items and estimate', async () => {
+    const rows = JSON.parse(php('requests-read.php') || '[]');
+    const r = rows[0] || {};
+    const items = JSON.parse(r.items || '[]');
+    return [rows.length === 1 && r.customer_email === 'zz-rfq-guest@example.invalid' && r.customer_name === 'Zz Quote' && r.status === 'new' && items.length === 1 && items[0].quantity >= 1 && /ZZ RFQ/.test(items[0].name) && parseFloat(r.total_estimate) > 0,
+      `rows ${JSON.stringify(rows).slice(0, 300)}`];
+  });
+  await check('stored request: with the quote email off, sending fails and nothing is stored', async () => {
+    await page.goto(ids.in_url, { waitUntil: 'load' });
+    await page.locator(quoteButton).click();
+    await page.waitForSelector('text=Product added to quote list', { timeout: 30000 });
+    await page.goto(ids.quote_page, { waitUntil: 'load' });
+    php('mail-enabled.php', 'no');
+    const rowsBefore = JSON.parse(php('requests-read.php') || '[]').length;
+    const countB = parseInt(php('option.php', 'wpheka_rfq_quote_count') || '0', 10) || 0;
+    try {
+      await page.fill('#rfq_display_name', 'Zz Fail');
+      await page.fill('#rfq_email', 'zz-rfq-fail@example.invalid');
+      await page.fill('#rfq_phone', '2045550100');
+      await page.fill('#rfq_message', 'This one must not be stored.');
+      await page.locator('.wpheka-quote-request-form-submit').click();
+      await page.waitForSelector('text=Something went wrong', { timeout: 60000 });
+    } finally {
+      php('mail-enabled.php', 'yes');
+    }
+    const rowsAfter = JSON.parse(php('requests-read.php') || '[]').length;
+    const countA = parseInt(php('option.php', 'wpheka_rfq_quote_count') || '0', 10) || 0;
+    return [rowsAfter === rowsBefore && countA === countB, `stored ${rowsBefore}->${rowsAfter}, counter ${countB}->${countA}`];
   });
   await ctx.close();
 

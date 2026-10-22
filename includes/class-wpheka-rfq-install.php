@@ -33,6 +33,11 @@ class WPHEKA_Rfq_Install {
 		wc_maybe_define_constant( 'WPHEKA_RFQ_INSTALLING', true );
 
 		self::create_tables();
+
+		// Stored quote requests (1.9.0). Sites that update without reactivating get it on admin_init.
+		if ( class_exists( 'WPHEKA_Rfq_Requests' ) ) {
+			WPHEKA_Rfq_Requests::create_table();
+		}
 		self::create_options();
 		self::create_pages();
 

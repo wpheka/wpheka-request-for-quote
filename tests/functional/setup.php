@@ -86,6 +86,22 @@ $ids['cookies'] = array(
 	array( 'name' => AUTH_COOKIE, 'value' => wp_generate_auth_cookie( $uid, $exp, 'auth' ), 'domain' => 'localhost', 'path' => wp_parse_url( admin_url(), PHP_URL_PATH ) ),
 	array( 'name' => LOGGED_IN_COOKIE, 'value' => wp_generate_auth_cookie( $uid, $exp, 'logged_in' ), 'domain' => 'localhost', 'path' => wp_parse_url( home_url( '/' ), PHP_URL_PATH ) ),
 );
+// A shop manager and a subscriber, for who may open and save the 1.9.0 page.
+foreach ( array( 'manager' => 'shop_manager', 'subscriber' => 'subscriber' ) as $key => $role ) {
+	$user_id               = wp_insert_user( array( 'user_login' => 'zz_rfq_' . $key, 'user_pass' => wp_generate_password( 24 ), 'user_email' => 'zz-rfq-' . $key . '@example.invalid', 'role' => $role ) );
+	$ids[ $key ]           = $user_id;
+	$ids[ $key . '_cookies' ] = array(
+		array( 'name' => AUTH_COOKIE, 'value' => wp_generate_auth_cookie( $user_id, $exp, 'auth' ), 'domain' => 'localhost', 'path' => wp_parse_url( admin_url(), PHP_URL_PATH ) ),
+		array( 'name' => LOGGED_IN_COOKIE, 'value' => wp_generate_auth_cookie( $user_id, $exp, 'logged_in' ), 'domain' => 'localhost', 'path' => wp_parse_url( home_url( '/' ), PHP_URL_PATH ) ),
+	);
+}
+// Stored requests (1.9.0): requests above this id were made by the suite.
+WPHEKA_Rfq_Requests::maybe_create_table();
+$ids['max_request']   = (int) $wpdb->get_var( "SELECT MAX(id) FROM {$wpdb->prefix}wpheka_rfq_requests" );
+$ids['delete_data']   = get_option( 'wpheka_rfq_delete_data', '__unset__' );
+$ids['mail_settings'] = get_option( 'woocommerce_wpheka_rfq_mail_settings', '__unset__' );
+$ids['page_id']       = get_option( 'wpheka_request_for_quote_page_id', '__unset__' );
+$ids['quote_page_id'] = (int) $page_id;
 $ids['admin_url']   = admin_url();
 $ids['admin_email'] = get_option( 'admin_email' );
 

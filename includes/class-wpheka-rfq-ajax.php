@@ -25,7 +25,6 @@ if ( ! class_exists( 'WPHEKA_Rfq_Ajax', false ) ) :
 		public function __construct() {
 
 			// Save plugin data.
-			add_action( 'wp_ajax_save_wpheka_rfq_plugin_data', array( $this, 'action_save_wpheka_rfq_plugin_data' ) );
 
 			// Save product to add to quote list.
 			add_action( 'wp_ajax_wpheka_add_to_quote', array( $this, 'action_wpheka_add_to_quote' ) );
@@ -45,73 +44,6 @@ if ( ! class_exists( 'WPHEKA_Rfq_Ajax', false ) ) :
 			// Mail quote product list.
 			add_action( 'wp_ajax_send_rfq_list', array( $this, 'action_send_rfq_list' ) );
 			add_action( 'wp_ajax_nopriv_send_rfq_list', array( $this, 'action_send_rfq_list' ) );
-		}
-
-		/**
-		 * AJAX Action to save all plugin data
-		 *
-		 * @return void
-		 */
-		public function action_save_wpheka_rfq_plugin_data() {
-
-			check_ajax_referer( 'save-plugin-data', 'wpheka_nonce' );
-
-			/*
-			 * The nonce proves the request was not forged; it does not prove the
-			 * sender is allowed to do this. Only wp_ajax_ is registered, so a
-			 * caller is at least logged in -- but on a store that includes every
-			 * customer, and this handler rewrites every plugin setting including
-			 * which page is the quote page.
-			 *
-			 * It matters more from 1.8.1 on, because a save now purges every page
-			 * cache on the site. Without this check the cost of an unauthorised
-			 * call is not just changed settings, it is the store's cache dumped
-			 * as often as the caller likes.
-			 */
-			if ( ! current_user_can( 'manage_options' ) ) {
-				wp_send_json_error( array( 'message' => __( 'You do not have permission to change these settings.', 'wpheka-request-for-quote' ) ) );
-				wp_die();
-			}
-
-			if ( empty( $_POST['wpheka_request_for_quote_page_id'] ) ) { // PHPCS: input var ok.
-				wp_send_json_error( array( 'message' => __( 'Request for quote page is not set.', 'wpheka-request-for-quote' ) ) );
-				wp_die();
-			}
-
-			// Sanitize only relevant settings fields from $_POST
-	$page_id = sanitize_text_field( wp_unslash( $_POST['wpheka_request_for_quote_page_id'] ) );
-		$wpheka_rfq_general_settings = array(
-			'wpheka_request_for_quote_page_id' => $page_id,
-		'user_type'                         => isset( $_POST['user_type'] ) ? sanitize_text_field( wp_unslash( $_POST['user_type'] ) ) : 'all',
-		'out_of_stock_option'               => isset( $_POST['out_of_stock_option'] ) ? sanitize_text_field( wp_unslash( $_POST['out_of_stock_option'] ) ) : 'show_all',
-		'hide_price'                        => isset( $_POST['hide_price'] ) ? sanitize_text_field( wp_unslash( $_POST['hide_price'] ) ) : 'no',
-			'hide_add_to_cart'        => isset( $_POST['hide_add_to_cart'] ) ? sanitize_text_field( wp_unslash( $_POST['hide_add_to_cart'] ) ) : 'no',
-			'button_type'                       => isset( $_POST['button_type'] ) ? sanitize_text_field( wp_unslash( $_POST['button_type'] ) ) : 'button',
-		'button_position'                   => isset( $_POST['button_position'] ) ? sanitize_text_field( wp_unslash( $_POST['button_position'] ) ) : 'after',
-			'button_in_other_pages'   => isset( $_POST['button_in_other_pages'] ) ? sanitize_text_field( wp_unslash( $_POST['button_in_other_pages'] ) ) : 'no',
-			'button_link_text'                  => isset( $_POST['button_link_text'] ) ? sanitize_text_field( wp_unslash( $_POST['button_link_text'] ) ) : '',
-		'after_click_action'                => isset( $_POST['after_click_action'] ) ? sanitize_text_field( wp_unslash( $_POST['after_click_action'] ) ) : 'show_link',
-		'show_phone_field'                  => isset( $_POST['show_phone_field'] ) ? sanitize_text_field( wp_unslash( $_POST['show_phone_field'] ) ) : 'no',
-		'phone_required'                    => isset( $_POST['phone_required'] ) ? sanitize_text_field( wp_unslash( $_POST['phone_required'] ) ) : 'no',
-		'show_company_field'                => isset( $_POST['show_company_field'] ) ? sanitize_text_field( wp_unslash( $_POST['show_company_field'] ) ) : 'no',
-		);
-
-			update_option( 'wpheka_rfq_general_settings', $wpheka_rfq_general_settings );
-			update_option( 'wpheka_request_for_quote_page_id', $page_id );
-
-			/*
-			 * Every setting above changes product, shop or quote page markup, and
-			 * those pages are exactly what a full-page cache is holding. Without
-			 * this the option really was written and the shop owner still saw the
-			 * old button, old label and old price -- with nothing anywhere saying
-			 * why. Reported from a live site running a caching plugin.
-			 */
-			if ( class_exists( 'WPHEKA_Rfq_Cache' ) ) {
-				WPHEKA_Rfq_Cache::purge_all();
-			}
-
-			wp_send_json_success( array( 'message' => __( 'Settings saved.', 'wpheka-request-for-quote' ) ) );
-			wp_die();
 		}
 
 		/**
@@ -319,6 +251,11 @@ if ( ! class_exists( 'WPHEKA_Rfq_Ajax', false ) ) :
 
 							$quote_count = (int) get_option( 'wpheka_rfq_quote_count', 0 );
 							update_option( 'wpheka_rfq_quote_count', $quote_count + 1 );
+
+							// Stored only now, with the counter: a stored request always matches a sent email (1.9.0).
+							if ( class_exists( 'WPHEKA_Rfq_Requests' ) ) {
+								WPHEKA_Rfq_Requests::store( $customer_data, $rfq_data );
+							}
 
 							wp_send_json_success( array( 'message' => __( 'Your request has been sent successfully.', 'wpheka-request-for-quote' ) ) );
 						}

@@ -4,7 +4,7 @@ Tags: request a quote, request for quote, quote, woocommerce, rfq
 Requires at least: 6.5
 Tested up to: 7.1.2
 Requires PHP: 8.1
-Stable tag: 1.8.3
+Stable tag: 1.9.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Donate link: https://www.paypal.me/AKSHAYASWAROOP
@@ -35,7 +35,7 @@ If you enjoyed this plugin then please put a review, that will encourage me to b
 
 1. Upload 'wpheka-request-for-quote' to the '/wp-content/plugins/' directory or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Go to Admin area -> WPHEKA -> Request For Quote Settings
+3. Go to WPHEKA > Request For Quote in the admin menu
 4. Done!
 
 == Frequently Asked Questions ==
@@ -46,10 +46,21 @@ If you enjoyed this plugin then please put a review, that will encourage me to b
 == Screenshots ==
 
 1. Plugin settings link.
-2. Plugin settings screen
+2. Plugin settings screen (needs a new capture for 1.9.0: the WPHEKA > Request For Quote page)
 3. Configure email notifications
 
 == Changelog ==
+
+= 1.9.0 - Unreleased =
+* New - A new page under WPHEKA > Request For Quote, with Settings, Requests and Help tabs. It saves with a normal form, so a save that fails says why and never shows "Changes Updated".
+* New - Quote requests are now stored. The Requests tab lists each one with the customer, the products, a status and the date. Change a request's status (New, Replied or Closed) or delete it. Requests sent before 1.9.0 were not stored.
+* New - Stats at the top of the page: quote requests, products requested, the most requested product and the average request at list price.
+* New - Stored requests are included in WordPress's personal data export and erase tools. The plugin also suggests text for your privacy policy.
+* New - A setting "Delete all data when the plugin is deleted", off by default.
+* Tweak - Shop managers can now open the page and change the settings.
+* Tweak - An empty button text now shows "Add to quote".
+* Fix - Out-of-stock products no longer show two Add to quote buttons on the product page.
+* Fix - A product that does not exist, is not published or is hidden by the button rules can no longer be added to a quote list.
 
 = 1.8.3 - 2026-10-05 =
 * Fix - The Add to quote button shows on product pages again when "Hide Add to cart" is on. With Storefront and other themes that use WooCommerce's standard product layout, it had disappeared together with the Add to cart button.

@@ -1,5 +1,6 @@
-// The shop owner's side: the Settings page saves through its AJAX handler, and
-// the review request's buttons (Maybe later, X, I don't want to) behave per user.
+// The shop owner's side: the WPHEKA > Request For Quote page (1.9.0: Settings saved by a
+// form post, the Requests tab, the stats) and the review request's buttons (Maybe later, X,
+// I don't want to), which behave per user.
 const { chromium } = require('playwright');
 const { execFileSync } = require('child_process');
 const fs = require('fs');
@@ -35,22 +36,197 @@ async function check(name, fn) {
   const errors = [];
   const newPage = async () => { const p = await ctx.newPage(); p.setDefaultTimeout(120000); p.on('pageerror', e => errors.push(`${p.url()}: ${e && (e.stack || e.message)}`)); return p; };
 
-  await check('settings page: changing the button text saves and shows on the product', async () => {
+  // ---- 1.9.0 page: WPHEKA > Request For Quote (Settings, Requests, Help), saved by a form post.
+  const PAGE = `${A}admin.php?page=wpheka_request_for_quote`;
+  const F = k => `[name="wpheka_rfq_general_settings[${k}]"]`;
+  const setRadio = (page, k, v) => page.locator(`${F(k)}[value="${v}"]`).evaluate(el => { el.checked = true; el.dispatchEvent(new Event('change', { bubbles: true })); });
+  const setSwitch = (page, name, on) => page.locator(`input[role="switch"][name="${name}"]`).evaluate((el, on) => { el.checked = on; el.dispatchEvent(new Event('change', { bubbles: true })); }, on);
+  const submit = async page => { await Promise.all([page.waitForNavigation({ waitUntil: 'load' }), page.locator('#rfq-settings').evaluate(f => f.requestSubmit())]); };
+  const toast = async page => ({ saved: await page.locator('.w-toast.is-shown[role="status"]', { hasText: 'Settings saved' }).count(), error: await page.locator('.w-toast--error.is-shown[role="alert"]').count(), errorText: (await page.locator('.w-toast--error').innerText().catch(() => '')).trim() });
+  const stored = () => JSON.parse(php('settings-read.php', 'all'));
+  const asUser = async who => { const c = await browser.newContext({ viewport: { width: 1400, height: 1400 } }); await c.addCookies(ids[who + '_cookies']); const p = await c.newPage(); p.setDefaultTimeout(120000); return { c, p }; };
+
+  await check('settings page: every field saves and shows again after the reload', async () => {
     const page = await newPage();
-    await page.goto(`${A}admin.php?page=wpheka_request_for_quote`, { waitUntil: 'load' });
-    const field = page.locator('#button_link_text');
-    await field.fill('Ask for a price');
-    const resp = page.waitForResponse(r => r.url().includes('admin-ajax.php') && (r.request().postData() || '').includes('save_wpheka_rfq_plugin_data'));
-    resp.catch(() => {}); // a failed click must not leave this wait to crash the run
-    await page.locator('.wpheka-save-changes').click();
-    const r = await resp;
-    const body = await r.text().catch(() => '(reloaded)');
-    const stored = JSON.parse(php('settings-read.php', 'button_link_text'));
+    await page.goto(`${PAGE}&tab=settings`, { waitUntil: 'load' });
+    await setRadio(page, 'user_type', 'logged');
+    await setRadio(page, 'out_of_stock_option', 'only_out_of_stock');
+    await setRadio(page, 'button_position', 'before');
+    await setRadio(page, 'button_type', 'link');
+    await page.fill(F('button_link_text'), 'Price please');
+    await setSwitch(page, 'wpheka_rfq_general_settings[button_in_other_pages]', false);
+    await setSwitch(page, 'wpheka_rfq_general_settings[hide_price]', true);
+    await setSwitch(page, 'wpheka_rfq_general_settings[hide_add_to_cart]', false);
+    await page.selectOption('select[name="wpheka_request_for_quote_page_id"]', String(ids.quote_page_id));
+    await setRadio(page, 'after_click_action', 'redirect');
+    await setSwitch(page, 'wpheka_rfq_general_settings[show_phone_field]', true);
+    await setSwitch(page, 'wpheka_rfq_general_settings[phone_required]', true);
+    await setSwitch(page, 'wpheka_rfq_general_settings[show_company_field]', true);
+    await setSwitch(page, 'wpheka_rfq_delete_data', true);
+    await submit(page);
+    const t = await toast(page);
+    const s = stored();
+    const want = { user_type: 'logged', out_of_stock_option: 'only_out_of_stock', button_position: 'before', button_type: 'link', button_link_text: 'Price please', button_in_other_pages: 'no', hide_price: 'yes', hide_add_to_cart: 'no', after_click_action: 'redirect', show_phone_field: 'yes', phone_required: 'yes', show_company_field: 'yes', wpheka_request_for_quote_page_id: String(ids.quote_page_id) };
+    const wrong = Object.keys(want).filter(k => String(s[k]) !== want[k]);
+    const shown = { user: await page.locator(`${F('user_type')}[value="logged"]`).isChecked(), text: await page.locator(F('button_link_text')).inputValue(), del: await page.locator('input[role="switch"][name="wpheka_rfq_delete_data"]').isChecked(), page: await page.locator('select[name="wpheka_request_for_quote_page_id"]').inputValue() };
+    const del = php('option.php', 'wpheka_rfq_delete_data');
+    await page.close();
+    return [t.saved === 1 && t.error === 0 && wrong.length === 0 && del === 'yes' && shown.user && shown.text === 'Price please' && shown.del && shown.page === String(ids.quote_page_id),
+      `toast ${JSON.stringify(t)}, wrong ${JSON.stringify(wrong.map(k => [k, s[k]]))}, delete_data ${del}, shown ${JSON.stringify(shown)}`];
+  });
+  php('settings.php', 'hide_price=yes');
+  php('set-option.php', 'wpheka_rfq_delete_data', 'no');
+
+  await check('settings page: the button text saved with the Save button shows on the product', async () => {
+    const page = await newPage();
+    await page.goto(`${PAGE}&tab=settings`, { waitUntil: 'load' });
+    await page.fill(F('button_link_text'), 'Ask for a price');
+    await page.locator('.w-savebar button[type="submit"]').waitFor({ state: 'visible' });
+    await Promise.all([page.waitForNavigation({ waitUntil: 'load' }), page.locator('.w-savebar button[type="submit"]').click()]);
+    const t = await toast(page);
     const g = await browser.newContext(); const gp = await g.newPage(); gp.setDefaultTimeout(90000);
     await gp.goto(ids.in_url, { waitUntil: 'load' });
     const shown = await gp.locator('.wpheka-add-to-quote-button', { hasText: 'Ask for a price' }).count();
     await g.close(); await page.close();
-    return [r.status() === 200 && stored === 'Ask for a price' && shown === 1, `save ${r.status()} ${body.slice(0, 60)}, stored ${stored}, on product ${shown}`];
+    return [t.saved === 1 && stored().button_link_text === 'Ask for a price' && shown === 1, `toast ${JSON.stringify(t)}, on product ${shown}`];
+  });
+
+  await check('settings page: an empty button text is saved as "Add to quote" and the product shows it', async () => {
+    const page = await newPage();
+    await page.goto(`${PAGE}&tab=settings`, { waitUntil: 'load' });
+    await page.fill(F('button_link_text'), '');
+    await submit(page);
+    const s = stored().button_link_text;
+    const g = await browser.newContext(); const gp = await g.newPage(); gp.setDefaultTimeout(90000);
+    await gp.goto(ids.in_url, { waitUntil: 'load' });
+    const shown = await gp.locator('.wpheka-add-to-quote-button', { hasText: 'Add to quote' }).count();
+    await g.close(); await page.close();
+    return [s === 'Add to quote' && shown === 1, `stored "${s}", on product ${shown}`];
+  });
+  php('settings.php', 'hide_price=yes', 'button_link_text=');
+  await check('settings page: a stored empty button text still prints "Add to quote" on the product', async () => {
+    const g = await browser.newContext(); const gp = await g.newPage(); gp.setDefaultTimeout(90000);
+    await gp.goto(ids.in_url, { waitUntil: 'load' });
+    const shown = await gp.locator('.wpheka-add-to-quote-button', { hasText: 'Add to quote' }).count();
+    await g.close();
+    return [shown === 1, `on product ${shown}`];
+  });
+  php('settings.php', 'hide_price=yes');
+
+  await check('settings page: with no quote page chosen, a red error and never "Settings saved"; nothing is stored', async () => {
+    const before = php('settings-read.php', 'all');
+    const pageBefore = php('option.php', 'wpheka_request_for_quote_page_id');
+    const page = await newPage();
+    await page.goto(`${PAGE}&tab=settings`, { waitUntil: 'load' });
+    await page.fill(F('button_link_text'), 'Must not be saved');
+    await page.selectOption('select[name="wpheka_request_for_quote_page_id"]', '');
+    await submit(page);
+    const t = await toast(page);
+    await page.waitForTimeout(3500); // a saved toast would have shown and faded by now
+    const later = await toast(page);
+    const after = php('settings-read.php', 'all');
+    const pageAfter = php('option.php', 'wpheka_request_for_quote_page_id');
+    await page.close();
+    return [t.error === 1 && /quote page is not set/i.test(t.errorText) && t.saved === 0 && later.saved === 0 && later.error === 1 && after === before && pageAfter === pageBefore,
+      `toast ${JSON.stringify(t)}, later ${JSON.stringify(later)}, settings unchanged ${after === before}, page ${pageBefore}->${pageAfter}`];
+  });
+
+  await check('settings page: a shop manager sees it in the WPHEKA menu, opens it and saves', async () => {
+    const { c, p } = await asUser('manager');
+    const r = await p.goto(`${PAGE}&tab=settings`, { waitUntil: 'load' });
+    const menu = await p.locator('#toplevel_page_wpheka_plugin_panel .wp-submenu a', { hasText: 'Request For Quote' }).count();
+    await p.fill(F('button_link_text'), 'Manager text');
+    await submit(p);
+    const t = await toast(p);
+    await c.close();
+    const s = stored().button_link_text;
+    return [r.status() === 200 && menu === 1 && t.saved === 1 && s === 'Manager text', `page ${r.status()}, menu ${menu}, toast ${JSON.stringify(t)}, stored ${s}`];
+  });
+  php('settings.php', 'hide_price=yes');
+
+  await check('settings page: a subscriber cannot open it', async () => {
+    const { c, p } = await asUser('subscriber');
+    const r = await p.goto(`${PAGE}&tab=settings`, { waitUntil: 'load' });
+    const form = await p.locator('#rfq-settings').count();
+    await c.close();
+    return [form === 0 && r.status() >= 400, `status ${r.status()}, form ${form}`];
+  });
+
+  // ---- Requests tab and stats.
+  const others = parseInt(php('requests-read.php', 'others') || '0', 10);
+  php('requests-read.php', 'clear');
+  if (others === 0) {
+    await check('requests: with nothing stored, the stats say so and the tab shows the empty state', async () => {
+      const page = await newPage();
+      await page.goto(`${PAGE}&tab=requests`, { waitUntil: 'load' });
+      const stats = await page.locator('.w-stat').allInnerTexts();
+      const empty = await page.locator('.w-empty', { hasText: 'Requests are stored from version 1.9.0' }).count();
+      const count = await page.locator('.w-tab', { hasText: 'Requests' }).locator('.w-count').count();
+      await page.close();
+      const flat = stats.join(' | ');
+      return [empty === 1 && count === 0 && (flat.match(/Counted from version 1\.9\.0/g) || []).length === 3 && /None yet/.test(flat), `empty ${empty}, count ${count}, stats ${flat.replace(/\s+/g, ' ')}`];
+    });
+  } else {
+    record(true, 'requests: with nothing stored (skipped: this store already has requests)');
+  }
+  php('requests-read.php', 'seed', '3');
+  await check('requests: the tab lists them newest first and its label counts the New ones', async () => {
+    const page = await newPage();
+    await page.goto(`${PAGE}&tab=requests`, { waitUntil: 'load' });
+    const names = await page.locator('table.rfq-requests-table tbody tr').evaluateAll(trs => trs.map(tr => tr.cells[1].innerText.split('\n')[0]));
+    const count = (await page.locator('.w-tab', { hasText: 'Requests' }).locator('.w-count').innerText().catch(() => '')).trim();
+    const heads = await page.locator('table.rfq-requests-table thead th').allInnerTexts();
+    await page.close();
+    const mine = names.filter(n => /Zz Seed/.test(n));
+    return [JSON.stringify(mine) === JSON.stringify(['Zz Seed 3', 'Zz Seed 2', 'Zz Seed 1']) && parseInt(count, 10) >= 3 && heads.slice(0, 5).join('|').toLowerCase() === 'request|customer|products|status|received', `names ${JSON.stringify(names)}, count ${count}, heads ${heads.join('|')}`];
+  });
+  await check('requests: the stats show the stored numbers', async () => {
+    const page = await newPage();
+    await page.goto(`${PAGE}&tab=requests`, { waitUntil: 'load' });
+    const card = async label => (await page.locator('.w-stat', { hasText: label }).locator('.w-stat-value').innerText()).trim();
+    const products = await card('Products requested');
+    const top = await card('Most requested');
+    const avg = await card('Average request');
+    await page.close();
+    return [others > 0 || (products === '6' && /ZZ RFQ In Stock/.test(top) && /\d/.test(avg)), `products ${products}, top ${top}, average ${avg}`];
+  });
+  await check('requests: changing a status from the tab saves it and says so', async () => {
+    const rows = JSON.parse(php('requests-read.php'));
+    const target = rows.find(r => r.customer_name === 'Zz Seed 2');
+    const page = await newPage();
+    await page.goto(`${PAGE}&tab=requests`, { waitUntil: 'load' });
+    const tr = page.locator(`tr[data-request="${target.id}"]`);
+    await tr.locator('select[name="status"]').selectOption('replied');
+    await Promise.all([page.waitForNavigation({ waitUntil: 'load' }), tr.locator('.rfq-status-form button').click()]);
+    const notice = await page.locator('.w-notice', { hasText: 'Status changed.' }).count();
+    const pill = (await page.locator(`tr[data-request="${target.id}"] .w-pill`).innerText()).trim();
+    await page.close();
+    const now = JSON.parse(php('requests-read.php')).find(r => r.id === target.id);
+    return [notice === 1 && pill === 'Replied' && now.status === 'replied', `notice ${notice}, pill ${pill}, stored ${now.status}`];
+  });
+  await check('requests: deleting from the tab asks first and removes it', async () => {
+    const rows = JSON.parse(php('requests-read.php'));
+    const target = rows.find(r => r.customer_name === 'Zz Seed 1');
+    const page = await newPage();
+    let asked = '';
+    page.on('dialog', d => { asked = d.message(); d.accept(); });
+    await page.goto(`${PAGE}&tab=requests`, { waitUntil: 'load' });
+    await Promise.all([page.waitForNavigation({ waitUntil: 'load' }), page.locator(`tr[data-request="${target.id}"] .rfq-delete-form button`).click()]);
+    const notice = await page.locator('.w-notice', { hasText: 'Request deleted.' }).count();
+    const still = await page.locator(`tr[data-request="${target.id}"]`).count();
+    await page.close();
+    const gone = !JSON.parse(php('requests-read.php')).some(r => r.id === target.id);
+    return [/cannot be undone/.test(asked) && notice === 1 && still === 0 && gone, `asked "${asked}", notice ${notice}, row ${still}, deleted ${gone}`];
+  });
+  await check('requests: a status change without a valid nonce is refused', async () => {
+    const rows = JSON.parse(php('requests-read.php'));
+    const target = rows.find(r => r.customer_name === 'Zz Seed 3');
+    const page = await newPage();
+    await page.goto(`${PAGE}&tab=requests`, { waitUntil: 'load' });
+    const res = await page.request.post(`${A}admin-post.php`, { form: { action: 'wpheka_rfq_request_status', request_id: String(target.id), status: 'closed', _wpnonce: 'bogus' }, maxRedirects: 0 });
+    await page.close();
+    const now = JSON.parse(php('requests-read.php')).find(r => r.id === target.id);
+    return [res.status() >= 400 && now.status === 'new', `HTTP ${res.status()}, status ${now.status}`];
   });
   php('settings.php', 'hide_price=yes');
 
