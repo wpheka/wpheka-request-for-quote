@@ -9,11 +9,11 @@
  * Text Domain: wpheka-request-for-quote
  * Domain Path: /languages/
  * Requires at least: 6.5
- * Tested up to: 7.1.2
+ * Tested up to: 7.1.3
  * Requires PHP: 8.1
  * Requires Plugins: woocommerce
  * WC requires at least: 3.0
- * WC tested up to: 11.1.2
+ * WC tested up to: 11.2.1
  * Woo: 10.7.0
  * License: GPLv3 or later
  *

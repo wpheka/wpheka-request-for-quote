@@ -109,6 +109,12 @@ class WPHEKA_Rfq_Admin_Page {
 			return;
 		}
 		Page::enqueue( 'wpheka-request-for-quote', plugins_url( 'assets/wpheka-ui/', WPHEKA_RFQ_PLUGIN_FILE ) );
+		// The Requests table: messages wrap, and the status control and Delete keep their size,
+		// so the table fits its card on a desktop screen instead of cutting off Delete.
+		wp_add_inline_style(
+			'wpheka-request-for-quote-wpheka-ui',
+			'.rfq-requests-table td{vertical-align:top}.rfq-requests-table td:first-child{min-width:200px;max-width:320px}.rfq-status-form{flex-wrap:nowrap;margin-top:6px}.rfq-status-form .w-select{width:auto;min-width:110px}.rfq-requests-table .w-pill--plain{background:#eef0f4;color:var(--w-text-3)}'
+		);
 	}
 
 	/**
@@ -718,7 +724,7 @@ class WPHEKA_Rfq_Admin_Page {
 			}
 
 			echo '<tr data-request="' . esc_attr( $id ) . '">';
-			echo '<td><strong>#' . esc_html( $id ) . '</strong>' . ( '' !== $row['message'] ? '<br><span class="w-wrap">' . esc_html( wp_trim_words( $row['message'], 20 ) ) . '</span>' : '' ) . '</td>';
+			echo '<td class="w-wrap"><strong>#' . esc_html( $id ) . '</strong>' . ( '' !== $row['message'] ? '<br><span>' . esc_html( wp_trim_words( $row['message'], 20 ) ) . '</span>' : '' ) . '</td>';
 			echo '<td class="w-wrap">' . esc_html( '' !== $row['customer_name'] ? $row['customer_name'] : __( 'No name given', 'wpheka-request-for-quote' ) );
 			echo '<br><a href="mailto:' . esc_attr( $row['customer_email'] ) . '">' . esc_html( $row['customer_email'] ) . '</a>';
 			if ( '' !== $row['customer_company'] ) {

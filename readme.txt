@@ -2,7 +2,7 @@
 Contributors: wpheka, akshayaswaroop
 Tags: request a quote, request for quote, quote, woocommerce, rfq
 Requires at least: 6.5
-Tested up to: 7.1.2
+Tested up to: 7.1.3
 Requires PHP: 8.1
 Stable tag: 1.9.0
 License: GPLv3
@@ -46,12 +46,13 @@ If you enjoyed this plugin then please put a review, that will encourage me to b
 == Screenshots ==
 
 1. Plugin settings link.
-2. Plugin settings screen (needs a new capture for 1.9.0: the WPHEKA > Request For Quote page)
+2. The settings page under WPHEKA > Request For Quote, with the quote request stats.
 3. Configure email notifications
+4. The Requests tab: every quote request with the customer, the products, a status and the date.
 
 == Changelog ==
 
-= 1.9.0 - Unreleased =
+= 1.9.0 - 2026-10-23 =
 * New - A new page under WPHEKA > Request For Quote, with Settings, Requests and Help tabs. It saves with a normal form, so a save that fails says why and never shows "Changes Updated".
 * New - Quote requests are now stored. The Requests tab lists each one with the customer, the products, a status and the date. Change a request's status (New, Replied or Closed) or delete it. Requests sent before 1.9.0 were not stored.
 * New - Stats at the top of the page: quote requests, products requested, the most requested product and the average request at list price.
