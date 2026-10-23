@@ -8,15 +8,21 @@ if ( ! $ids ) {
 	return;
 }
 global $wpdb;
-foreach ( array( 'in', 'out' ) as $k ) {
+foreach ( array( 'in', 'out', 'var_in', 'var_out', 'draft', 'private' ) as $k ) {
 	if ( ! empty( $ids[ $k ] ) && ( $p = wc_get_product( $ids[ $k ] ) ) ) {
 		$p->delete( true );
 	}
 }
-if ( ! empty( $ids['admin'] ) ) {
-	wp_delete_user( $ids['admin'] );
+foreach ( array( 'admin', 'manager', 'subscriber' ) as $k ) {
+	if ( ! empty( $ids[ $k ] ) ) {
+		wp_delete_user( $ids[ $k ] );
+	}
 }
-foreach ( array( 'settings' => 'wpheka_rfq_general_settings', 'quote_count' => 'wpheka_rfq_quote_count' ) as $k => $opt ) {
+if ( isset( $ids['max_request'] ) && class_exists( 'WPHEKA_Rfq_Requests' ) ) {
+	$wpdb->query( $wpdb->prepare( 'DELETE FROM ' . WPHEKA_Rfq_Requests::table() . ' WHERE id > %d', (int) $ids['max_request'] ) );
+	WPHEKA_Rfq_Requests::flush_stats();
+}
+foreach ( array( 'settings' => 'wpheka_rfq_general_settings', 'quote_count' => 'wpheka_rfq_quote_count', 'delete_data' => 'wpheka_rfq_delete_data', 'mail_settings' => 'woocommerce_wpheka_rfq_mail_settings', 'page_id' => 'wpheka_request_for_quote_page_id' ) as $k => $opt ) {
 	if ( '__unset__' === ( $ids[ $k ] ?? '__unset__' ) ) {
 		delete_option( $opt );
 	} else {

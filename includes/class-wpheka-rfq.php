@@ -123,6 +123,11 @@ final class WPHEKA_Rfq
         add_filter('woocommerce_prepare_email_for_preview', array( $this, 'prepare_email_for_preview' ));
 
         WPHEKA_Rfq_Cache::init();
+		WPHEKA_Rfq_Requests::init();
+
+		if ( class_exists( 'WPHEKA_Rfq_Admin_Page' ) ) {
+			WPHEKA_Rfq_Admin_Page::init();
+		}
     }
 
     /**
@@ -231,9 +236,16 @@ final class WPHEKA_Rfq
          */
         include_once WPHEKA_RFQ_PLUGIN_ABSPATH . 'includes/class-wpheka-rfq-cache.php';
 
+		// Stored quote requests (1.9.0): written when a request is sent, read by the admin page.
+		include_once WPHEKA_RFQ_PLUGIN_ABSPATH . 'includes/class-wpheka-rfq-requests.php';
+
         // Include admin class.
         if ($this->is_request('admin')) {
             include_once WPHEKA_RFQ_PLUGIN_ABSPATH . 'includes/admin/class-wpheka-rfq-admin.php';
+
+			// The WPHEKA admin UI kit and the plugin's page built with it (1.9.0).
+			include_once WPHEKA_RFQ_PLUGIN_ABSPATH . 'includes/wpheka-ui/load.php';
+			include_once WPHEKA_RFQ_PLUGIN_ABSPATH . 'includes/admin/class-wpheka-rfq-admin-page.php';
         }
 
         // Include frontend class.
@@ -476,6 +488,18 @@ final class WPHEKA_Rfq
         $email_classes['WPHEKA_Rfq_Mail'] = include WPHEKA_RFQ_PLUGIN_ABSPATH . 'includes/emails/class-wpheka-rfq-mail.php';
         return $email_classes;
     }
+
+	/**
+	 * The quote button's text. An empty setting falls back to "Add to quote" (1.9.0).
+	 *
+	 * @since 1.9.0
+	 * @return string
+	 */
+	public function get_button_text() {
+		$text = (string) $this->get_settings( 'button_link_text' );
+
+		return '' === trim( $text ) ? __( 'Add to quote', 'wpheka-request-for-quote' ) : $text;
+	}
 
     /**
      * Get plugin settings
