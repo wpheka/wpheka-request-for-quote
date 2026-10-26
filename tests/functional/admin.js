@@ -77,6 +77,38 @@ async function check(name, fn) {
   php('settings.php', 'hide_price=yes');
   php('set-option.php', 'wpheka_rfq_delete_data', 'no');
 
+  await check('settings page: a left nav link glides to its section, marks it and keeps the #hash', async () => {
+    const page = await newPage();
+    await page.goto(`${PAGE}&tab=settings`, { waitUntil: 'load' });
+    const link = page.locator('.w-nav-link[href^="#"]').last();
+    const hash = await link.getAttribute('href');
+    await link.click();
+    // Sample the scroll position while it moves: a jump has no in-between values.
+    const ys = await page.evaluate(() => new Promise(done => { const out = []; const t = setInterval(() => out.push(Math.round(window.scrollY)), 16); setTimeout(() => { clearInterval(t); done(out); }, 1200); }));
+    const end = ys[ys.length - 1];
+    const between = ys.filter(y => y > 0 && y < end).length;
+    const top = await page.evaluate(h => Math.round(document.querySelector(h).getBoundingClientRect().top), hash);
+    const atBottom = await page.evaluate(() => Math.ceil(window.scrollY + window.innerHeight) >= document.documentElement.scrollHeight - 1);
+    const active = await page.locator('.w-nav-link.is-active').getAttribute('href');
+    const url = new URL(page.url()).hash;
+    await page.close();
+    const ok = between >= 3 && (top < 200 || atBottom) && active === hash && url === hash;
+    return [ok, `in-between positions ${between}, section top ${top}, active ${active}, url hash ${url}`];
+  });
+
+  await check('settings page: with reduced motion, a left nav link jumps straight to its section', async () => {
+    const page = await newPage();
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto(`${PAGE}&tab=settings`, { waitUntil: 'load' });
+    const link = page.locator('.w-nav-link[href^="#"]').last();
+    await link.click();
+    const y = await page.evaluate(() => new Promise(done => requestAnimationFrame(() => done(Math.round(window.scrollY)))));
+    await page.waitForTimeout(400);
+    const later = await page.evaluate(() => Math.round(window.scrollY));
+    await page.close();
+    return [y > 0 && y === later, `first frame ${y}, settled ${later}`];
+  });
+
   await check('settings page: the button text saved with the Save button shows on the product', async () => {
     const page = await newPage();
     await page.goto(`${PAGE}&tab=settings`, { waitUntil: 'load' });

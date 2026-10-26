@@ -175,31 +175,76 @@
 		} );
 	}
 
-	// Highlight the section in view.
+	// Highlight the section in view; nav links glide to their section.
 	function scrollspy( ui ) {
 		var links = $$( '.w-nav-link[href^="#"]', ui );
-		if ( ! links.length || ! ( 'IntersectionObserver' in window ) ) {
+		var held = false;
+		var timer;
+		if ( ! links.length ) {
+			return;
+		}
+
+		function mark( link ) {
+			links.forEach( function ( l ) {
+				var on = l === link;
+				l.classList.toggle( 'is-active', on );
+				if ( on ) {
+					l.setAttribute( 'aria-current', 'true' );
+					var nav = l.parentNode;
+					if ( nav.scrollWidth > nav.clientWidth ) {
+						nav.scrollTo( { left: l.offsetLeft - 16, behavior: 'smooth' } );
+					}
+				} else {
+					l.removeAttribute( 'aria-current' );
+				}
+			} );
+		}
+
+		// Hold the highlight on the clicked link until the page stops moving.
+		function settle() {
+			clearTimeout( timer );
+			timer = setTimeout( function () {
+				held = false;
+				window.removeEventListener( 'scroll', settle );
+			}, 120 );
+		}
+
+		links.forEach( function ( l ) {
+			l.addEventListener( 'click', function ( ev ) {
+				var s = document.getElementById( l.getAttribute( 'href' ).slice( 1 ) );
+				if ( ! s || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.button ) {
+					return;
+				}
+				ev.preventDefault();
+				var still = window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
+				held = true;
+				mark( l );
+				window.addEventListener( 'scroll', settle );
+				settle();
+				s.scrollIntoView( { behavior: still ? 'auto' : 'smooth', block: 'start' } );
+				if ( window.history && history.pushState ) {
+					history.pushState( null, '', l.getAttribute( 'href' ) );
+				}
+				// Keyboard and screen reader users land in the section too.
+				if ( ! s.hasAttribute( 'tabindex' ) ) {
+					s.setAttribute( 'tabindex', '-1' );
+				}
+				s.focus( { preventScroll: true } );
+			} );
+		} );
+
+		if ( ! ( 'IntersectionObserver' in window ) ) {
 			return;
 		}
 		var io = new IntersectionObserver(
 			function ( entries ) {
 				entries.forEach( function ( e ) {
-					if ( ! e.isIntersecting ) {
+					if ( held || ! e.isIntersecting ) {
 						return;
 					}
-					links.forEach( function ( l ) {
-						var on = l.getAttribute( 'href' ) === '#' + e.target.id;
-						l.classList.toggle( 'is-active', on );
-						if ( on ) {
-							l.setAttribute( 'aria-current', 'true' );
-							var nav = l.parentNode;
-							if ( nav.scrollWidth > nav.clientWidth ) {
-								nav.scrollTo( { left: l.offsetLeft - 16, behavior: 'smooth' } );
-							}
-						} else {
-							l.removeAttribute( 'aria-current' );
-						}
-					} );
+					mark( links.filter( function ( l ) {
+						return l.getAttribute( 'href' ) === '#' + e.target.id;
+					} )[ 0 ] );
 				} );
 			},
 			{ rootMargin: '-25% 0px -65% 0px' }
