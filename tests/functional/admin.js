@@ -77,6 +77,38 @@ async function check(name, fn) {
   php('settings.php', 'hide_price=yes');
   php('set-option.php', 'wpheka_rfq_delete_data', 'no');
 
+  await check('settings page: a left nav link glides to its section, marks it and keeps the #hash', async () => {
+    const page = await newPage();
+    await page.goto(`${PAGE}&tab=settings`, { waitUntil: 'load' });
+    const link = page.locator('.w-nav-link[href^="#"]').last();
+    const hash = await link.getAttribute('href');
+    await link.click();
+    // Sample the scroll position while it moves: a jump has no in-between values.
+    const ys = await page.evaluate(() => new Promise(done => { const out = []; const t = setInterval(() => out.push(Math.round(window.scrollY)), 16); setTimeout(() => { clearInterval(t); done(out); }, 1200); }));
+    const end = ys[ys.length - 1];
+    const between = ys.filter(y => y > 0 && y < end).length;
+    const top = await page.evaluate(h => Math.round(document.querySelector(h).getBoundingClientRect().top), hash);
+    const atBottom = await page.evaluate(() => Math.ceil(window.scrollY + window.innerHeight) >= document.documentElement.scrollHeight - 1);
+    const active = await page.locator('.w-nav-link.is-active').getAttribute('href');
+    const url = new URL(page.url()).hash;
+    await page.close();
+    const ok = between >= 3 && (top < 200 || atBottom) && active === hash && url === hash;
+    return [ok, `in-between positions ${between}, section top ${top}, active ${active}, url hash ${url}`];
+  });
+
+  await check('settings page: with reduced motion, a left nav link jumps straight to its section', async () => {
+    const page = await newPage();
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto(`${PAGE}&tab=settings`, { waitUntil: 'load' });
+    const link = page.locator('.w-nav-link[href^="#"]').last();
+    await link.click();
+    const y = await page.evaluate(() => new Promise(done => requestAnimationFrame(() => done(Math.round(window.scrollY)))));
+    await page.waitForTimeout(400);
+    const later = await page.evaluate(() => Math.round(window.scrollY));
+    await page.close();
+    return [y > 0 && y === later, `first frame ${y}, settled ${later}`];
+  });
+
   await check('settings page: the button text saved with the Save button shows on the product', async () => {
     const page = await newPage();
     await page.goto(`${PAGE}&tab=settings`, { waitUntil: 'load' });
@@ -198,7 +230,7 @@ async function check(name, fn) {
     const tr = page.locator(`tr[data-request="${target.id}"]`);
     await tr.locator('select[name="status"]').selectOption('replied');
     await Promise.all([page.waitForNavigation({ waitUntil: 'load' }), tr.locator('.rfq-status-form button').click()]);
-    const notice = await page.locator('.w-notice', { hasText: 'Status changed.' }).count();
+    const notice = await page.locator('.w-notice--success[role="status"]', { hasText: 'Status changed.' }).count();
     const pill = (await page.locator(`tr[data-request="${target.id}"] .w-pill`).innerText()).trim();
     await page.close();
     const now = JSON.parse(php('requests-read.php')).find(r => r.id === target.id);
@@ -217,6 +249,26 @@ async function check(name, fn) {
     await page.close();
     const gone = !JSON.parse(php('requests-read.php')).some(r => r.id === target.id);
     return [/cannot be undone/.test(asked) && notice === 1 && still === 0 && gone, `asked "${asked}", notice ${notice}, row ${still}, deleted ${gone}`];
+  });
+  await check('notices: other plugins\' notices stay off the plugin page, and show on the Dashboard', async () => {
+    const page = await newPage();
+    await page.goto(`${A}index.php`, { waitUntil: 'load' });
+    const elsewhere = await page.locator('.zz-rfq-foreign').count();
+    let here = 0, stray = false;
+    for (const tab of ['settings', 'requests']) {
+      await page.goto(`${PAGE}&tab=${tab}`, { waitUntil: 'load' });
+      here += await page.locator('.zz-rfq-foreign').count();
+      stray = stray || await page.locator('.zz-rfq-stray').isVisible();
+    }
+    await page.close();
+    return [elsewhere === 3 && here === 0 && !stray, `dashboard ${elsewhere} (want 3), plugin page ${here}, stray visible ${stray}`];
+  });
+  await check('requests: a failed change shows a red notice that screen readers announce', async () => {
+    const page = await newPage();
+    await page.goto(`${PAGE}&tab=requests&rfq_notice=error`, { waitUntil: 'load' });
+    const n = await page.locator('.w-notice--error[role="alert"]', { hasText: 'could not be changed' }).count();
+    await page.close();
+    return [n === 1, `error notices ${n}`];
   });
   await check('requests: a status change without a valid nonce is refused', async () => {
     const rows = JSON.parse(php('requests-read.php'));

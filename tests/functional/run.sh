@@ -8,7 +8,8 @@
 # Add to quote button with the price and cart hidden, on product and shop pages;
 # adding, updating and removing in the quote list; sending the request and the
 # email the shop receives; every display setting; the Settings page; the review
-# request; the 1.9.0 page (settings, Requests tab, stats) and stored requests
+# request; that other plugins' notices stay off the plugin page; the 1.9.0 page
+# (settings, Requests tab, stats) and stored requests
 # (requests.php: handlers, privacy, uninstall); and that requests without a valid
 # nonce are refused. Fails on any
 # case that misbehaves or on new PHP errors from this plugin in debug.log. The

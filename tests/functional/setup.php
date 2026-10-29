@@ -126,6 +126,19 @@ if ( isset( $_COOKIE["zz_rfq_theme"] ) && "storefront" === $_COOKIE["zz_rfq_them
 }
 ' );
 $ids['theme_mu']   = $theme_mu;
+
+// "Another plugin" with notices hooked three ways, and one printed outside the notice hooks.
+$notices_mu = WP_CONTENT_DIR . '/mu-plugins/zz-rfq-functional-notices.php';
+file_put_contents( $notices_mu, '<?php
+// Written by wpheka-request-for-quote/tests/functional; deleted when the suite ends.
+function zz_rfq_foreign_notice() { echo \'<div class="notice notice-warning zz-rfq-foreign"><p>ZZ RFQ function notice</p></div>\'; }
+class ZZ_Rfq_Foreign { public static function notice() { echo \'<div class="notice notice-info zz-rfq-foreign"><p>ZZ RFQ method notice</p></div>\'; } }
+add_action( \'admin_notices\', \'zz_rfq_foreign_notice\' );
+add_action( \'admin_notices\', array( \'ZZ_Rfq_Foreign\', \'notice\' ) );
+add_action( \'all_admin_notices\', function () { echo \'<div class="notice notice-error zz-rfq-foreign"><p>ZZ RFQ closure notice</p></div>\'; } );
+add_action( \'in_admin_header\', function () { echo \'<div class="notice notice-warning zz-rfq-stray"><p>ZZ RFQ stray notice</p></div>\'; }, 1 );
+' );
+$ids['notices_mu'] = $notices_mu;
 $ids['site_theme'] = get_stylesheet();
 $ids['themes']     = array_values( array_unique( array_filter( array( get_stylesheet(), wp_get_theme( 'storefront' )->exists() ? 'storefront' : '' ) ) ) );
 rfq_t_save_ids( $ids );

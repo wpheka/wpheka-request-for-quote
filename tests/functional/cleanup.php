@@ -30,7 +30,7 @@ foreach ( array( 'settings' => 'wpheka_rfq_general_settings', 'quote_count' => '
 	}
 }
 $sessions = $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}wpheka_rfq_sessions WHERE session_id > %d", (int) $ids['max_session'] ) );
-foreach ( array( 'mu', 'theme_mu' ) as $k ) {
+foreach ( array( 'mu', 'theme_mu', 'notices_mu' ) as $k ) {
 	if ( ! empty( $ids[ $k ] ) && file_exists( $ids[ $k ] ) ) {
 		unlink( $ids[ $k ] );
 	}
