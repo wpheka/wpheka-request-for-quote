@@ -4,7 +4,7 @@ Tags: request a quote, request for quote, quote, woocommerce, rfq
 Requires at least: 6.5
 Tested up to: 7.1.3
 Requires PHP: 8.1
-Stable tag: 1.9.0
+Stable tag: 1.9.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Donate link: https://www.paypal.me/AKSHAYASWAROOP
@@ -51,6 +51,11 @@ If you enjoyed this plugin then please put a review, that will encourage me to b
 4. The Requests tab: every quote request with the customer, the products, a status and the date.
 
 == Changelog ==
+
+= 1.9.1 - 2026-10-29 =
+* Tweak - Notices from WordPress and other plugins no longer show on the Request For Quote page, where they printed above the header and then jumped into place. They still show on every other screen.
+* Tweak - On the Requests tab, "Status changed" and "Request deleted" show with an icon. A change that fails shows in red and is announced by screen readers.
+* Tweak - The section links on the Settings tab scroll smoothly to their section.
 
 = 1.9.0 - 2026-10-23 =
 * New - A new page under WPHEKA > Request For Quote, with Settings, Requests and Help tabs. It saves with a normal form, so a save that fails says why and never shows "Changes Updated".

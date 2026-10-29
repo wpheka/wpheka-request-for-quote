@@ -97,6 +97,10 @@ class WPHEKA_Rfq_Admin_Page {
 		$hook = Menu::add_page( __( 'Request For Quote', 'wpheka-request-for-quote' ), __( 'Request For Quote', 'wpheka-request-for-quote' ), self::capability(), self::PAGE, array( __CLASS__, 'render' ), Icons::menu_icon() );
 
 		self::$hook = is_string( $hook ) ? $hook : '';
+		if ( '' !== self::$hook ) {
+			// Notices from WordPress and other plugins would print above the header and then jump into place.
+			add_action( 'load-' . self::$hook, array( Page::class, 'quiet_notices' ) );
+		}
 	}
 
 	/**
@@ -672,9 +676,9 @@ class WPHEKA_Rfq_Admin_Page {
 		$statuses = WPHEKA_Rfq_Requests::statuses();
 		$status   = isset( $statuses[ $status ] ) ? $status : '';
 		$notices  = array(
-			'status'  => array( '', __( 'Status changed.', 'wpheka-request-for-quote' ) ),
-			'deleted' => array( '', __( 'Request deleted.', 'wpheka-request-for-quote' ) ),
-			'error'   => array( ' w-notice--warn', __( 'That request could not be changed. It may have been deleted already.', 'wpheka-request-for-quote' ) ),
+			'status'  => array( 'success', __( 'Status changed.', 'wpheka-request-for-quote' ) ),
+			'deleted' => array( 'success', __( 'Request deleted.', 'wpheka-request-for-quote' ) ),
+			'error'   => array( 'error', __( 'That request could not be changed. It may have been deleted already.', 'wpheka-request-for-quote' ) ),
 		);
 		$pills    = array(
 			'new'     => 'info',
@@ -684,7 +688,15 @@ class WPHEKA_Rfq_Admin_Page {
 
 		echo '<div class="w-stack rfq-requests">';
 		if ( isset( $notices[ $notice ] ) ) {
-			echo '<div class="w-notice' . esc_attr( $notices[ $notice ][0] ) . '" role="status"><p>' . esc_html( $notices[ $notice ][1] ) . '</p></div>';
+			Page::notices(
+				array(
+					array(
+						'id'   => 'rfq-notice-' . $notice,
+						'kind' => $notices[ $notice ][0],
+						'text' => esc_html( $notices[ $notice ][1] ),
+					),
+				)
+			);
 		}
 		echo '<section class="w-section" aria-labelledby="rfq-requests-t"><div class="w-section-head"><h2 id="rfq-requests-t">' . esc_html__( 'Quote requests', 'wpheka-request-for-quote' ) . '</h2>';
 		echo '<p>' . esc_html__( 'Every quote request customers sent, newest first. The quote email to the store is sent as before.', 'wpheka-request-for-quote' ) . '</p></div><div class="w-card">';

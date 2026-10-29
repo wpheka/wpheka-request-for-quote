@@ -30,6 +30,7 @@
 	function init( ui ) {
 		form( ui );
 		chipfind( ui );
+		kvfind( ui );
 		subs( ui );
 		units( ui );
 		scrollspy( ui );
@@ -124,6 +125,33 @@
 			box.addEventListener( 'keydown', function ( e ) {
 				if ( 'Enter' === e.key ) {
 					e.preventDefault();
+				}
+			} );
+		} );
+	}
+
+	// Narrow key/value rows as you type; hide sections with no match.
+	function kvfind( ui ) {
+		$$( '[data-w-kvfind]', ui ).forEach( function ( box ) {
+			var area = document.getElementById( box.getAttribute( 'data-w-kvfind' ) );
+			if ( ! area ) {
+				return;
+			}
+			var empty = $( '[data-w-kv-empty]', area );
+			box.addEventListener( 'input', function () {
+				var q = box.value.trim().toLowerCase();
+				var shown = 0;
+				$$( '.w-kv > div', area ).forEach( function ( r ) {
+					r.hidden = !! q && -1 === r.textContent.toLowerCase().indexOf( q );
+					if ( ! r.hidden ) {
+						shown++;
+					}
+				} );
+				$$( '.w-section', area ).forEach( function ( s ) {
+					s.hidden = !! q && ! $( '.w-kv > div:not([hidden])', s );
+				} );
+				if ( empty ) {
+					empty.hidden = ! q || shown > 0;
 				}
 			} );
 		} );

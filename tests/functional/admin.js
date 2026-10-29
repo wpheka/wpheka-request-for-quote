@@ -230,7 +230,7 @@ async function check(name, fn) {
     const tr = page.locator(`tr[data-request="${target.id}"]`);
     await tr.locator('select[name="status"]').selectOption('replied');
     await Promise.all([page.waitForNavigation({ waitUntil: 'load' }), tr.locator('.rfq-status-form button').click()]);
-    const notice = await page.locator('.w-notice', { hasText: 'Status changed.' }).count();
+    const notice = await page.locator('.w-notice--success[role="status"]', { hasText: 'Status changed.' }).count();
     const pill = (await page.locator(`tr[data-request="${target.id}"] .w-pill`).innerText()).trim();
     await page.close();
     const now = JSON.parse(php('requests-read.php')).find(r => r.id === target.id);
@@ -249,6 +249,26 @@ async function check(name, fn) {
     await page.close();
     const gone = !JSON.parse(php('requests-read.php')).some(r => r.id === target.id);
     return [/cannot be undone/.test(asked) && notice === 1 && still === 0 && gone, `asked "${asked}", notice ${notice}, row ${still}, deleted ${gone}`];
+  });
+  await check('notices: other plugins\' notices stay off the plugin page, and show on the Dashboard', async () => {
+    const page = await newPage();
+    await page.goto(`${A}index.php`, { waitUntil: 'load' });
+    const elsewhere = await page.locator('.zz-rfq-foreign').count();
+    let here = 0, stray = false;
+    for (const tab of ['settings', 'requests']) {
+      await page.goto(`${PAGE}&tab=${tab}`, { waitUntil: 'load' });
+      here += await page.locator('.zz-rfq-foreign').count();
+      stray = stray || await page.locator('.zz-rfq-stray').isVisible();
+    }
+    await page.close();
+    return [elsewhere === 3 && here === 0 && !stray, `dashboard ${elsewhere} (want 3), plugin page ${here}, stray visible ${stray}`];
+  });
+  await check('requests: a failed change shows a red notice that screen readers announce', async () => {
+    const page = await newPage();
+    await page.goto(`${PAGE}&tab=requests&rfq_notice=error`, { waitUntil: 'load' });
+    const n = await page.locator('.w-notice--error[role="alert"]', { hasText: 'could not be changed' }).count();
+    await page.close();
+    return [n === 1, `error notices ${n}`];
   });
   await check('requests: a status change without a valid nonce is refused', async () => {
     const rows = JSON.parse(php('requests-read.php'));
