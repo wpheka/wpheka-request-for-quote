@@ -21,9 +21,11 @@ Let customers request a quote on any product and negotiate the best price, turni
 * Option to hide **add to cart** button from product pages
 * Option to enable **request quote** button in shop and other archive/category pages
 * Allow your customers to request a **list of products** or a **single product** for each quote
-* Quote list page with a basic form (name, email, message)
-* Email alerts to admin/site owners on RFQ
-* Configure email notification for the users and admin
+* Quote list page with a form: name, email and message, plus optional phone and company fields
+* An email to the store for each new request, with the customer's details, their message and the products. It goes to the site admin email or the recipients you choose.
+* Under WooCommerce > Settings > Emails, set the email's recipients, subject, heading and format (HTML or plain text) or switch it off
+
+The customer does not get a copy of the request. Reply to them from your own email.
 
 If you enjoyed this plugin then please put a review, that will encourage me to bring some more …
 
@@ -51,6 +53,10 @@ If you enjoyed this plugin then please put a review, that will encourage me to b
 4. The Requests tab: every quote request with the customer, the products, a status and the date.
 
 == Changelog ==
+
+= Unreleased =
+* Enhancement - The Docs link now opens the documentation at docs.wpheka.com. The Help tab links to the developer hooks.
+* Tweak - The readme now describes the one email the plugin sends: a new-request email to the store. It no longer mentions emails to customers, which the plugin has never sent.
 
 = 1.9.1 - 2026-10-29 =
 * Tweak - Notices from WordPress and other plugins no longer show on the Request For Quote page, where they printed above the header and then jumped into place. They still show on every other screen.
