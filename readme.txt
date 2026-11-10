@@ -1,17 +1,17 @@
-=== WPHEKA Request For Quote (RFQ) for WooCommerce ===
+=== WPHEKA Request For Quote for WooCommerce ===
 Contributors: wpheka, akshayaswaroop
 Tags: b2b quote, quote request, request a quote, rfq, woocommerce
 Requires at least: 6.5
 Tested up to: 7.1.4
 Requires PHP: 8.1
-Stable tag: 1.9.2
+Stable tag: 1.9.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Donate link: https://www.paypal.me/AKSHAYASWAROOP
 B2B quote requests for WooCommerce. Buyers add products to a quote list and send an RFQ. Hide prices or Add to cart to run a catalogue.
 
 == Description ==
-Business buyers rarely buy from a price list. They ask for a quantity, wait for a price and then order. **WPHEKA Request For Quote (RFQ) for WooCommerce** gives them a way to do that in your store: an Add to quote button on any product, a quote list where they set quantities and a short form that sends you the request by email. You can hide prices, hide the Add to cart button or show the quote button only to logged-in customers, so the same store serves retail buyers and trade accounts. Every request is kept in WPHEKA > Request For Quote with a New, Replied or Closed status, so nothing is lost in an inbox.
+Business buyers rarely buy from a price list. They ask for a quantity, wait for a price and then order. **WPHEKA Request For Quote for WooCommerce** gives them a way to do that in your store: an Add to quote button on any product, a quote list where they set quantities and a short form that sends you the request by email. You can hide prices, hide the Add to cart button or show the quote button only to logged-in customers, so the same store serves retail buyers and trade accounts. Every request is kept in WPHEKA > Request For Quote with a New, Replied or Closed status, so nothing is lost in an inbox.
 
 = For your trade buyers =
 
@@ -81,6 +81,9 @@ Not yet. The plugin collects the request and keeps it in one place; you quote th
 4. The Requests tab: every quote request with the buyer, the products, a status and the date.
 
 == Changelog ==
+
+= 1.9.3 - 2026-11-10 =
+* Tweak - The plugin is now called WPHEKA Request For Quote for WooCommerce.
 
 = 1.9.2 - 2026-11-10 =
 * Tweak - The plugin is now called WPHEKA Request For Quote (RFQ) for WooCommerce. The description now covers B2B quote requests, with a new FAQ and new screenshots.
