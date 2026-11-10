@@ -270,7 +270,8 @@ class WPHEKA_Rfq_Admin_Page {
 	 */
 	private static function links() {
 		return array(
-			'docs'    => 'https://www.wpheka.com/product/request-for-quote/',
+			'docs'    => 'https://docs.wpheka.com/plugin/' . self::SLUG,
+			'hooks'   => 'https://docs.wpheka.com/plugin/' . self::SLUG . '/developers',
 			'support' => 'https://wordpress.org/support/plugin/' . self::SLUG . '/',
 			'changes' => 'https://wordpress.org/plugins/' . self::SLUG . '/#developers',
 			'review'  => 'https://wordpress.org/support/plugin/' . self::SLUG . '/reviews/#new-post',
@@ -797,6 +798,7 @@ class WPHEKA_Rfq_Admin_Page {
 			array( 'book', __( 'Documentation', 'wpheka-request-for-quote' ), __( 'Step-by-step guides for every Request For Quote setting.', 'wpheka-request-for-quote' ), $links['docs'] ),
 			array( 'chat', __( 'Support forum', 'wpheka-request-for-quote' ), __( 'Ask a question. The developers who built the plugin answer.', 'wpheka-request-for-quote' ), $links['support'] ),
 			array( 'sparkle', __( "What's new", 'wpheka-request-for-quote' ), __( 'Every change in each version, in plain words.', 'wpheka-request-for-quote' ), $links['changes'] ),
+			array( 'code', __( 'Developer hooks', 'wpheka-request-for-quote' ), __( 'Change the buttons, the quote list, the request form and the quote email.', 'wpheka-request-for-quote' ), $links['hooks'] ),
 		);
 		echo '<div class="w-flow">';
 		foreach ( $cards as $card ) {

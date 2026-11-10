@@ -1,31 +1,36 @@
-=== Request For Quote ===
+=== WPHEKA Request For Quote (RFQ) for WooCommerce ===
 Contributors: wpheka, akshayaswaroop
-Tags: request a quote, request for quote, quote, woocommerce, rfq
+Tags: b2b quote, quote request, request a quote, rfq, woocommerce
 Requires at least: 6.5
-Tested up to: 7.1.3
+Tested up to: 7.1.4
 Requires PHP: 8.1
-Stable tag: 1.9.1
+Stable tag: 1.9.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Donate link: https://www.paypal.me/AKSHAYASWAROOP
-Let customers request a quote on any product and negotiate the best price, turning product enquiries into sales leads.
+B2B quote requests for WooCommerce. Buyers add products to a quote list and send an RFQ. Hide prices or Add to cart to run a catalogue.
 
 == Description ==
-**Request For Quote** allows your customers to add products to a quote basket and negotiate with you for the best price. This Extension helps both sides to reach a price agreement, which decreases cart abandonment with price reason and increase purchases.
+Business buyers rarely buy from a price list. They ask for a quantity, wait for a price and then order. **WPHEKA Request For Quote (RFQ) for WooCommerce** gives them a way to do that in your store: an Add to quote button on any product, a quote list where they set quantities and a short form that sends you the request by email. You can hide prices, hide the Add to cart button or show the quote button only to logged-in customers, so the same store serves retail buyers and trade accounts. Every request is kept in WPHEKA > Request For Quote with a New, Replied or Closed status, so nothing is lost in an inbox.
 
-### 📝 FEATURES
+= For your trade buyers =
 
-* Display **Add to Quote** on products
-* Option to show **Add to quote** as button or link
-* Option to **hide price** from product pages
-* Option to hide **add to cart** button from product pages
-* Option to enable **request quote** button in shop and other archive/category pages
-* Allow your customers to request a **list of products** or a **single product** for each quote
-* Quote list page with a basic form (name, email, message)
-* Email alerts to admin/site owners on RFQ
-* Configure email notification for the users and admin
+* An "Add to quote" button on any product page, as a button or a link
+* A quote list where buyers set the quantity for each product
+* A request form with name, email and message, plus optional phone and company fields
+* Guests can send a request. You can also show the button to logged-in customers only
 
-If you enjoyed this plugin then please put a review, that will encourage me to bring some more …
+= For your store =
+
+* Hide prices across the shop, the product pages, the quote list and the quote email
+* Hide the Add to cart button, so a product can only be quoted
+* Show the quote button on shop and category pages as well as product pages
+* Show it on every product, only on products that are out of stock or only on products in stock
+* Every request is listed under WPHEKA > Request For Quote with a New, Replied or Closed status
+* One email to the store for each request, with the buyer's details, their message and the products. It goes to the site admin address or to recipients you choose
+* Under WooCommerce > Settings > Emails, set the email's recipients, subject, heading and format or switch it off
+
+The buyer does not get a copy of the request. Reply to them from your own email.
 
 == Installation ==
 
@@ -40,17 +45,48 @@ If you enjoyed this plugin then please put a review, that will encourage me to b
 
 == Frequently Asked Questions ==
 
-= How It Works? =
-*check installation*
+= How does a buyer ask for a quote? =
+
+An "Add to quote" button appears on your product pages, plus on shop and category pages if you switch that on. The buyer adds what they want, sets a quantity for each product on the quote list page, fills in the short form and sends it. The request arrives in your inbox and is listed under WPHEKA > Request For Quote.
+
+= Can I hide prices and run my store as a catalogue? =
+
+Yes. "Hide prices" removes prices from the shop, the product pages, the quote list and the quote email. "Hide the Add to cart button" leaves asking for a quote as the only way to proceed. Use either on its own or both together.
+
+= Can I show the quote button only to trade customers? =
+
+You can show it to all users, to logged-in users only or to guests only. That is enough to keep the quote route for account holders while retail visitors buy normally. There are no per-role rules yet.
+
+= Which products can be added to a quote? =
+
+On a product page: simple, variable, external and subscription products. For a variable product the buyer chooses the options, such as size or colour, before adding it. On shop and category pages the button shows for simple, external and subscription products, because a variable product needs its options chosen first. A developer can change the shop page list with the `wpheka_rfq_display_for_product_type` filter.
+
+= Does the buyer get a copy of their request? =
+
+No. One email goes to your store for each request, with the buyer's details, their message and the products. Reply to the buyer from your own email. You can set the recipients, subject, heading and format under WooCommerce > Settings > Emails. You can also switch the email off.
+
+= Where do I see my quote requests? =
+
+Under WPHEKA > Request For Quote, on the Requests tab: every request with the buyer, the products, a status and the date. Mark each one New, Replied or Closed as you work through them.
+
+= Can I send a price back through the plugin? =
+
+Not yet. The plugin collects the request and keeps it in one place; you quote the buyer by email. Converting an accepted quote into an order is a manual step today.
 
 == Screenshots ==
 
-1. Plugin settings link.
-2. The settings page under WPHEKA > Request For Quote, with the quote request stats.
-3. Configure email notifications
-4. The Requests tab: every quote request with the customer, the products, a status and the date.
+1. The Add to quote button on a product page, next to or instead of Add to cart.
+2. Settings: where the quote button appears, who sees it and whether prices are hidden.
+3. The email that reaches your store for each request, with the buyer, their message and the products.
+4. The Requests tab: every quote request with the buyer, the products, a status and the date.
 
 == Changelog ==
+
+= 1.9.2 - 2026-11-10 =
+* Tweak - The plugin is now called WPHEKA Request For Quote (RFQ) for WooCommerce. The description now covers B2B quote requests, with a new FAQ and new screenshots.
+* Tweak - Tested up to WordPress 7.1.4.
+* Enhancement - The Docs link now opens the documentation at docs.wpheka.com. The Help tab links to the developer hooks.
+* Tweak - The readme now describes the one email the plugin sends: a new-request email to the store. It no longer mentions emails to customers, which the plugin has never sent.
 
 = 1.9.1 - 2026-10-29 =
 * Tweak - Notices from WordPress and other plugins no longer show on the Request For Quote page, where they printed above the header and then jumped into place. They still show on every other screen.
