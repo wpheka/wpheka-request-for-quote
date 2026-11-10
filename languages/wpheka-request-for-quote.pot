@@ -2,29 +2,21 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Request For Quote 1.9.1\n"
+"Project-Id-Version: WPHEKA Request For Quote (RFQ) for WooCommerce 1.9.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wpheka-request-for-quote\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-29T15:03:26+00:00\n"
+"POT-Creation-Date: 2026-11-10T07:44:22+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wpheka-request-for-quote\n"
 
 #. Plugin Name of the plugin
 #: wpheka-request-for-quote.php
-#: includes/admin/class-wpheka-rfq-admin-page.php:97
-#: includes/admin/class-wpheka-rfq-admin-page.php:307
-#: includes/admin/class-wpheka-rfq-admin-page.php:311
-#: includes/admin/class-wpheka-rfq-admin-page.php:348
-#: includes/admin/class-wpheka-rfq-admin.php:125
-#: includes/class-wpheka-rfq-requests.php:543
-#: includes/emails/class-wpheka-rfq-mail.php:50
-#: includes/wpheka-ui/class-catalogue.php:63
-msgid "Request For Quote"
+msgid "WPHEKA Request For Quote (RFQ) for WooCommerce"
 msgstr ""
 
 #. Plugin URI of the plugin
@@ -47,442 +39,453 @@ msgstr ""
 msgid "https://www.wpheka.com"
 msgstr ""
 
+#: includes/admin/class-wpheka-rfq-admin-page.php:97
+#: includes/admin/class-wpheka-rfq-admin-page.php:308
+#: includes/admin/class-wpheka-rfq-admin-page.php:312
+#: includes/admin/class-wpheka-rfq-admin-page.php:349
+#: includes/admin/class-wpheka-rfq-admin.php:125
+#: includes/class-wpheka-rfq-requests.php:543
+#: includes/emails/class-wpheka-rfq-mail.php:50
+#: includes/wpheka-ui/class-catalogue.php:63
+msgid "Request For Quote"
+msgstr ""
+
 #: includes/admin/class-wpheka-rfq-admin-page.php:129
 msgid "You do not have permission to change these settings."
 msgstr ""
 
 #: includes/admin/class-wpheka-rfq-admin-page.php:195
-#: includes/admin/class-wpheka-rfq-admin-page.php:533
-#: includes/admin/class-wpheka-rfq-admin-page.php:536
+#: includes/admin/class-wpheka-rfq-admin-page.php:534
+#: includes/admin/class-wpheka-rfq-admin-page.php:537
 #: includes/class-wpheka-rfq.php:501
 msgid "Add to quote"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:309
+#: includes/admin/class-wpheka-rfq-admin-page.php:310
 #: includes/wpheka-ui/class-page.php:314
 msgid "Free"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:310
+#: includes/admin/class-wpheka-rfq-admin-page.php:311
 msgid "Let customers build a quote list and ask for your price."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:313
+#: includes/admin/class-wpheka-rfq-admin-page.php:314
 msgid "Docs"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:314
+#: includes/admin/class-wpheka-rfq-admin-page.php:315
 msgid "Support"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:315
-#: includes/admin/class-wpheka-rfq-admin-page.php:799
+#: includes/admin/class-wpheka-rfq-admin-page.php:316
+#: includes/admin/class-wpheka-rfq-admin-page.php:800
 msgid "What's new"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:317
+#: includes/admin/class-wpheka-rfq-admin-page.php:318
 msgid "Rate on WordPress.org"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:319
+#: includes/admin/class-wpheka-rfq-admin-page.php:320
 #: includes/admin/class-wpheka-rfq-admin.php:211
 msgid "Settings"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:320
+#: includes/admin/class-wpheka-rfq-admin-page.php:321
 msgid "Requests"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:321
+#: includes/admin/class-wpheka-rfq-admin-page.php:322
 #: includes/wpheka-ui/class-page.php:167
 msgid "Help"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:328
+#: includes/admin/class-wpheka-rfq-admin-page.php:329
 msgid "Request for quote page is not set. Choose the page that holds your quote list, then save again."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:372
+#: includes/admin/class-wpheka-rfq-admin-page.php:373
 msgid "Counted from version 1.9.0"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:373
+#: includes/admin/class-wpheka-rfq-admin-page.php:374
 msgid "None yet"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:375
+#: includes/admin/class-wpheka-rfq-admin-page.php:376
 msgid "All time"
 msgstr ""
 
 #. translators: %s: difference in requests, with a sign, for example +3 or -2.
-#: includes/admin/class-wpheka-rfq-admin-page.php:381
+#: includes/admin/class-wpheka-rfq-admin-page.php:382
 #, php-format
 msgid "%s vs last month"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:387
-#: includes/admin/class-wpheka-rfq-admin-page.php:701
+#: includes/admin/class-wpheka-rfq-admin-page.php:388
+#: includes/admin/class-wpheka-rfq-admin-page.php:702
 #: includes/class-wpheka-rfq-requests.php:424
 #: includes/class-wpheka-rfq-requests.php:439
 #: includes/class-wpheka-rfq-requests.php:464
 msgid "Quote requests"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:394
+#: includes/admin/class-wpheka-rfq-admin-page.php:395
 msgid "Products requested"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:397
+#: includes/admin/class-wpheka-rfq-admin-page.php:398
 msgid "Across all requests"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:400
+#: includes/admin/class-wpheka-rfq-admin-page.php:401
 msgid "Most requested"
 msgstr ""
 
 #. translators: %s: number of units requested.
-#: includes/admin/class-wpheka-rfq-admin-page.php:405
+#: includes/admin/class-wpheka-rfq-admin-page.php:406
 #, php-format
 msgid "%s requested"
 msgid_plural "%s requested"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:408
+#: includes/admin/class-wpheka-rfq-admin-page.php:409
 msgid "Average request"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:411
+#: includes/admin/class-wpheka-rfq-admin-page.php:412
 msgid "Estimated at list price"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:424
-#: includes/admin/class-wpheka-rfq-admin-page.php:481
+#: includes/admin/class-wpheka-rfq-admin-page.php:425
+#: includes/admin/class-wpheka-rfq-admin-page.php:482
 msgid "Quote button"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:425
-#: includes/admin/class-wpheka-rfq-admin-page.php:549
+#: includes/admin/class-wpheka-rfq-admin-page.php:426
+#: includes/admin/class-wpheka-rfq-admin-page.php:550
 msgid "Product pages"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:426
-#: includes/admin/class-wpheka-rfq-admin-page.php:570
+#: includes/admin/class-wpheka-rfq-admin-page.php:427
+#: includes/admin/class-wpheka-rfq-admin-page.php:571
 msgid "Quote list"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:427
-#: includes/admin/class-wpheka-rfq-admin-page.php:593
+#: includes/admin/class-wpheka-rfq-admin-page.php:428
+#: includes/admin/class-wpheka-rfq-admin-page.php:594
 msgid "Request form"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:428
-#: includes/admin/class-wpheka-rfq-admin-page.php:621
+#: includes/admin/class-wpheka-rfq-admin-page.php:429
+#: includes/admin/class-wpheka-rfq-admin-page.php:622
 msgid "Emails"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:429
-#: includes/admin/class-wpheka-rfq-admin-page.php:625
+#: includes/admin/class-wpheka-rfq-admin-page.php:430
+#: includes/admin/class-wpheka-rfq-admin-page.php:626
 msgid "Advanced"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:439
+#: includes/admin/class-wpheka-rfq-admin-page.php:440
 #: includes/wpheka-ui/class-page.php:338
 msgid "Save changes"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:440
+#: includes/admin/class-wpheka-rfq-admin-page.php:441
 msgid "Review and help"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:441
+#: includes/admin/class-wpheka-rfq-admin-page.php:442
 msgid "Enjoying Request For Quote?"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:441
+#: includes/admin/class-wpheka-rfq-admin-page.php:442
 msgid "A quick review helps other store owners find it and keeps it improving."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:444
+#: includes/admin/class-wpheka-rfq-admin-page.php:445
 msgid "Read the documentation"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:445
+#: includes/admin/class-wpheka-rfq-admin-page.php:446
 msgid "Ask in the support forum"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:446
+#: includes/admin/class-wpheka-rfq-admin-page.php:447
 msgid "Contact WPHEKA"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:458
+#: includes/admin/class-wpheka-rfq-admin-page.php:459
 msgid "Choose a page"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:481
+#: includes/admin/class-wpheka-rfq-admin-page.php:482
 msgid "Where the \"Add to quote\" button appears and who sees it."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:486
+#: includes/admin/class-wpheka-rfq-admin-page.php:487
 msgid "Show the button to"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:488
+#: includes/admin/class-wpheka-rfq-admin-page.php:489
 msgid "All users"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:489
+#: includes/admin/class-wpheka-rfq-admin-page.php:490
 msgid "Logged-in users"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:490
+#: includes/admin/class-wpheka-rfq-admin-page.php:491
 msgid "Guests"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:498
+#: includes/admin/class-wpheka-rfq-admin-page.php:499
 msgid "Show the button on"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:499
+#: includes/admin/class-wpheka-rfq-admin-page.php:500
 msgid "Every product, only products that are out of stock (to ask about them) or only products in stock."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:502
+#: includes/admin/class-wpheka-rfq-admin-page.php:503
 msgid "Every product"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:503
+#: includes/admin/class-wpheka-rfq-admin-page.php:504
 msgid "Out of stock only"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:504
+#: includes/admin/class-wpheka-rfq-admin-page.php:505
 msgid "In stock only"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:512
+#: includes/admin/class-wpheka-rfq-admin-page.php:513
 msgid "Position on the product page"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:514
+#: includes/admin/class-wpheka-rfq-admin-page.php:515
 msgid "Before Add to cart"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:515
+#: includes/admin/class-wpheka-rfq-admin-page.php:516
 msgid "After Add to cart"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:523
+#: includes/admin/class-wpheka-rfq-admin-page.php:524
 msgid "Style"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:525
+#: includes/admin/class-wpheka-rfq-admin-page.php:526
 msgid "Button"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:526
+#: includes/admin/class-wpheka-rfq-admin-page.php:527
 msgid "Link"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:534
+#: includes/admin/class-wpheka-rfq-admin-page.php:535
 msgid "Button text"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:535
+#: includes/admin/class-wpheka-rfq-admin-page.php:536
 msgid "Left empty, the button says \"Add to quote\"."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:543
+#: includes/admin/class-wpheka-rfq-admin-page.php:544
 msgid "Show on shop and category pages"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:544
+#: includes/admin/class-wpheka-rfq-admin-page.php:545
 msgid "Adds the button under each product in product lists."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:549
+#: includes/admin/class-wpheka-rfq-admin-page.php:550
 msgid "Turn your store into a catalogue when prices are agreed per customer."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:554
+#: includes/admin/class-wpheka-rfq-admin-page.php:555
 msgid "Hide prices"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:555
+#: includes/admin/class-wpheka-rfq-admin-page.php:556
 msgid "Removes prices from the shop, product pages, the quote list and the quote email."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:562
+#: includes/admin/class-wpheka-rfq-admin-page.php:563
 msgid "Hide the Add to cart button"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:563
+#: includes/admin/class-wpheka-rfq-admin-page.php:564
 msgid "Customers can only ask for a quote."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:575
+#: includes/admin/class-wpheka-rfq-admin-page.php:576
 msgid "Quote list page"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:576
+#: includes/admin/class-wpheka-rfq-admin-page.php:577
 msgid "The page with the [wpheka_request_for_quote] shortcode."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:576
+#: includes/admin/class-wpheka-rfq-admin-page.php:577
 msgid "View page"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:584
+#: includes/admin/class-wpheka-rfq-admin-page.php:585
 msgid "After \"Add to quote\""
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:586
+#: includes/admin/class-wpheka-rfq-admin-page.php:587
 msgid "Show a link"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:587
+#: includes/admin/class-wpheka-rfq-admin-page.php:588
 msgid "Go to the quote list"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:593
+#: includes/admin/class-wpheka-rfq-admin-page.php:594
 msgid "Extra fields on the form, after name and email."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:598
+#: includes/admin/class-wpheka-rfq-admin-page.php:599
 msgid "Phone number field"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:607
+#: includes/admin/class-wpheka-rfq-admin-page.php:608
 msgid "Make the phone number required"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:608
+#: includes/admin/class-wpheka-rfq-admin-page.php:609
 msgid "Customers must fill it in to send the request."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:616
+#: includes/admin/class-wpheka-rfq-admin-page.php:617
 msgid "Company name field"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:621
+#: includes/admin/class-wpheka-rfq-admin-page.php:622
 msgid "Who gets new quote requests and what the email says."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:630
+#: includes/admin/class-wpheka-rfq-admin-page.php:631
 msgid "Delete all data when the plugin is deleted"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:631
+#: includes/admin/class-wpheka-rfq-admin-page.php:632
 msgid "Removes the stored quote requests and the plugin settings when you delete the plugin. Left off, deleting and reinstalling keeps everything."
 msgstr ""
 
 #. translators: %s: email address.
-#: includes/admin/class-wpheka-rfq-admin-page.php:652
+#: includes/admin/class-wpheka-rfq-admin-page.php:653
 #, php-format
 msgid "Sent to %s."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:653
+#: includes/admin/class-wpheka-rfq-admin-page.php:654
 msgid "Off in WooCommerce, so quote requests cannot be sent. Turn it on to receive them."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:654
+#: includes/admin/class-wpheka-rfq-admin-page.php:655
 msgid "Edit email"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:658
+#: includes/admin/class-wpheka-rfq-admin-page.php:659
 #: includes/emails/class-wpheka-rfq-mail.php:91
 msgid "New quote request"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:660
+#: includes/admin/class-wpheka-rfq-admin-page.php:661
 msgid "On"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:660
+#: includes/admin/class-wpheka-rfq-admin-page.php:661
 msgid "Off"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:679
+#: includes/admin/class-wpheka-rfq-admin-page.php:680
 msgid "Status changed."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:680
+#: includes/admin/class-wpheka-rfq-admin-page.php:681
 msgid "Request deleted."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:681
+#: includes/admin/class-wpheka-rfq-admin-page.php:682
 msgid "That request could not be changed. It may have been deleted already."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:702
+#: includes/admin/class-wpheka-rfq-admin-page.php:703
 msgid "Every quote request customers sent, newest first. The quote email to the store is sent as before."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:707
-#: includes/admin/class-wpheka-rfq-admin-page.php:727
+#: includes/admin/class-wpheka-rfq-admin-page.php:708
+#: includes/admin/class-wpheka-rfq-admin-page.php:728
 msgid "Status"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:707
+#: includes/admin/class-wpheka-rfq-admin-page.php:708
 msgid "All requests"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:711
+#: includes/admin/class-wpheka-rfq-admin-page.php:712
 msgid "Filter"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:717
+#: includes/admin/class-wpheka-rfq-admin-page.php:718
 msgid "No requests on this page."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:717
+#: includes/admin/class-wpheka-rfq-admin-page.php:718
 msgid "Go to the first page"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:719
+#: includes/admin/class-wpheka-rfq-admin-page.php:720
 msgid "No requests with this status."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:719
+#: includes/admin/class-wpheka-rfq-admin-page.php:720
 msgid "Choose \"All requests\" to see every request."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:721
+#: includes/admin/class-wpheka-rfq-admin-page.php:722
 msgid "No quote requests yet."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:721
+#: includes/admin/class-wpheka-rfq-admin-page.php:722
 msgid "Requests are stored from version 1.9.0. Each request a customer sends appears here, as well as in your email."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:727
+#: includes/admin/class-wpheka-rfq-admin-page.php:728
 msgid "Request"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:727
+#: includes/admin/class-wpheka-rfq-admin-page.php:728
 msgid "Customer"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:727
+#: includes/admin/class-wpheka-rfq-admin-page.php:728
 #: includes/class-wpheka-rfq-requests.php:492
 msgid "Products"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:727
+#: includes/admin/class-wpheka-rfq-admin-page.php:728
 #: includes/class-wpheka-rfq-requests.php:468
 msgid "Received"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:727
+#: includes/admin/class-wpheka-rfq-admin-page.php:728
 msgid "Actions"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:740
+#: includes/admin/class-wpheka-rfq-admin-page.php:741
 msgid "No name given"
 msgstr ""
 
 #. translators: %s: number of products.
-#: includes/admin/class-wpheka-rfq-admin-page.php:750
+#: includes/admin/class-wpheka-rfq-admin-page.php:751
 #, php-format
 msgid "%s product"
 msgid_plural "%s products"
@@ -490,60 +493,68 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: estimated total at list price.
-#: includes/admin/class-wpheka-rfq-admin-page.php:753
+#: includes/admin/class-wpheka-rfq-admin-page.php:754
 #, php-format
 msgid "About %s at list price"
 msgstr ""
 
 #. translators: %s: request number.
-#: includes/admin/class-wpheka-rfq-admin-page.php:760
+#: includes/admin/class-wpheka-rfq-admin-page.php:761
 #, php-format
 msgid "Status of request #%s"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:764
+#: includes/admin/class-wpheka-rfq-admin-page.php:765
 msgid "Change"
 msgstr ""
 
 #. translators: %s: time since the request, for example "3 hours".
-#: includes/admin/class-wpheka-rfq-admin-page.php:766
+#: includes/admin/class-wpheka-rfq-admin-page.php:767
 #, php-format
 msgid "%s ago"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:767
+#: includes/admin/class-wpheka-rfq-admin-page.php:768
 msgid "Delete this request? This cannot be undone."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:770
+#: includes/admin/class-wpheka-rfq-admin-page.php:771
 msgid "Delete"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:776
+#: includes/admin/class-wpheka-rfq-admin-page.php:777
 msgid "Request pages"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:797
+#: includes/admin/class-wpheka-rfq-admin-page.php:798
 msgid "Documentation"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:797
+#: includes/admin/class-wpheka-rfq-admin-page.php:798
 msgid "Step-by-step guides for every Request For Quote setting."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:798
+#: includes/admin/class-wpheka-rfq-admin-page.php:799
 msgid "Support forum"
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:798
+#: includes/admin/class-wpheka-rfq-admin-page.php:799
 msgid "Ask a question. The developers who built the plugin answer."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:799
+#: includes/admin/class-wpheka-rfq-admin-page.php:800
 msgid "Every change in each version, in plain words."
 msgstr ""
 
-#: includes/admin/class-wpheka-rfq-admin-page.php:803
+#: includes/admin/class-wpheka-rfq-admin-page.php:801
+msgid "Developer hooks"
+msgstr ""
+
+#: includes/admin/class-wpheka-rfq-admin-page.php:801
+msgid "Change the buttons, the quote list, the request form and the quote email."
+msgstr ""
+
+#: includes/admin/class-wpheka-rfq-admin-page.php:805
 #: includes/wpheka-ui/class-catalogue.php:121
 #: includes/wpheka-ui/class-page.php:129
 #: includes/wpheka-ui/class-page.php:169
